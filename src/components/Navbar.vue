@@ -1,7 +1,6 @@
 <template>
   <div class="navbar">
-    <router-link :to="{ name: 'Home' }"> Home </router-link>
-    <router-link :to="{ name: 'Register' }">Register </router-link>
+    <h1>HRMS</h1>
   </div>
 </template>
 
@@ -9,5 +8,7 @@
 
 <style scoped>
 .navbar {
+  background: #f0f3fb;
+  height: 10vh;
 }
 </style>

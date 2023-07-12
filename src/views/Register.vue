@@ -43,10 +43,8 @@
         required
       ></v-select>
 
-      <v-date-picker></v-date-picker>
-
-      <v-btn class="me-4" type="submit"> submit </v-btn>
-      <v-btn> clear </v-btn>
+      <v-btn class="me-4" type="submit"> Submit </v-btn>
+      <v-btn>Clear</v-btn>
     </form>
   </div>
 </template>
