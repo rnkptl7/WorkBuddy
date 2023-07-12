@@ -1,6 +1,5 @@
 <template>
   <aside class="sidebar-menu">
-    Sidebar
     <router-link :to="{ name: 'Home' }"> Home </router-link>
     <router-link :to="{ name: 'Login' }">Login </router-link>
     <router-link :to="{ name: 'Register' }">Register </router-link>
@@ -11,6 +10,7 @@
 
 <style scoped>
 .sidebar-menu {
+  position: fixed;
   height: 90vh;
   width: 18rem;
   background: #f0f3fb;

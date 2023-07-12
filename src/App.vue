@@ -9,15 +9,20 @@ import Sidebar from "./components/Sidebar.vue";
     <div class="main-sidebar">
       <Sidebar></Sidebar>
     </div>
-    <router-view v-slot="{ Component }">
-      <component :is="Component"></component>
-    </router-view>
+    <div class="main-content">
+      <router-view v-slot="{ Component }">
+        <component :is="Component"></component>
+      </router-view>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .main-layout {
-  display: flex;
   width: 100vw;
+}
+
+.main-layout .main-content {
+  margin-left: 19rem;
 }
 </style>

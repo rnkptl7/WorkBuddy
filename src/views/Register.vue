@@ -1,5 +1,5 @@
 <template>
-  <div class="registration v-col-8">
+  <div class="registration">
     <form @submit.prevent="registerData">
       <v-text-field
         v-model="form.FirstName"
@@ -50,9 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { reactive } from "vue";
 import { useFirestore } from "vuefire";
-import { getDocs, collection, addDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 
 const db = useFirestore();
 
@@ -71,4 +71,13 @@ const registerData = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.registration {
+  display: grid;
+  place-items: center;
+  height: 90vh;
+}
+.registration form {
+  width: 30rem;
+}
+</style>
