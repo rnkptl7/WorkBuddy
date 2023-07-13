@@ -1,13 +1,15 @@
 <template>
-    <section>
+    <section class="flex-fill">
         <ProfileIcon @toggle="toggleFunc" />
-        <div class="profiles">
+        <v-divider></v-divider>
+        <div v-if="toggleValue" class="profiles">
             <div class="left-profile">
-                <v-divider></v-divider>
-                <ProfileDetails v-if="toggleValue" />
-                <ProfileInfo v-else />
+                <ProfileDetails />
             </div>
             <div class="right-profile"><ProfileTimeline /></div>
+        </div>
+        <div v-else>
+            <ProfileInfo />
         </div>
     </section>
 </template>
@@ -25,8 +27,6 @@ function toggleFunc(isProfileSelected) {
 </script>
 <style scoped>
 .left-profile {
-    display: flex;
-    flex-flow: row wrap;
     width: 50%;
 }
 .right-profile {

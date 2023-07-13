@@ -61,6 +61,6 @@ const toggleProfile = () => {
     align-items: center;
 }
 .selected-button {
-    color: red;
+    color: orangered;
 }
 </style>
