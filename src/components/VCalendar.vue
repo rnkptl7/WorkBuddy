@@ -1,12 +1,15 @@
 <template>
     <div class="DatePicker-wrapper">
         <VDatePicker
+            transparent
+            borderless
             expanded
             title-position="left"
             v-model.range="range"
             :select-attribute="selectDragAttribute"
             :drag-attribute="selectDragAttribute"
             @drag="dragValue = $event"
+            :color="selectedColor"
         >
             <template #day-popover="{ format }">
                 <div class="text-sm">
@@ -36,7 +39,8 @@
     import moment from "moment";
     console.log(new Date());
     let date = new Date();
-    //
+    // for VCalendar
+    const selectedColor = ref("gray");
     const range = ref({
         start: date,
         end: date,
@@ -58,6 +62,7 @@
 
 <style scoped>
     .DatePicker-wrapper {
-        width: 375px;
+        min-width: 325px;
+        max-width: 375px;
     }
 </style>
