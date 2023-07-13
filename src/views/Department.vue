@@ -1,78 +1,93 @@
 <template>
-  <div class="department-title">Department</div>
+  <section>
+    <div class="department-title">Department</div>
 
-  <!-- Employees Directory -->
+    <!-- Employees Directory -->
+    <div>
+      <div class="drop-zone">
+        <v-container>
+          <v-row>
+            <v-col class="department-list" @drop="onDrop($event, 1)" @dragenter.prevent @dragover.prevent>
+              <v-sheet class="pa-2 ma-2 front-end-dept">
+                Frontend Department
 
-  <v-container>
-    <v-row>
-      <v-col class="department-list">
-        <v-sheet class="pa-2 ma-2 front-end-dept">
-          Frontend Department
+                <div v-for="item in getList(1)" :key="item.id" class="drag-el" draggable="true"
+                  @dragstart="startDrag($event, item)">
+                  <v-card width="400" :title="item.title" text="Contact Info"></v-card>
+                </div>
+              </v-sheet>
+            </v-col>
+            <v-col @drop="onDrop($event, 2)" @dragenter.prevent @dragover.prevent>
+              <v-sheet class="pa-2 ma-2 back-end-dept">
+                Backend Department
+                <div v-for="item in getList(2)" :key="item.id" class="drag-el" draggable="true"
+                  @dragstart="startDrag($event, item)">
+                  <v-card width="400" :title="item.title" text="Contact Info"></v-card>
+                </div>
+              </v-sheet>
+            </v-col>
 
-          <!-- Cards -->
+            <v-responsive width="100%"></v-responsive>
 
-          <v-list lines="one">
-            <v-list-item
-              v-for="item in items"
-              :key="item.title"
-              :title="item.title"
-            ></v-list-item>
-          </v-list>
-        </v-sheet>
-      </v-col>
-      <v-col>
-        <v-sheet class="pa-2 ma-2 back-end-dept">
-          Backend Department
+            <v-col @drop="onDrop($event, 3)" @dragenter.prevent @dragover.prevent>
+              <v-sheet class="pa-2 ma-2 dev-ops-dept">
+                DevOps Department
+                <div v-for="item in getList(3)" :key="item.id" class="drag-el" draggable="true"
+                  @dragstart="startDrag($event, item)">
+                  <v-card width="400" :title="item.title" text="Contact Info"></v-card>
+                </div>
+              </v-sheet>
+            </v-col>
 
-          <!-- Cards -->
-
-          <div class="card-data">
-            <v-card
-              title="Card title"
-              text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius, sit?"
-            >
-            </v-card>
-          </div>
-        </v-sheet>
-      </v-col>
-
-      <v-responsive width="100%"></v-responsive>
-
-      <v-col>
-        <v-sheet class="pa-2 ma-2 dev-ops-dept">
-          DevOps
-
-          <!-- Cards -->
-
-          <div class="card-data">
-            <v-card
-              title="Card title"
-              text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius, sit?"
-            >
-            </v-card>
-          </div>
-        </v-sheet>
-      </v-col>
-
-      <v-col>
-        <v-sheet class="pa-2 ma-2 qa-dept"
-          >QA
-
-          <!-- Cards -->
-
-          <div class="card-data">
-            <v-card
-              title="Card title"
-              text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius, sit?"
-            >
-            </v-card></div
-        ></v-sheet>
-      </v-col>
-    </v-row>
-  </v-container>
+            <v-col @drop="onDrop($event, 4)" @dragenter.prevent @dragover.prevent>
+              <v-sheet class="pa-2 ma-2 qa-dept">
+                QA Department
+                <div v-for="item in getList(4)" :key="item.id" class="drag-el" draggable="true"
+                  @dragstart="startDrag($event, item)">
+                  <v-card width="400" :title="item.title" text="Contact Info"></v-card>
+                </div>
+              </v-sheet>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+    </div>
+  </section>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const items = ref([
+  { id: 0, title: "Prem", list: 1 },
+  { id: 1, title: "Aman", list: 2 },
+  { id: 2, title: "Dixit", list: 3 },
+  { id: 3, title: "Ronak", list: 4 },
+  { id: 4, title: "Shyam", list: 4 },
+]);
+
+//--------------------------------------Separate the Items--------------------------------------//
+
+const getList = (list) => {
+  return items.value.filter((item) => item.list == list);
+};
+
+//----------------------------------Drag and Drop Functionality----------------------------------//
+
+const startDrag = (event, item) => {
+  console.log(item);
+  event.dataTransfer.dropEffect = "move";
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("itemID", item.id);
+};
+
+const onDrop = (event, list) => {
+  const itemID = event.dataTransfer.getData("itemID");
+  const item = items.value.find((item) => item.id == itemID);
+  item.list = list;
+};
+</script>
+
 
 <style scoped>
 * {
@@ -86,30 +101,38 @@
 .department-title {
   margin: 10px;
   padding: 10px;
-}
-
-.v-container {
-  margin-top: 10%;
+  font-size: 25px;
 }
 
 .v-row {
   text-align: center;
 }
 
+.v-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .front-end-dept,
 .back-end-dept,
 .dev-ops-dept,
 .qa-dept {
-  background-color: rgb(162, 253, 255);
+  background-color: #f0f3fb;
   border-radius: 3px;
+  font-size: 20px;
 }
 
 /* Card's CSS */
 
-.card-data {
-  width: 95%;
+.drag-el {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+
+.card-title {
+  background-color: transparent;
+  border: none;
 }
 </style>
