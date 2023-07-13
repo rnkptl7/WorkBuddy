@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
+
+import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
+
+const authStore = useAuthStore();
+
+const { isLoggedIn } = storeToRefs(authStore);
 </script>
 
 <template>
   <Navbar></Navbar>
   <div class="main-layout">
-    <div class="main-sidebar">
+    <div class="main-sidebar" v-if="isLoggedIn">
       <Sidebar></Sidebar>
     </div>
-    <div class="main-content">
+    <div :class="[isLoggedIn ? 'main-content-margin' : 'main-content']">
       <router-view v-slot="{ Component }">
         <component :is="Component"></component>
       </router-view>
@@ -23,6 +30,10 @@ import Sidebar from "./components/Sidebar.vue";
 }
 
 .main-layout .main-content {
+  padding: 0 20rem;
+}
+
+.main-layout .main-content-margin {
   margin-left: 19rem;
 }
 </style>

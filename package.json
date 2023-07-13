@@ -10,8 +10,10 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
   },
   "dependencies": {
+    "@vee-validate/rules": "^4.10.6",
     "firebase": "^9.23.0",
     "pinia": "^2.1.3",
+    "vee-validate": "^4.10.6",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2",
     "vuefire": "^3.1.2",

@@ -19,7 +19,7 @@
 .sidebar-menu a {
   display: block;
   margin: 5px 0;
-  padding: 1rem;
+  padding: 0.7rem 4rem;
   border-radius: 0 10px 10px 0;
   text-decoration: none;
   color: #000000ab;

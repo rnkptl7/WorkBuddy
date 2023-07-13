@@ -1,17 +1,23 @@
 <template>
   <div class="registration">
-    <form @submit.prevent="submitData">
-      <v-text-field v-model="form.Email" label="E-mail" required></v-text-field>
+    <div>
+      <h1 class="form-heading">Login Here</h1>
+      <VForm class="form" :validation-schema="schema" @submit="submitData">
 
-      <v-text-field
-        v-model="form.Password"
-        label="Password"
-        required
-      ></v-text-field>
+        <div class="inputDiv">
+          <VField name="email" placeholder="Email*" type="email" class="input" v-model="form.Email" />
+          <ErrorMessage name="email" class="error_message" />
+        </div>
 
-      <v-btn class="me-4" type="submit"> Submit </v-btn>
-      <v-btn>Clear</v-btn>
-    </form>
+        <div class="inputDiv">
+          <VField name="password" placeholder="Password*" type="password" class="input" v-model="form.Password" />
+          <ErrorMessage name="password" class="error_message" />
+        </div>
+
+        <v-btn class="me-4 btn-submit" type="submit"> Login </v-btn>
+        <v-btn type="reset">Clear</v-btn>
+      </VForm>
+    </div>
   </div>
 </template>
 
@@ -21,12 +27,23 @@ import { useFirestore } from "vuefire";
 import { collection, getDocs } from "firebase/firestore";
 import router from "@/router";
 
+import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
+
+const authStore = useAuthStore();
 const db = useFirestore();
+
+const { isLoggedIn, isAdmin } = storeToRefs(authStore);
 
 const form = reactive({
   Email: "",
   Password: "",
 });
+
+const schema = {
+  email: "required|email",
+  password: "required|min:8|max:12|regex:^(?=.*\\d)(?=.*[^\\w\\d\\s]).+$",
+};
 
 const submitData = async () => {
   console.log("submit");
@@ -35,15 +52,15 @@ const submitData = async () => {
   let userData;
   querySnapshot.forEach((doc) => {
     let { Email, Password } = doc.data();
-    // console.log(doc.id, " => ", doc.data().Password);
-    // console.log(Email, Password);
     if (form.Email === Email && form.Password === Password) {
+      sessionStorage.setItem("userId", doc.id);
       userData = doc.data();
     }
   });
 
   if (userData) {
     sessionStorage.setItem("isLoggedIn", true);
+    isLoggedIn.value = true;
     router.replace({ name: "Home" });
   } else {
     alert("Invalid Credentials");
@@ -53,11 +70,10 @@ const submitData = async () => {
 
 <style scoped>
 .registration {
-  display: grid;
-  place-items: center;
   height: 50vh;
 }
-.registration form {
-  width: 30rem;
+
+.btn-submit {
+  background: #0000003d;
 }
 </style>
