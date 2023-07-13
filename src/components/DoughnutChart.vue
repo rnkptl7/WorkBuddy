@@ -19,7 +19,20 @@ const data = {
 }
 
 const options = {
-    responsive: true
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            labels: {
+                font: {
+                    family: '"DM Sans", sans-serif',
+                    size: 14,
+                    weight: "500"
+                },
+                padding: 20
+            }
+        }
+    }
 }
 
 </script>
