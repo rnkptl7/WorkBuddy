@@ -1,98 +1,113 @@
 <template>
-    <section class="LMS-wrapper d-flex flex-column flex-fill pa-3">
-        <div class="LMS-button_container my-2">
-            <v-btn rounded class="ma-2">Request Leave</v-btn>
+    <section class="LMS-wrapper d-flex flex-column pa-3 mx-auto">
+        <!-- Request Leave button -->
+        <div class="LMS-button_container my-2 d-flex flex-row-reverse">
+            <v-btn
+                class="my-3"
+                rounded
+                variant="outlined"
+                color="grey-darken-3"
+                @click="openRequestLeaveDialog = !openRequestLeaveDialog"
+                >Request for Leave</v-btn
+            >
+            <ApplyLeaveModal
+                :dialog="openRequestLeaveDialog"
+                @closeLeaveRequestModal="
+                    openRequestLeaveDialog = !openRequestLeaveDialog
+                "
+            />
         </div>
         <div
-            class="LMS-information_container d-flex flex-row flex-wrap justify-center"
+            class="LMS-information_container d-flex flex-row flex-wrap justify-space-around rounded-lg pa-3 w-100"
         >
-            <div class="LMS-calendar d-flex justify-center flex-fill">
-                <VCalendarVue />
-            </div>
+            <!-- Calendar and Leave count wrapper -->
             <div
-                class="LMS-balance d-flex flex-column align-center flex-fill pa-2"
+                class="LMS-calendar_wrapper d-flex flex-column justify-space-around justify-lg-center"
             >
-                <div class="d-flex">
-                    <h3>Leave balance: 8</h3>
-                    <v-divider vertical></v-divider>
-                    <h3>Leave Taken: 2</h3>
+                <div class="LMS-calendar d-flex justify-center">
+                    <VCalendarVue />
                 </div>
-                <h3>Total Allowances: 10</h3>
+                <div
+                    class="LMS-leave_balance ma-3 d-flex flex-column align-space-between justify-center"
+                >
+                    <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
+                        <div class="leaves_count pa-3">
+                            <h3>Leaves Left: 8</h3>
+                            <h6>Expires on: January 26th, 2024</h6>
+                        </div>
+                        <div class="leaves_count pa-3">
+                            <h3>Leaves Taken: 2</h3>
+                            <h4></h4>
+                        </div>
+                    </div>
+                    <div class="leaves_count pa-3">
+                        <h3>Total Allowances: 10</h3>
+                        <h6>For Year: 2023-24</h6>
+                    </div>
+                </div>
+            </div>
+            <!-- Pending Leave Requests -->
+            <div
+                class="LMS-pending_requests d-flex flex-column align-center pa-3"
+            >
+                <h3>Your Pending Requests:</h3>
+                <div class="pending-requests_cards d-flex flex-column">
+                    <LeaveRequestCardVue />
+                    <LeaveRequestCardVue />
+                    <LeaveRequestCardVue />
+                    <LeaveRequestCardVue />
+                    <LeaveRequestCardVue />
+                    <LeaveRequestCardVue />
+                    <LeaveRequestCardVue />
+                </div>
             </div>
         </div>
-        <div class="LMS-leaves_container">
-            Your leaves:-
-            <v-table fixed-header class="ma-3">
-                <thead>
-                    <tr>
-                        <th class="text-left">Name</th>
-                        <th class="text-left">Calories</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in desserts" :key="item.name">
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.calories }}</td>
-                    </tr>
-                </tbody>
-            </v-table>
-        </div>
+        <!-- Leave History -->
+        <LeaveHistory />
     </section>
 </template>
 
 <script setup lang="ts">
-    import { reactive } from "vue";
+    import LeaveRequestCardVue from "../components/LeaveRequestCard.vue";
+    import LeaveHistory from "../components/LeaveHistory.vue";
     import VCalendarVue from "../components/VCalendar.vue";
-    const desserts = reactive([
-        {
-            name: "Frozen Yogurt",
-            calories: 159,
-        },
-        {
-            name: "Ice cream sandwich",
-            calories: 237,
-        },
-        {
-            name: "Eclair",
-            calories: 262,
-        },
-        {
-            name: "Cupcake",
-            calories: 305,
-        },
-        {
-            name: "Gingerbread",
-            calories: 356,
-        },
-        {
-            name: "Jelly bean",
-            calories: 375,
-        },
-        {
-            name: "Lollipop",
-            calories: 392,
-        },
-        {
-            name: "Honeycomb",
-            calories: 408,
-        },
-        {
-            name: "Donut",
-            calories: 452,
-        },
-        {
-            name: "KitKat",
-            calories: 518,
-        },
-    ]);
+    import ApplyLeaveModal from "../components/ApplyLeaveModal.vue";
+    import { reactive, ref } from "vue";
+
+    const openRequestLeaveDialog = ref(false);
 </script>
 
 <style scoped>
+    .LMS-wrapper {
+        width: 80%;
+    }
     .LMS_container {
-        width: 100%;
         background: whitesmoke;
     }
-    .LMS-balance {
-        background: #a0a0a3;
+
+    .v-card {
+        box-sizing: content-box;
+        border-radius: 5%;
+        border: 1px dashed grey;
+    }
+    /* Custom small cards for Leaves analytics */
+    .LMS-leave_balance .leaves_count {
+        border-radius: 5%;
+        border: 1px dashed grey;
+        margin-block: 1rem;
+    }
+    .leaves_count_wrapper {
+        /* width: fit-content; */
+    }
+    .LMS-pending_requests {
+        width: 50%;
+        max-height: 580px;
+    }
+    .pending-requests_cards {
+        overflow-y: auto;
+    }
+    .pending-requests_cards > .pending_card {
+        display: flex;
+        flex: 1 1 auto;
     }
 </style>
