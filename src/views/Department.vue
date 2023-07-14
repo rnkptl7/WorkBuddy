@@ -27,14 +27,14 @@
           </div>
 
           <div
-            v-for="item in getDepartmentItems(department.id)"
-            :key="item.id"
+            v-for="(item, key) in getDepartmentItems(department.id)"
+            :key="key"
             class="drag-el"
             draggable="true"
             @dragstart="startDrag($event, item)"
           >
             <v-card
-              :title="item.title"
+              :title="item.firstName"
               text="Contact Info"
               subtitle="Locations"
               class="employee-card"
@@ -48,14 +48,8 @@
 
 <script setup>
 import { ref } from "vue";
-
-const employeeList = ref([
-  { id: 0, title: "Prem", departmentId: 1 },
-  { id: 1, title: "Aman", departmentId: 2 },
-  { id: 2, title: "Dixit", departmentId: 3 },
-  { id: 3, title: "Ronak", departmentId: 4 },
-  { id: 4, title: "Shyam", departmentId: 2 },
-]);
+import { useFirestore } from "vuefire";
+import { collection, getDocs } from "firebase/firestore";
 
 const departmentList = [
   { id: 1, name: "Frontend Department", class: "frontend-dept" },
@@ -63,14 +57,6 @@ const departmentList = [
   { id: 3, name: "DevOps Department", class: "devops-dept" },
   { id: 4, name: "QA Department", class: "qa-dept" },
 ];
-
-//--------------------Filters and returns items belonging to a specific department--------------------//
-
-const getDepartmentItems = (departmentId) => {
-  return employeeList.value.filter(
-    (item) => item.departmentId === departmentId
-  );
-};
 
 //--------------------Sets necessary data for dragging an item--------------------//
 
@@ -84,7 +70,7 @@ const startDrag = (event, item) => {
 
 const onDrop = (event, departmentId) => {
   const itemID = event.dataTransfer.getData("itemID");
-  const item = employeeList.value.find((item) => item.id == itemID);
+  const item = displayUserData.value.find((item) => item.id == itemID);
   item.departmentId = departmentId;
 };
 
@@ -96,6 +82,52 @@ const getDepartmentClass = (departmentId) => {
       ?.class || ""
   );
 };
+
+//--------------------Get User Data From Firebase and Display it on DOM--------------------//
+
+const db = useFirestore();
+let frontendDept = ref([]);
+let backendDept = ref([]);
+let devopsDept = ref([]);
+let qaDept = ref([]);
+// let allUserList = ref({});
+
+async function getUserDataFromDB() {
+  const getUserDataFromDB = await getDocs(collection(db, "users"));
+
+  getUserDataFromDB.forEach((doc) => {
+    const displayUserData = {
+      firstName: doc.data().register.firstName,
+      lastName: doc.data().register.lastName,
+      department: doc.data().register.department,
+      email: doc.data().register.email,
+    };
+
+    if ((doc.id, doc.data().register.department === "qa")) {
+      qaDept.value.push({ ...displayUserData, departmentId: 4 });
+    } else if ((doc.id, doc.data().register.department === "frontend")) {
+      frontendDept.value.push({ ...displayUserData, departmentId: 1 });
+    } else if ((doc.id, doc.data().register.department === "backend")) {
+      backendDept.value.push({ ...displayUserData, departmentId: 2 });
+    } else {
+      devopsDept.value.push({ ...displayUserData, departmentId: 3 });
+    }
+  });
+}
+
+const getDepartmentItems = (departmentId) => {
+  if (departmentId == 1) {
+    return frontendDept.value;
+  } else if (departmentId == 2) {
+    return backendDept.value;
+  } else if (departmentId == 3) {
+    return devopsDept.value;
+  } else if (departmentId == 4) {
+    return qaDept.value;
+  }
+};
+
+getUserDataFromDB();
 </script>
 
 <style scoped>
@@ -128,7 +160,7 @@ const getDepartmentClass = (departmentId) => {
   border-radius: 3px;
   font-size: 20px;
   min-height: 70vh;
-  background: #f0f3fb;
+  background: #d8e2e6a4;
 }
 
 /* Card's CSS */
@@ -161,7 +193,7 @@ const getDepartmentClass = (departmentId) => {
 }
 
 .empty-placeholder {
-  margin-top: 80%;
+  margin-top: 70%;
   background-color: #eaeaea;
   border: 2px dashed #cccccc;
   padding: 10px;
