@@ -1,6 +1,6 @@
 <template>
   <div class="registration">
-    <div>
+    <div class="form-wrapper">
       <h1 class="form-heading">Register Here</h1>
       <VForm class="form" :validation-schema="schema" @submit="registerData">
         <div class="d-flex justify-space-between">
@@ -10,7 +10,7 @@
               placeholder="Firstname*"
               type="text"
               class="input"
-              v-model="form.FirstName"
+              v-model="form.firstName"
             />
             <ErrorMessage name="firstname" class="error_message" />
           </div>
@@ -20,8 +20,8 @@
               name="lastname"
               placeholder="Lastname*"
               type="text"
-              class="input"
-              v-model="form.LastName"
+              class="input lastnameInput"
+              v-model="form.lastName"
             />
             <ErrorMessage name="lastname" class="error_message" />
           </div>
@@ -33,7 +33,7 @@
             placeholder="Email*"
             type="email"
             class="input"
-            v-model="form.Email"
+            v-model="form.email"
           />
           <ErrorMessage name="email" class="error_message" />
         </div>
@@ -44,7 +44,7 @@
             placeholder="Password*"
             type="password"
             class="input"
-            v-model="form.Password"
+            v-model="form.password"
           />
           <ErrorMessage name="password" class="error_message" />
         </div>
@@ -55,7 +55,6 @@
             placeholder="Confirm Password*"
             type="password"
             class="input"
-            v-model="form.confirmPassword"
           />
           <ErrorMessage name="confirmPassword" class="error_message" />
         </div>
@@ -68,7 +67,7 @@
                 type="radio"
                 name="gender"
                 value="Male"
-                v-model="form.Gender"
+                v-model="form.gender"
               />
               Male
             </label>
@@ -77,7 +76,7 @@
                 type="radio"
                 name="gender"
                 value="Female"
-                v-model="form.Gender"
+                v-model="form.gender"
               />
               Female
             </label>
@@ -90,7 +89,7 @@
             name="role"
             :bails="false"
             v-slot="{ field, errors }"
-            v-model="form.Role"
+            v-model="form.role"
           >
             <select v-bind="field" class="input">
               <option disabled value="">Select a role*</option>
@@ -108,13 +107,13 @@
             name="department"
             :bails="false"
             v-slot="{ field, errors }"
-            v-model="form.Department"
+            v-model="form.department"
           >
             <select v-bind="field" class="input">
               <option disabled value="">Select Your Department*</option>
               <option value="frontend">Frontend</option>
               <option value="backend">Backend</option>
-              <option value="hr">HR</option>
+              <option value="hr">DevOps</option>
               <option value="qa">QA</option>
             </select>
             <div class="error_message" v-for="err in errors" :key="err">
@@ -134,8 +133,10 @@
 import { reactive } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, addDoc } from "firebase/firestore";
+import { useRouter } from "vue-router";
 
 const db = useFirestore();
+const router = useRouter();
 
 const schema = {
   firstname: "required|alphaChar",
@@ -149,23 +150,40 @@ const schema = {
 };
 
 const form = reactive({
-  FirstName: "",
-  LastName: "",
-  Email: "",
-  Password: "",
-  Department: "",
-  Gender: "",
-  Role: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  department: "",
+  gender: "",
+  role: "",
 });
 
-const registerData = () => {
+const uniqueID = () => {
+  return Date.now().toString().slice(6);
+};
+
+const registerData = async () => {
   console.log("Register");
-  addDoc(collection(db, "users"), form);
+
+  const data = await addDoc(collection(db, "users"), {
+    register: { ...form, empID: uniqueID() },
+  });
+  if (data.id) {
+    router.replace({ name: "Login" });
+  }
 };
 </script>
 
 <style scoped>
-.btn-submit {
-  background: #0000003d;
+@import "../assets/main.css";
+
+select,
+.form-group {
+  color: var(--input-text);
+}
+
+.lastnameInput {
+  border-left: none !important;
 }
 </style>

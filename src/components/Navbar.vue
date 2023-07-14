@@ -7,10 +7,31 @@
       <div v-if="isLoggedIn">
         <ul>
           <li>
-            <router-link :to="{ name: 'Profile' }">Profile</router-link>
+            <router-link :to="{ name: 'Profile' }">
+              <span class="d-flex mr-2"
+                ><img src="../assets/images/profile.png" alt=""
+              /></span>
+              {{ fullname }}</router-link
+            >
           </li>
           <li>
             <button @click="logout">Logout</button>
+          </li>
+          <li v-if="mobileView">
+            <img
+              v-show="!showNav"
+              class="hamburgerMenu"
+              src="../assets/images/menu.png"
+              alt="hamburger-menu"
+              @click="showNav = !showNav"
+            />
+            <img
+              v-show="showNav"
+              class="hamburgerMenu"
+              src="../assets/images/close.png"
+              alt="close-menu"
+              @click="showNav = !showNav"
+            />
           </li>
         </ul>
       </div>
@@ -30,25 +51,36 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/authStore";
+import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
-const router = useRouter()
+const commonStore = useCommonStore();
+const router = useRouter();
 
-const { isLoggedIn, isAdmin } = storeToRefs(authStore);
+const { isLoggedIn, fullname } = storeToRefs(authStore);
+const { mobileView, showNav } = storeToRefs(commonStore);
 
 const logout = () => {
-  sessionStorage.setItem("isLoggedIn", false);
+  localStorage.setItem("isLoggedIn", false);
+  localStorage.setItem("userId", null);
+  localStorage.setItem("lastname", null);
+  localStorage.setItem("firstname", null);
   isLoggedIn.value = false;
+  fullname.value = "";
   router.replace({ name: "Login" });
-}
+};
+
+commonStore.handleView();
+window.addEventListener("resize", commonStore.handleView);
 </script>
 
 <style scoped>
+@import "../assets/main.css";
 a.router-link-exact-active {
-  border-bottom: 2px solid #000000ab;
-  background: #00000020;
+  border-bottom: 2px solid var(--primary-color);
+  background: var(--secondary-color);
 }
 
 .navbar {
@@ -64,23 +96,38 @@ a.router-link-exact-active {
 
 .navbar .logo {
   padding: 15px 30px;
+  color: var(--primary-color);
 }
 
 .navbar .navbar-item ul {
   display: flex;
   list-style: none;
+  align-items: center;
 }
 
-.navbar .navbar-item ul li button {
-  font-size: 18px;
-  color: #000000ab;
-  margin-left: 1rem;
+.navbar .navbar-item ul li {
+  font-size: 20px;
+  color: var(--primary-color);
+  margin: 0 0.2rem;
 }
 
 .navbar .navbar-item ul li a {
-  padding: 1.4rem;
-  font-size: 18px;
+  font-size: 20px;
   text-decoration: none;
-  color: #000000ab;
+  color: var(--primary-color);
+  padding: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+img {
+  width: 30px;
+}
+
+@media screen and (max-width: 500px) {
+  .navbar .navbar-item ul li a {
+    font-size: 18px;
+    padding: 1rem;
+  }
 }
 </style>

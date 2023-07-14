@@ -1,12 +1,18 @@
 <template>
-  <aside class="sidebar-menu">
+  <aside class="sidebar-menu" :class="{ showSidebar: showNav }">
     <router-link :to="{ name: 'Home' }"> Home </router-link>
     <router-link :to="{ name: 'Login' }">Login </router-link>
     <router-link :to="{ name: 'Register' }">Register </router-link>
   </aside>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useCommonStore } from "@/stores/commonStore";
+import { storeToRefs } from "pinia";
+
+const commonStore = useCommonStore();
+const { showNav, mobileView } = storeToRefs(commonStore);
+</script>
 
 <style scoped>
 .sidebar-menu {
@@ -14,6 +20,11 @@
   height: 90vh;
   width: 18rem;
   background: #f0f3fb;
+  box-shadow: 0px 10px 10px -4px black;
+}
+
+.position_left {
+  display: none;
 }
 
 .sidebar-menu a {
@@ -23,9 +34,23 @@
   border-radius: 0 10px 10px 0;
   text-decoration: none;
   color: #000000ab;
+  font-size: 20px;
 }
 
 .sidebar-menu a.router-link-exact-active {
-  background-color: rgb(162, 253, 255);
+  background-color: var(--primary-color);
+  color: var(--white-text);
+}
+
+@media screen and (max-width: 1000px) {
+  .sidebar-menu {
+    left: -30%;
+    display: none;
+  }
+
+  .showSidebar {
+    left: 0%;
+    display: block;
+  }
 }
 </style>
