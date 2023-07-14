@@ -4,93 +4,99 @@
 
     <!-- Employees Directory -->
 
-    <div>
-      <v-row justify="space-between">
+    <v-row>
+      <v-col
+        v-for="department in departmentList"
+        :key="department.id"
+        @drop="onDrop($event, department.id)"
+        @dragenter.prevent
+        @dragover.prevent
+        cols="12"
+        sm="3"
+      >
+        <v-sheet :class="[getDepartmentClass(department.id)]">
+          <div class="department-name">{{ department.name }}</div>
 
-        <v-col @drop="onDrop($event, 1)" @dragenter.prevent @dragover.prevent>
-          <v-sheet class="pa-2 ma-2 front-end-dept">
-            Frontend Department
+          <!-- Show empty text when there is no item -->
 
-            <!-- Show empty text when there is no item -->
-            <div v-if="getList(1).length === 0">
-              <span>No items found</span>
-            </div>
+          <div
+            v-if="getDepartmentItems(department.id).length === 0"
+            class="empty-placeholder"
+          >
+            <span>Drag here to add Employees</span>
+          </div>
 
-            <div v-for="item in getList(1)" :key="item.id" class="drag-el" draggable="true"
-              @dragstart="startDrag($event, item)">
-              <v-card width="400" :title="item.title" text="Contact Info" :prepend-avatar="item.avatar"></v-card>
-            </div>
-
-          </v-sheet>
-        </v-col>
-
-        <v-col @drop="onDrop($event, 2)" @dragenter.prevent @dragover.prevent>
-          <v-sheet class="pa-2 ma-2 back-end-dept ">
-            Backend Department
-            <div v-for="item in getList(2)" :key="item.id" class="drag-el" draggable="true"
-              @dragstart="startDrag($event, item)">
-              <v-card width="400" :title="item.title" text="Contact Info"></v-card>
-            </div>
-          </v-sheet>
-        </v-col>
-
-        <v-col @drop="onDrop($event, 3)" @dragenter.prevent @dragover.prevent>
-          <v-sheet class="pa-2 ma-2 dev-ops-dept">
-            DevOps Department
-            <div v-for="item in getList(3)" :key="item.id" class="drag-el" draggable="true"
-              @dragstart="startDrag($event, item)">
-              <v-card width="400" :title="item.title" text="Contact Info"></v-card>
-            </div>
-          </v-sheet>
-        </v-col>
-
-        <v-col @drop="onDrop($event, 4)" @dragenter.prevent @dragover.prevent>
-          <v-sheet class="pa-2 ma-2 qa-dept">
-            QA Department
-            <div v-for="item in getList(4)" :key="item.id" class="drag-el" draggable="true"
-              @dragstart="startDrag($event, item)">
-              <v-card width="400" :title="item.title" text="Contact Info"></v-card>
-            </div>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </div>
+          <div
+            v-for="item in getDepartmentItems(department.id)"
+            :key="item.id"
+            class="drag-el"
+            draggable="true"
+            @dragstart="startDrag($event, item)"
+          >
+            <v-card
+              :title="item.title"
+              text="Contact Info"
+              subtitle="Locations"
+              class="employee-card"
+            ></v-card>
+          </div>
+        </v-sheet>
+      </v-col>
+    </v-row>
   </section>
 </template>
 
 <script setup>
 import { ref } from "vue";
 
-const items = ref([
-  { id: 0, title: "Prem", list: 1 },
-  { id: 1, title: "Aman", list: 2 },
-  { id: 2, title: "Dixit", list: 3 },
-  { id: 3, title: "Ronak", list: 4 },
-  { id: 4, title: "Shyam", list: 4 },
+const employeeList = ref([
+  { id: 0, title: "Prem", departmentId: 1 },
+  { id: 1, title: "Aman", departmentId: 2 },
+  { id: 2, title: "Dixit", departmentId: 3 },
+  { id: 3, title: "Ronak", departmentId: 4 },
+  { id: 4, title: "Shyam", departmentId: 2 },
 ]);
 
-//--------------------------------------Separate the Items--------------------------------------//
+const departmentList = [
+  { id: 1, name: "Frontend Department", class: "frontend-dept" },
+  { id: 2, name: "Backend Department", class: "backend-dept" },
+  { id: 3, name: "DevOps Department", class: "devops-dept" },
+  { id: 4, name: "QA Department", class: "qa-dept" },
+];
 
-const getList = (list) => {
-  return items.value.filter((item) => item.list == list);
+//--------------------Filters and returns items belonging to a specific department--------------------//
+
+const getDepartmentItems = (departmentId) => {
+  return employeeList.value.filter(
+    (item) => item.departmentId === departmentId
+  );
 };
 
-//----------------------------------Drag and Drop Functionality----------------------------------//
+//--------------------Sets necessary data for dragging an item--------------------//
 
 const startDrag = (event, item) => {
-  console.log(item);
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.id);
 };
 
-const onDrop = (event, list) => {
+//--------------------Handles dropping an item into a department, updating its departmentId--------------------//
+
+const onDrop = (event, departmentId) => {
   const itemID = event.dataTransfer.getData("itemID");
-  const item = items.value.find((item) => item.id == itemID);
-  item.list = list;
+  const item = employeeList.value.find((item) => item.id == itemID);
+  item.departmentId = departmentId;
+};
+
+//--------------------Returns the CSS class name for a department based on its id--------------------//
+
+const getDepartmentClass = (departmentId) => {
+  return (
+    departmentList.find((department) => department.id === departmentId)
+      ?.class || ""
+  );
 };
 </script>
-
 
 <style scoped>
 * {
@@ -115,13 +121,13 @@ const onDrop = (event, list) => {
   width: 20%;
 }
 
-.front-end-dept,
-.back-end-dept,
-.dev-ops-dept,
+.frontend-dept,
+.backend-dept,
+.devops-dept,
 .qa-dept {
   border-radius: 3px;
   font-size: 20px;
-  min-height: 80vh;
+  min-height: 70vh;
   background: #f0f3fb;
 }
 
@@ -136,5 +142,30 @@ const onDrop = (event, list) => {
 .card-title {
   background-color: transparent;
   border: none;
+}
+
+.department-name {
+  background-color: #115173;
+  color: white;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.employee-card {
+  width: 95%;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+.empty-placeholder {
+  margin-top: 80%;
+  background-color: #eaeaea;
+  border: 2px dashed #cccccc;
+  padding: 10px;
+  border-radius: 5px;
+  color: #555555;
 }
 </style>
