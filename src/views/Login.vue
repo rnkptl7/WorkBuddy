@@ -14,14 +14,28 @@
           <ErrorMessage name="email" class="error_message" />
         </div>
 
-        <div class="inputDiv">
+        <div class="inputDiv passwordWrapper">
           <VField
             name="password"
             placeholder="Password*"
-            type="password"
+            :type="showPassword ? 'password' : 'text'"
             class="input"
             v-model="form.password"
           />
+          <span class="passwordSpan">
+            <img
+              v-if="showPassword"
+              src="../assets/images/hide.png"
+              alt="hide password"
+              @click="showPasswordChange"
+            />
+            <img
+              v-else
+              src="../assets/images/show.png"
+              alt="show password"
+              @click="showPasswordChange"
+            />
+          </span>
           <ErrorMessage name="password" class="error_message" />
         </div>
 
@@ -35,16 +49,20 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { useFirestore } from "vuefire";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import router from "@/router";
 
 import { useAuthStore } from "@/stores/authStore";
+import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
 
 const authStore = useAuthStore();
+const commonStore = useCommonStore();
 const db = useFirestore();
 
 const { isLoggedIn, fullname } = storeToRefs(authStore);
+const { showPassword } = storeToRefs(commonStore);
+const { showPasswordChange } = commonStore;
 
 const form = reactive({
   email: "",
@@ -53,21 +71,21 @@ const form = reactive({
 
 const schema = {
   email: "required|email",
-  password: "required|min:8|max:12|regex:^(?=.*\\d)(?=.*[^\\w\\d\\s]).+$",
+  password: "required",
 };
 
 const submitData = async () => {
   console.log("submit");
 
   const querySnapshot = await getDocs(collection(db, "users"));
+
   let userData;
   querySnapshot.forEach((doc) => {
     let { register } = doc.data();
     console.log(register);
     if (form.email === register.email && form.password === register.password) {
       localStorage.setItem("userId", doc.id);
-      localStorage.setItem("firstname", register.firstName);
-      localStorage.setItem("lastname", register.lastName);
+      localStorage.setItem("fullName", register.fullName);
       userData = doc.data();
     }
   });
@@ -75,7 +93,7 @@ const submitData = async () => {
   if (userData) {
     localStorage.setItem("isLoggedIn", true);
     isLoggedIn.value = true;
-    fullname.value = `${userData.register.firstName} ${userData.register.lastName}`;
+    fullname.value = userData.register.fullName;
     router.replace({ name: "Home" });
   } else {
     alert("Invalid Credentials");
@@ -84,8 +102,63 @@ const submitData = async () => {
 </script>
 
 <style scoped>
-@import "../assets/main.css";
+/* form */
+.form-heading {
+  font-weight: 900;
+}
+
 .registration {
+  display: grid;
+  place-items: center;
   height: 50vh;
+}
+
+.registration h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.registration form {
+  width: 30rem;
+}
+
+.form .inputDiv {
+  margin: 15px 0;
+}
+
+.form .inputDiv input,
+.inputDiv select {
+  padding: 10px;
+  display: block;
+  width: 100%;
+  outline: none;
+  border: 1px solid var(--primary-color);
+}
+
+.btn-submit {
+  width: 6rem;
+  font-size: 16px;
+  text-align: center;
+  color: var(--white-text);
+  background: var(--primary-color);
+}
+
+.error_message {
+  color: #f44b4b;
+}
+
+@media screen and (max-width: 630px) {
+  .registration {
+    max-width: 38rem;
+  }
+
+  .registration form {
+    width: 100%;
+  }
+
+  .registration .form-wrapper {
+    width: 80%;
+  }
 }
 </style>

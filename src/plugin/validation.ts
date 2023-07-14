@@ -42,7 +42,7 @@ export default {
                     URL: `The ${ctx.field} field must be a URL`,
                     email: `The ${ctx.field} field must be valid an email`,
                     regex: `The ${ctx.field} field must contain at least one numeric digit and a special character`,
-                    confirmed: `The ${ctx.field} field must have the same value as the password field`,
+                    confirmed: `Password do not match`,
                     select: `Please select your suitable role`,
                     department: `Please select your department`,
                     gender: `Please choose a value`,

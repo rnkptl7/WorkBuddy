@@ -17,17 +17,16 @@
           <li>
             <button @click="logout">Logout</button>
           </li>
-          <li v-if="mobileView">
+          <li v-if="mobileView" class="hamburgerMenu">
             <img
               v-show="!showNav"
-              class="hamburgerMenu"
               src="../assets/images/menu.png"
               alt="hamburger-menu"
               @click="showNav = !showNav"
             />
             <img
               v-show="showNav"
-              class="hamburgerMenu"
+              class="closeIcon"
               src="../assets/images/close.png"
               alt="close-menu"
               @click="showNav = !showNav"
@@ -65,8 +64,7 @@ const { mobileView, showNav } = storeToRefs(commonStore);
 const logout = () => {
   localStorage.setItem("isLoggedIn", false);
   localStorage.setItem("userId", null);
-  localStorage.setItem("lastname", null);
-  localStorage.setItem("firstname", null);
+  localStorage.setItem("fullName", null);
   isLoggedIn.value = false;
   fullname.value = "";
   router.replace({ name: "Login" });
@@ -108,7 +106,7 @@ a.router-link-exact-active {
 .navbar .navbar-item ul li {
   font-size: 20px;
   color: var(--primary-color);
-  margin: 0 0.2rem;
+  margin: 0 0.7rem;
 }
 
 .navbar .navbar-item ul li a {
@@ -120,11 +118,29 @@ a.router-link-exact-active {
   align-items: center;
 }
 
-img {
+.hamburgerMenu {
   width: 30px;
+  cursor: pointer;
+}
+
+img {
+  width: 27px;
+  display: flex;
+  margin-left: 10px;
+}
+
+.closeIcon {
+  width: 20px;
 }
 
 @media screen and (max-width: 500px) {
+  .navbar .navbar-item ul li a {
+    font-size: 18px;
+    padding: 1rem;
+  }
+}
+
+@media screen and (max-width: 560px) {
   .navbar .navbar-item ul li a {
     font-size: 18px;
     padding: 1rem;

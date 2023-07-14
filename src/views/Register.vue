@@ -10,7 +10,7 @@
               placeholder="Firstname*"
               type="text"
               class="input"
-              v-model="form.firstName"
+              v-model="firstName"
             />
             <ErrorMessage name="firstname" class="error_message" />
           </div>
@@ -21,7 +21,7 @@
               placeholder="Lastname*"
               type="text"
               class="input lastnameInput"
-              v-model="form.lastName"
+              v-model="lastName"
             />
             <ErrorMessage name="lastname" class="error_message" />
           </div>
@@ -38,24 +38,52 @@
           <ErrorMessage name="email" class="error_message" />
         </div>
 
-        <div class="inputDiv">
+        <div class="inputDiv passwordWrapper">
           <VField
             name="password"
             placeholder="Password*"
-            type="password"
+            :type="showRegisterPassword ? 'password' : 'text'"
             class="input"
             v-model="form.password"
           />
+          <span class="passwordSpan">
+            <img
+              v-if="showRegisterPassword"
+              src="../assets/images/hide.png"
+              alt="hide password"
+              @click="showRegisterPasswordChange"
+            />
+            <img
+              v-else
+              src="../assets/images/show.png"
+              alt="show password"
+              @click="showRegisterPasswordChange"
+            />
+          </span>
           <ErrorMessage name="password" class="error_message" />
         </div>
 
-        <div class="inputDiv">
+        <div class="inputDiv passwordWrapper">
           <VField
             name="confirmPassword"
             placeholder="Confirm Password*"
-            type="password"
+            :type="showConfirmPassword ? 'password' : 'text'"
             class="input"
           />
+          <span class="passwordSpan">
+            <img
+              v-if="showConfirmPassword"
+              src="../assets/images/hide.png"
+              alt="hide password"
+              @click="showConfirmPasswordChange"
+            />
+            <img
+              v-else
+              src="../assets/images/show.png"
+              alt="show password"
+              @click="showConfirmPasswordChange"
+            />
+          </span>
           <ErrorMessage name="confirmPassword" class="error_message" />
         </div>
 
@@ -130,13 +158,19 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, addDoc } from "firebase/firestore";
 import { useRouter } from "vue-router";
+import { useCommonStore } from "@/stores/commonStore";
+import { storeToRefs } from "pinia";
 
+const commonStore = useCommonStore();
 const db = useFirestore();
 const router = useRouter();
+
+const { showConfirmPassword, showRegisterPassword } = storeToRefs(commonStore);
+const { showConfirmPasswordChange, showRegisterPasswordChange } = commonStore;
 
 const schema = {
   firstname: "required|alphaChar",
@@ -149,9 +183,10 @@ const schema = {
   gender: "gender",
 };
 
+const firstName = ref("");
+const lastName = ref("");
+
 const form = reactive({
-  firstName: "",
-  lastName: "",
   email: "",
   password: "",
   department: "",
@@ -165,9 +200,12 @@ const uniqueID = () => {
 
 const registerData = async () => {
   console.log("Register");
+  const fullName = `${firstName.value} ${lastName.value}`;
+
+  console.log(form);
 
   const data = await addDoc(collection(db, "users"), {
-    register: { ...form, empID: uniqueID() },
+    register: { ...form, empID: uniqueID(), fullName },
   });
   if (data.id) {
     router.replace({ name: "Login" });
@@ -185,5 +223,65 @@ select,
 
 .lastnameInput {
   border-left: none !important;
+}
+
+/* form */
+.form-heading {
+  font-weight: 900;
+}
+
+.registration {
+  display: grid;
+  place-items: center;
+  height: 80vh;
+}
+
+.registration h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.registration form {
+  width: 30rem;
+}
+
+.form .inputDiv {
+  margin: 15px 0;
+}
+
+.form .inputDiv input,
+.inputDiv select {
+  padding: 10px;
+  display: block;
+  width: 100%;
+  outline: none;
+  border: 1px solid var(--primary-color);
+}
+
+.btn-submit {
+  width: 6rem;
+  font-size: 16px;
+  text-align: center;
+  color: var(--white-text);
+  background: var(--primary-color);
+}
+
+.error_message {
+  color: #f44b4b;
+}
+
+@media screen and (max-width: 630px) {
+  .registration {
+    max-width: 38rem;
+  }
+
+  .registration form {
+    width: 100%;
+  }
+
+  .registration .form-wrapper {
+    width: 80%;
+  }
 }
 </style>

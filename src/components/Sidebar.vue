@@ -1,8 +1,6 @@
 <template>
   <aside class="sidebar-menu" :class="{ showSidebar: showNav }">
     <router-link :to="{ name: 'Home' }"> Home </router-link>
-    <router-link :to="{ name: 'Login' }">Login </router-link>
-    <router-link :to="{ name: 'Register' }">Register </router-link>
   </aside>
 </template>
 
