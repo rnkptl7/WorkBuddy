@@ -8,7 +8,9 @@ import App from "./App.vue";
 import router from "./router";
 import { firebaseApp } from "./firebase";
 
-import VeeValidation from "./plugin/validation";
+import App from "./App.vue";
+import router from "./router";
+import { firebaseApp } from "./firebase";
 
 // Vuetify
 import "vuetify/styles";
@@ -26,7 +28,6 @@ const app = createApp(App);
 app.use(VueFire, { firebaseApp });
 app.use(createPinia());
 app.use(vuetify);
-app.use(VeeValidation);
 app.use(router);
 
 app.mount("#app");
