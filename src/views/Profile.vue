@@ -16,10 +16,11 @@
 
 <script setup>
 import { ref } from "vue";
-import ProfileIcon from "../components/ProfileIcon.vue";
-import ProfileDetails from "../components/ProfileDetails.vue";
-import ProfileInfo from "../components/ProfileInfo.vue";
-import ProfileTimeline from "../components/ProfileTimeline.vue";
+import ProfileIcon from "../components/Profile/ProfileIcon.vue";
+import ProfileDetails from "../components/Profile/ProfileDetails.vue";
+import ProfileTimeline from "../components/Profile/ProfileTimeline.vue";
+import ProfileInfo from "../components/Profile/ProfileInfo.vue";
+
 const toggleValue = ref(true);
 function toggleFunc(isProfileSelected) {
     toggleValue.value = isProfileSelected;

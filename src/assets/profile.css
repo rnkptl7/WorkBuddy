@@ -1,0 +1,56 @@
+.main-field {
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+}
+form {
+    width: 50%;
+}
+fieldset {
+    padding: 10px 20px;
+    margin: 20px;
+}
+legend {
+    background: orange;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.legend-input {
+    margin: 15px 0;
+    display: flex;
+    color: red;
+}
+.legend-input label {
+    width: 20%;
+}
+.legend-input input,
+select {
+    border-bottom: 1px solid orange;
+    padding: 5px 10px;
+    margin-left: 10px;
+    outline: none;
+}
+.button-box {
+    display: flex;
+    justify-content: center;
+}
+:disabled {
+    cursor: not-allowed;
+}
+.error_message {
+    color: red;
+    position: relative;
+}
+
+@media screen and (max-width: 1200px) {
+    form {
+        width: min(80%, 800px);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    form {
+        width: 384px;
+    }
+}

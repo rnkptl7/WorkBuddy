@@ -1,6 +1,6 @@
 <template>
     <div class="navbar">
-        <h1>Work Buddy</h1>
+        <h1 class="legend-input">Work Buddy</h1>
     </div>
 </template>
 
