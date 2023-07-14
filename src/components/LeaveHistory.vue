@@ -1,154 +1,76 @@
 <template>
-    <div class="border rounded-lg">
-        <v-data-table
-            v-model:expanded="expanded"
-            :headers="dessertHeaders"
-            :items="desserts"
-            item-value="name"
-            show-expand
-            class="elevation-1"
-        >
-            <template v-slot:top>
-                <v-toolbar flat>
-                    <v-toolbar-title>Leave History:</v-toolbar-title>
-                </v-toolbar>
-            </template>
-            <template v-slot:expanded-row="{ columns, item }">
-                <tr>
-                    <td :colspan="columns.length">
-                        More info about {{ item.raw.name }}
-                    </td>
-                </tr>
-            </template>
-        </v-data-table>
-    </div>
+    <v-data-table
+        v-model:expanded="expanded"
+        :headers="tableHeaders"
+        :items="leaves"
+        item-value="id"
+        show-expand
+        class="elevation-1"
+    >
+        <template v-slot:top>
+            <v-toolbar flat color="#F0F3FB">
+                <v-toolbar-title>
+                    <div
+                        class="d-flex justify-space-between w-100 align-center title-wrapper"
+                    >
+                        <h3>Leave History</h3>
+                        <TicketForm />
+                    </div>
+                </v-toolbar-title>
+            </v-toolbar>
+        </template>
+        <template v-slot:expanded-row="{ columns, item }">
+            <tr>
+                <td :colspan="columns.length">
+                    {{ item.raw.description }}
+                </td>
+            </tr>
+        </template>
+    </v-data-table>
 </template>
-<script>
-    export default {
-        data() {
-            return {
-                expanded: [],
-                dessertHeaders: [
-                    {
-                        title: "Dessert (100g serving)",
-                        align: "start",
-                        sortable: false,
-                        key: "name",
-                    },
-                    { title: "Calories", key: "calories" },
-                    { title: "Fat (g)", key: "fat" },
-                    { title: "Carbs (g)", key: "carbs" },
-                    { title: "Protein (g)", key: "protein" },
-                    { title: "Iron (%)", key: "iron" },
-                    { title: "", key: "data-table-expand" },
-                ],
-                desserts: [
-                    {
-                        name: "Frozen Yogurt",
-                        calories: 159,
-                        fat: 6.0,
-                        carbs: 24,
-                        protein: 4.0,
-                        iron: 1,
-                    },
-                    {
-                        name: "Ice cream sandwich",
-                        calories: 237,
-                        fat: 9.0,
-                        carbs: 37,
-                        protein: 4.3,
-                        iron: 1,
-                    },
-                    {
-                        name: "Eclair",
-                        calories: 262,
-                        fat: 16.0,
-                        carbs: 23,
-                        protein: 6.0,
-                        iron: 7,
-                    },
-                    {
-                        name: "Cupcake",
-                        calories: 305,
-                        fat: 3.7,
-                        carbs: 67,
-                        protein: 4.3,
-                        iron: 8,
-                    },
-                    {
-                        name: "Gingerbread",
-                        calories: 356,
-                        fat: 16.0,
-                        carbs: 49,
-                        protein: 3.9,
-                        iron: 16,
-                    },
-                    {
-                        name: "Jelly bean",
-                        calories: 375,
-                        fat: 0.0,
-                        carbs: 94,
-                        protein: 0.0,
-                        iron: 0,
-                    },
-                    {
-                        name: "Lollipop",
-                        calories: 392,
-                        fat: 0.2,
-                        carbs: 98,
-                        protein: 0,
-                        iron: 2,
-                    },
-                    {
-                        name: "Honeycomb",
-                        calories: 408,
-                        fat: 3.2,
-                        carbs: 87,
-                        protein: 6.5,
-                        iron: 45,
-                    },
-                    {
-                        name: "Donut",
-                        calories: 452,
-                        fat: 25.0,
-                        carbs: 51,
-                        protein: 4.9,
-                        iron: 22,
-                    },
-                    {
-                        name: "KitKat",
-                        calories: 518,
-                        fat: 26.0,
-                        carbs: 65,
-                        protein: 7,
-                        iron: 6,
-                    },
-                    {
-                        name: "Honeycomb",
-                        calories: 408,
-                        fat: 3.2,
-                        carbs: 87,
-                        protein: 6.5,
-                        iron: 45,
-                    },
-                    {
-                        name: "Donut",
-                        calories: 452,
-                        fat: 25.0,
-                        carbs: 51,
-                        protein: 4.9,
-                        iron: 22,
-                    },
-                    {
-                        name: "KitKat",
-                        calories: 518,
-                        fat: 26.0,
-                        carbs: 65,
-                        protein: 7,
-                        iron: 6,
-                    },
-                ],
-            };
+
+<script setup>
+    import { collection, getDocs, query } from "firebase/firestore";
+    import { storeToRefs } from "pinia";
+    import { onMounted, reactive, ref } from "vue";
+    import { useLeavesStore } from "../stores/leaves";
+    import { useAppCheck, useFirestore } from "vuefire";
+    import { watch } from "vue";
+
+    const { leaves } = storeToRefs(useLeavesStore());
+
+    const expanded = ref([]);
+    const tableHeaders = ref([
+        {
+            title: "Leave ID",
+            align: "start",
+            key: "id",
         },
-    };
+        { title: "Leave Message", key: "leaveMessage" },
+        { title: "Start date", key: "startDate" },
+        { title: "End date", key: "endDate" },
+        { title: "Category", key: "leaveCategory" },
+        { title: "Requesting To", key: "requestingToEmail" },
+        { title: "", key: "data-table-expand" },
+    ]);
+
+    // async function getLeaveHistory() {
+    //     const leaveHistoryList = await getDocs(query(collection(db, "leaves")));
+    //     leaveHistoryList.forEach((doc) => {
+    //         leaves.push(doc.data());
+    //     });
+    // }
+    // onMounted(() => {
+    //     // getLeaveHistory();
+    // });
 </script>
+
+<style>
+    .title-wrapper .btn {
+        margin-right: 2rem;
+    }
+
+    .v-toolbar-title__placeholder {
+        overflow: visible !important;
+    }
+</style>

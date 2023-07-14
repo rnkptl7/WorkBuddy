@@ -1,28 +1,22 @@
 <template>
     <v-row justify="end">
         <v-dialog v-model="props.dialog" persistent width="500">
-            <!-- <template v-slot:activator="{ props }">
-                <v-btn
-                    variant="outlined"
-                    color="grey-darken-3"
-                    class="btn my-3"
-                    v-bind="props"
-                >
-                    <span id="plus">+ </span> Request For Leave
-                </v-btn>
-            </template> -->
             <v-card>
                 <div class="pa-5">
                     <h2>Request for Leave</h2>
                     <v-divider class="py-1"></v-divider>
-                    <VForm class="form">
+                    <VForm class="form" @submit.prevent="submitRequest">
                         <div class="inputDiv">
-                            <select name="category" class="input">
+                            <select
+                                name="category"
+                                class="input"
+                                v-model="leaveRequestInput.leaveCategory"
+                            >
                                 <option value="" disabled selected>
                                     Leave Category*
                                 </option>
-                                <option value="Hardware">Unplanned</option>
-                                <option value="Software">Planned</option>
+                                <option value="Unplanned">Unplanned</option>
+                                <option value="Planned">Planned</option>
                             </select>
                             <ErrorMessage
                                 name="category"
@@ -36,6 +30,7 @@
                                 placeholder="Leave message*"
                                 type="text"
                                 class="input"
+                                v-model="leaveRequestInput.leaveMessage"
                             />
                             <ErrorMessage name="title" class="error_message" />
                         </div>
@@ -50,6 +45,7 @@
                                     placeholder="Leave message*"
                                     type="date"
                                     class="input w-100"
+                                    v-model="leaveRequestInput.startDate"
                                 />
                                 <ErrorMessage
                                     name="title"
@@ -63,6 +59,7 @@
                                     placeholder=""
                                     type="date"
                                     class="input w-100"
+                                    v-model="leaveRequestInput.endDate"
                                 />
                                 <ErrorMessage
                                     name="title"
@@ -77,6 +74,7 @@
                                 placeholder="Description*"
                                 type="text"
                                 class="input"
+                                v-model="leaveRequestInput.description"
                             />
                             <ErrorMessage
                                 name="description"
@@ -90,6 +88,7 @@
                                 placeholder="Requesting To*"
                                 type="email"
                                 class="input"
+                                v-model="leaveRequestInput.requestingToEmail"
                             />
                             <ErrorMessage name="title" class="error_message" />
                         </div>
@@ -105,7 +104,6 @@
                                 class="me-4 text-white ml-2 btn-submit"
                                 type="submit"
                                 color="#115173"
-                                @click.prevent="closeModal"
                             >
                                 Submit
                             </v-btn>
@@ -118,12 +116,69 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue";
+    import {
+        addDoc,
+        arrayUnion,
+        collection,
+        doc,
+        setDoc,
+        updateDoc,
+    } from "firebase/firestore";
+    import { reactive, ref } from "vue";
+    import { useFirestore } from "vuefire";
+    import { useLeavesStore } from "../stores/leaves";
+
+    const { getLeaves, userId } = useLeavesStore();
+
+    // Database reference
+    const db = useFirestore();
+
     const dialog = ref(false);
     const props = defineProps(["dialog"]);
     const emits = defineEmits(["closeLeaveRequestModal"]);
 
+    let leaveRequestInput = reactive({
+        leaveCategory: "",
+        leaveMessage: "",
+        description: "",
+        startDate: new Date(),
+        endDate: new Date(),
+        requestingToEmail: "",
+        status: undefined,
+    });
+
     function closeModal() {
+        emits("closeLeaveRequestModal", false);
+    }
+
+    async function submitRequest() {
+        console.log(new Date(leaveRequestInput.startDate));
+        // Adding a document to leaves collection
+        const leave = await addDoc(collection(db, "leaves"), {
+            ...leaveRequestInput,
+            startDate: new Date(leaveRequestInput.startDate),
+            endDate: new Date(leaveRequestInput.endDate),
+            status: "pending",
+            userId: userId,
+        });
+
+        // creating reference to users collection's document with specified id
+        const user = doc(db, "users", userId);
+
+        await updateDoc(user, {
+            leaveRequestIds: arrayUnion(leave.id),
+        });
+
+        leaveRequestInput = {
+            leaveCategory: "",
+            leaveMessage: "",
+            description: "",
+            startDate: new Date(),
+            endDate: new Date(),
+            requestingToEmail: "",
+            status: "",
+        };
+        getLeaves();
         emits("closeLeaveRequestModal", false);
     }
 </script>

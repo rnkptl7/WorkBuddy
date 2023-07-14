@@ -1,7 +1,13 @@
 <template>
     <section class="LMS-wrapper d-flex flex-column pa-3 mx-auto">
+        <ApplyLeaveModal
+            :dialog="openRequestLeaveDialog"
+            @closeLeaveRequestModal="
+                openRequestLeaveDialog = !openRequestLeaveDialog
+            "
+        />
         <!-- Request Leave button -->
-        <div class="LMS-button_container my-2 d-flex flex-row-reverse">
+        <div class="LMS-button_container my-2 border flex-row-reverse">
             <v-btn
                 class="my-3"
                 rounded
@@ -10,12 +16,6 @@
                 @click="openRequestLeaveDialog = !openRequestLeaveDialog"
                 >Request for Leave</v-btn
             >
-            <ApplyLeaveModal
-                :dialog="openRequestLeaveDialog"
-                @closeLeaveRequestModal="
-                    openRequestLeaveDialog = !openRequestLeaveDialog
-                "
-            />
         </div>
         <div
             class="LMS-information_container d-flex flex-row flex-wrap justify-space-around rounded-lg pa-3 w-100"
@@ -52,18 +52,16 @@
             >
                 <h3>Your Pending Requests:</h3>
                 <div class="pending-requests_cards d-flex flex-column">
-                    <LeaveRequestCardVue />
-                    <LeaveRequestCardVue />
-                    <LeaveRequestCardVue />
-                    <LeaveRequestCardVue />
-                    <LeaveRequestCardVue />
-                    <LeaveRequestCardVue />
-                    <LeaveRequestCardVue />
+                    <LeaveRequestCardVue
+                        v-for="(item, index) in leaves"
+                        :leave="item"
+                        :key="index"
+                    />
                 </div>
             </div>
         </div>
-        <!-- Leave History -->
-        <LeaveHistory />
+        <!-- Leave History Table -->
+        <LeaveHistory :leaveHistory="leaves" />
     </section>
 </template>
 
@@ -72,8 +70,23 @@
     import LeaveHistory from "../components/LeaveHistory.vue";
     import VCalendarVue from "../components/VCalendar.vue";
     import ApplyLeaveModal from "../components/ApplyLeaveModal.vue";
-    import { reactive, ref } from "vue";
+    import { useLeavesStore } from "../stores/leaves";
+    import { onMounted, watch } from "vue";
 
+    import { reactive, ref } from "vue";
+    import { useAppCheck, useCollection, useFirestore } from "vuefire";
+    import { collection } from "firebase/firestore";
+    import { storeToRefs } from "pinia";
+
+    // Fetching all leaves collection
+    // const db = useFirestore();
+    // const leaves = useCollection(collection(db, "leaves"));
+
+    const { leaves } = storeToRefs(useLeavesStore());
+    const { getLeaves } = useLeavesStore();
+    onMounted(async () => {
+        await getLeaves();
+    });
     const openRequestLeaveDialog = ref(false);
 </script>
 
@@ -95,9 +108,6 @@
         border-radius: 5%;
         border: 1px dashed grey;
         margin-block: 1rem;
-    }
-    .leaves_count_wrapper {
-        /* width: fit-content; */
     }
     .LMS-pending_requests {
         width: 50%;

@@ -1,63 +1,35 @@
 <template>
     <div class="DatePicker-wrapper">
-        <VDatePicker
-            transparent
-            borderless
-            expanded
-            title-position="left"
-            v-model.range="range"
-            :select-attribute="selectDragAttribute"
-            :drag-attribute="selectDragAttribute"
-            @drag="dragValue = $event"
-            :color="selectedColor"
-        >
-            <template #day-popover="{ format }">
-                <div class="text-sm">
-                    {{
-                        format(
-                            dragValue ? dragValue.start : range.start,
-                            "MMM D"
-                        )
-                    }}
-                    -
-                    {{ format(dragValue ? dragValue.end : range.end, "MMM D") }}
-                </div>
-            </template>
-            <template #footer>
-                <div class="w-full px-4 pb-3">
-                    <v-btn rounded class="ma-2" @click="moveToday">
-                        Apply for {{ moment(range.start).format("Do MMM") }}
-                    </v-btn>
-                </div>
-            </template>
-        </VDatePicker>
+        <VCalendar :attributes="attributes" />
     </div>
 </template>
 
-<script setup lang="ts">
-    import { ref, computed } from "vue";
-    import moment from "moment";
-    console.log(new Date());
-    let date = new Date();
-    // for VCalendar
-    const selectedColor = ref("gray");
-    const range = ref({
-        start: date,
-        end: date,
+<script setup>
+    import { collection, getDocs, query, where } from "firebase/firestore";
+    import { storeToRefs } from "pinia";
+    import { computed, onMounted, reactive, ref } from "vue";
+    import { useFirestore } from "vuefire";
+    import { useLeavesStore } from "../stores/leaves";
+
+    const { leavesDates } = storeToRefs(useLeavesStore());
+    const userId = ref("8myANlkdZmLQ3qccNAeE");
+    const database = useFirestore();
+
+    let attributes = computed(() => {
+        console.log(leavesDates.value);
+        attributes = reactive([
+            {
+                highlight: {
+                    start: { fillMode: "outline" },
+                    base: { fillMode: "light" },
+                    end: { fillMode: "outline" },
+                },
+                dates: leavesDates.value,
+            },
+        ]);
+        console.log(attributes);
+        return attributes;
     });
-
-    console.log(moment(date).format("DD-MM-YYYY"));
-    const dragValue = ref(null);
-    const selectDragAttribute = computed(() => ({
-        popover: {
-            visibility: "hover",
-            isInteractive: false,
-        },
-    }));
-
-    function moveToday() {
-        alert("Applied for leave");
-    }
 </script>
 
 <style scoped>
