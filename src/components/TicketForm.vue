@@ -19,13 +19,14 @@
           <v-container>
               <h2>Raise an Issue</h2>
               <v-divider class="py-1"></v-divider>
-                <VForm class="form">
+                <VForm class="form" @submit.prevent="createTicket">
                     <div class="inputDiv">
                     <select
                         name="category"
                         class="input"
+                        v-model="ticketData.category"
                     >
-                    <option value="" disabled selected>I need help regarding</option>
+                    <option value="" disabled selected>I need help regarding*</option>
                     <option value="Hardware">Hardware</option>
                     <option value="Software">Software</option>
                     <option value="HR Queries">HR Queries</option>
@@ -38,9 +39,10 @@
                     <div class="inputDiv">
                     <input
                         name="title"
-                        placeholder="Issue in brief"
+                        placeholder="Issue in brief*"
                         type="text"
                         class="input"
+                        v-model="ticketData.title"
                     />
                     <ErrorMessage name="title" class="error_message" />
                     </div>
@@ -48,10 +50,11 @@
                     <div class="inputDiv">
                     <textarea
                         name="description"
-                        placeholder="Detailed Description"
+                        placeholder="Detailed Description*"
                         type="text"
                         class="input"
-                    />
+                        v-model="ticketData.description"
+                    ></textarea>
                     <ErrorMessage name="description" class="error_message" />
                     </div>
 
@@ -59,8 +62,9 @@
                     <select
                         name="priority"
                         class="input"
+                        v-model="ticketData.priority"
                     >
-                    <option value="" disabled selected>Select Priority</option>
+                    <option value="" disabled selected>Select Priority*</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
@@ -74,7 +78,7 @@
             <v-spacer></v-spacer>
             <div class="d-flex justify-end">
               <v-btn type="reset" @click="dialog = false">Cancel</v-btn>
-              <v-btn class="me-4 text-white ml-2 btn-submit" type="submit" color="#115173" @click.prevent="dialog = false"> Submit </v-btn>
+              <v-btn class="me-4 text-white ml-2 btn-submit" type="submit" color="#115173"> Submit </v-btn>
             </div>
             </VForm>
           </v-container>
@@ -84,8 +88,55 @@
 </template>
 
 <script setup lang="ts">  
-    import { ref } from 'vue'
+    import { ref, reactive } from 'vue';
+    import { useTicketStore } from '@/stores/ticketStore';
+    import { useFirestore } from "vuefire";
+    import { collection, addDoc, doc, arrayUnion, updateDoc } from 'firebase/firestore';
+
+    const db = useFirestore();
+
     const dialog = ref(false);
+
+    let ticketData = reactive({
+      category: "",
+      title: "",
+      description: "",
+      priority: "",
+      createdOn: "",
+      status: "Open",
+      closedBy: ""
+    })
+
+    const { fetchTickets, fetchByCategory } = useTicketStore();
+    
+    async function createTicket() {
+      dialog.value = false;
+
+      const userId = "8myANlkdZmLQ3qccNAeE"; //TODO: Localstorage
+
+      ticketData = {...ticketData, createdOn: new Date()}
+
+      const ticket = await addDoc(collection(db, "tickets"), { userId: "8myANlkdZmLQ3qccNAeE", ...ticketData });
+
+      const docRef = doc(db, "users", userId);
+
+      await updateDoc(docRef, {
+        tickets: arrayUnion(ticket.id), // New Ticket in User
+      });
+
+      ticketData = {
+        category: "",
+        title: "",
+        description: "",
+        priority: "",
+        createdOn: "",
+        status: "Open",
+        closedBy: "-"
+      };
+
+      fetchTickets();
+      fetchByCategory();
+    }
 </script>
 
 

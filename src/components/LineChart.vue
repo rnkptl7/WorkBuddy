@@ -17,7 +17,7 @@ const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   datasets: [
     {
-      label: 'Your Tickets',
+      label: 'Total Tickets',
       backgroundColor: '#F993A2',
       borderColor: "#F993A2",
       data: [0, 0, 8, 30, 10, 40, 39, 10, 40, 39, 70, 40],

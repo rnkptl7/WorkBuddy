@@ -1,9 +1,3 @@
-<script setup lang="ts">
-import TicketsTable from '../components/TicketsTable.vue';
-import LineChart from '../components/LineChart.vue';
-import DoughnutChart from '../components/DoughnutChart.vue';
-</script>
-
 <template>
   <main>
     <section class="table-wrapper">
@@ -13,14 +7,16 @@ import DoughnutChart from '../components/DoughnutChart.vue';
     <section class="charts-wrapper">
       
       <section class="chart-wrapper rounded">
-        <h3 class="chart-description">All Tickets</h3>
+        <h3 class="chart-description pl-1">All Tickets</h3>
+        <v-divider class="my-2"></v-divider>
         <div class="line-wrapper">
           <LineChart />
         </div>
       </section>
 
       <section class="chart-wrapper rounded">
-        <h3 class="chart-description">Issues by type</h3>
+        <h3 class="chart-description pl-1">Issues by type</h3>
+        <v-divider class="mt-2"></v-divider>
         <div class="doughnut-wrapper">
           <DoughnutChart />
         </div>
@@ -29,6 +25,17 @@ import DoughnutChart from '../components/DoughnutChart.vue';
     </section>
   </main>
 </template>
+
+<script setup lang="ts">
+  import TicketsTable from '../components/TicketsTable.vue';
+  import LineChart from '../components/LineChart.vue';
+  import DoughnutChart from '../components/DoughnutChart.vue';
+  import { useTicketStore } from '@/stores/ticketStore';
+
+  const { fetchTickets } = useTicketStore()
+  fetchTickets()
+
+</script>
 
 <style scoped>
   main {
@@ -52,11 +59,8 @@ import DoughnutChart from '../components/DoughnutChart.vue';
     flex-direction: column;
   }
 
-  .chart-description {
-    margin-bottom: 1rem;
-  }
   .chart-wrapper {
-    box-shadow: 0px 3px 30px 1px #e8efff;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
     padding: 1rem;
   }
 
