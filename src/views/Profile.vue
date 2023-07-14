@@ -42,10 +42,3 @@ function toggleFunc(isProfileSelected) {
     width: 100%;
 }
 </style>
-<template>
-    <div>Profile</div>
-</template>
-
-<script setup lang="ts"></script>
-
-<style lang="scss" scoped></style>

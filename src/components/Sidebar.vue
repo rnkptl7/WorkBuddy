@@ -1,5 +1,4 @@
 <template>
-    <<<<<<< HEAD
     <aside class="sidebar-menu">
         Sidebar
         <router-link :to="{ name: 'Home' }"> Home </router-link>
@@ -7,13 +6,6 @@
         <router-link :to="{ name: 'Register' }">Register </router-link>
         <router-link :to="{ name: 'Profile' }">My Profile</router-link>
     </aside>
-    =======
-    <aside class="sidebar-menu" :class="{ showSidebar: showNav }">
-        <router-link :to="{ name: 'Home' }"> Home </router-link>
-        <router-link :to="{ name: 'Login' }">Login </router-link>
-        <router-link :to="{ name: 'Register' }">Register </router-link>
-    </aside>
-    >>>>>>> auth
 </template>
 
 <script setup lang="ts">
@@ -28,7 +20,7 @@ const { showNav, mobileView } = storeToRefs(commonStore);
 .sidebar-menu {
     position: fixed;
     height: 90vh;
-    width: 18rem;
+    width: 15rem;
     background: #f0f3fb;
     box-shadow: 0px 10px 10px -4px black;
 }

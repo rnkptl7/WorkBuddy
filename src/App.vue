@@ -16,12 +16,14 @@ const { showNav } = storeToRefs(commonStore);
 <template>
     <Navbar></Navbar>
     <div class="main-layout">
-        <div class="main-sidebar">
+        <div class="main-sidebar" v-if="isLoggedIn">
             <Sidebar></Sidebar>
         </div>
-        <router-view v-slot="{ Component }">
-            <component :is="Component"></component>
-        </router-view>
+        <div :class="[isLoggedIn ? 'main-content-margin' : 'main-content']">
+            <router-view v-slot="{ Component }">
+                <component :is="Component"></component>
+            </router-view>
+        </div>
     </div>
 </template>
 

@@ -195,14 +195,83 @@ const registerData = async () => {
 </script>
 
 <style scoped>
-@import "../assets/main.css";
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
-select,
-.form-group {
-    color: var(--input-text);
+:root {
+    --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    --primary-color: #115173;
+    --secondary-color: #6eb4d933;
+    --white-text: #f0f3fb;
+    --input-text: #000000a1;
 }
 
-.lastnameInput {
-    border-left: none !important;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "DM Sans", sans-serif;
+    background: #ffffff;
+}
+
+.form-heading {
+    font-weight: 900;
+}
+
+/* form */
+.registration {
+    display: grid;
+    place-items: center;
+    height: 80vh;
+}
+
+.registration h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.registration form {
+    width: 30rem;
+}
+
+.form .inputDiv {
+    margin: 15px 0;
+}
+
+.form .inputDiv input,
+.inputDiv select {
+    padding: 10px;
+    display: block;
+    width: 100%;
+    outline: none;
+    border: 1px solid var(--primary-color);
+}
+
+.btn-submit {
+    width: 6rem;
+    font-size: 16px;
+    text-align: center;
+    color: var(--white-text);
+    background: var(--primary-color);
+}
+
+.error_message {
+    color: #f44b4b;
+}
+
+@media screen and (max-width: 630px) {
+    .registration {
+        max-width: 38rem;
+    }
+
+    .registration form {
+        width: 100%;
+    }
+
+    .registration .form-wrapper {
+        width: 80%;
+    }
 }
 </style>

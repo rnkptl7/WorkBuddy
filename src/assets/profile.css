@@ -19,7 +19,6 @@ legend {
 .legend-input {
     margin: 15px 0;
     display: flex;
-    color: red;
 }
 .legend-input label {
     width: 20%;

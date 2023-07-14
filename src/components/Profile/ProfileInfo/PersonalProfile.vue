@@ -14,24 +14,13 @@
             </div>
             <div class="legend-input">
                 <label for="gender" class="genderLabel">Gender: </label>
-                <label class="radioLabel d-flex">
-                    <VField
-                        type="radio"
-                        name="gender"
-                        value="Male"
-                        v-model="personal.gender"
-                    />
-                    Male
-                </label>
-                <label class="radioLabel d-flex">
-                    <VField
-                        type="radio"
-                        name="gender"
-                        value="Female"
-                        v-model="personal.gender"
-                    />
-                    Female
-                </label>
+                <VField
+                    name="gender"
+                    type="text"
+                    class="input"
+                    disabled
+                    v-model="personal.gender"
+                />
             </div>
             <div class="legend-input">
                 <label for="dob">DOB*</label>
@@ -78,10 +67,23 @@
     </VForm>
 </template>
 <script setup>
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
 import { useFirestore } from "vuefire";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
-const key = "8myANlkdZmLQ3qccNAeE";
+import {
+    doc,
+    setDoc,
+    updateDoc,
+    getDoc,
+    collection,
+    where,
+    query,
+    getDocs,
+} from "firebase/firestore";
+
+onMounted(() => {
+    priorData();
+});
+const key = localStorage.getItem("userId");
 const db = useFirestore();
 
 const personalSchema = {
@@ -91,17 +93,28 @@ const personalSchema = {
     mobile: "integer",
     dob: "required",
 };
-const personal = {
+const personal = reactive({
     fullname: "",
     gender: "",
     address: "",
     mobile: "",
     dob: "",
-};
+});
 const updatePersonalInfo = async () => {
     await updateDoc(doc(db, "users", key), {
         personal: { ...personal },
     });
+};
+const priorData = async () => {
+    const docSnap = await getDoc(doc(db, "users", key));
+    if (docSnap.exists()) {
+        personal.fullname = `${docSnap.data().register.firstName} ${
+            docSnap.data().register.lastName
+        }`;
+        personal.gender = docSnap.data().register.gender;
+    } else {
+        return;
+    }
 };
 </script>
 <style scoped>

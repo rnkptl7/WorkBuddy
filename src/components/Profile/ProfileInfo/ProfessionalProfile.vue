@@ -65,7 +65,7 @@ import { reactive } from "vue";
 import { useFirestore } from "vuefire";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 
-const key = "8myANlkdZmLQ3qccNAeE";
+const key = localStorage.getItem("userId");
 const db = useFirestore();
 const professionalSchema = {
     qualification: "required|alphaSpaces",
