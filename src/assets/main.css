@@ -1,7 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 
-body {
-  font-family: "DM Sans", sans-serif;
-  background: #ffffff;
+:root {
+    --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    --primary-color: #115173;
+    --secondary-color: #6eb4d933;
+    --white-text: #f0f3fb;
+    --input-text: #000000a1;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "DM Sans", sans-serif;
+    background: #ffffff;
+}
