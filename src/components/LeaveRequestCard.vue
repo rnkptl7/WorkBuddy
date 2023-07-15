@@ -1,6 +1,6 @@
 <template>
     <div
-        class="leave-detail_card d-flex flex-fill align-center border rounded-lg my-2"
+        class="leave-detail_card d-flex flex-fill align-center justify-space-between border rounded-lg my-2"
     >
         <div class="ld-card_logo ma-2 d-flex flex-column align-start">
             <h3>From</h3>
@@ -24,13 +24,32 @@
                 <p>{{ trmimedDescrition }}</p>
             </div>
         </div>
+        <div>
+            <v-btn
+                rounded
+                v-if="isAdmin"
+                color="green"
+                @click="adminActions({ action: 'approve' })"
+                >Approve</v-btn
+            >
+            <v-btn
+                rounded
+                v-if="isAdmin"
+                color="red"
+                @click="adminActions({ action: 'reject' })"
+                >Reject</v-btn
+            >
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
+    import { arrayUnion, doc, updateDoc } from "firebase/firestore";
     import moment from "moment";
     import { computed, ref } from "vue";
-    const { leave } = defineProps(["leave"]);
+    import { useFirestore } from "vuefire";
+    const { leave, isAdmin } = defineProps(["leave", "isAdmin"]);
+    import { useLeavesStore } from "../stores/leaves";
 
     const logoDateString = computed(() => {
         const date = formatDate(leave.startDate);
@@ -55,6 +74,18 @@
     const trmimedDescrition = computed(() => {
         return leave?.description?.slice(0, 50) + "...";
     });
+
+    async function adminActions({ action }) {
+        // return async function () {
+        const db = useFirestore();
+        const leaveReferance = doc(db, "leaves", leave.id);
+        console.log(action);
+        await updateDoc(leaveReferance, {
+            status: action === "approve" ? "Approved" : "rejected",
+        });
+        await useLeavesStore().getLeaves();
+        // };
+    }
 </script>
 
 <style scoped>
