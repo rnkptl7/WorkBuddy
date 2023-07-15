@@ -11,15 +11,15 @@ function formatDate(data) {
     const date = moment
         .unix(seconds)
         .add(nanoseconds / 1000000, "milliseconds");
-
-    return date.format("DD/MM/YYYY");
+    // console.log(date._d, "");
+    return date;
 }
 
 export const useLeavesStore = defineStore("leaves", () => {
     const userId = ref("8myANlkdZmLQ3qccNAeE");
     const database = useFirestore();
     const leaves = ref([]);
-    const leavesDates = ref([]);
+    let leavesDates = ref([]);
     async function getLeaves() {
         const leaveHistoryList = await getDocs(
             query(
@@ -31,16 +31,20 @@ export const useLeavesStore = defineStore("leaves", () => {
         leavesDates.value = [];
         leaveHistoryList.forEach((doc: any) => {
             let leaveItem = doc.data();
+            const leavesForCalendar = {
+                status: leaveItem.status,
+                start: formatDate(leaveItem.startDate)._d,
+                end: formatDate(leaveItem.endDate)._d,
+            };
             leaveItem = {
                 ...leaveItem,
                 id: doc.id,
-                startDate: formatDate(leaveItem.startDate),
-                endDate: formatDate(leaveItem.endDate),
+                startDate: formatDate(leaveItem.startDate).format("DD-MM-YYYY"),
+                endDate: formatDate(leaveItem.endDate).format("DD-MM-YYYY"),
             };
-            leavesDates.value.push({
-                startDate: new Date(2023, 6, 16),
-                endDate: new Date(2023, 6, 15),
-            });
+            // console.log(leavesForCalendar, "====inside store====");
+
+            leavesDates.value.push(leavesForCalendar);
             leaves.value.push(leaveItem);
         });
     }
