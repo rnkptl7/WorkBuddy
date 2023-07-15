@@ -9,14 +9,14 @@ import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
 
 const commonStore = useCommonStore();
-const { showNav, mobileView } = storeToRefs(commonStore);
+const { showNav } = storeToRefs(commonStore);
 </script>
 
 <style scoped>
 .sidebar-menu {
   position: fixed;
   height: 90vh;
-  width: 18rem;
+  width: 14rem;
   background: #f0f3fb;
   box-shadow: 0px 10px 10px -4px black;
 }
