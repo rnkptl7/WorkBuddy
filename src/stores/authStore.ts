@@ -6,9 +6,7 @@ export const useAuthStore = defineStore("authStore", {
         return {
             isLoggedIn: Boolean(localStorage.getItem("isLoggedIn")),
             isAdmin: localStorage.getItem("isAdmin"),
-            fullname: `${localStorage.getItem(
-                "firstname"
-            )} ${localStorage.getItem("lastname")}`,
+            fullname: localStorage.getItem("fullName"),
         };
     },
     actions: {

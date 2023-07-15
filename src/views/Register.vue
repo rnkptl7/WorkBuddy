@@ -14,7 +14,7 @@
                             placeholder="Firstname*"
                             type="text"
                             class="input"
-                            v-model="form.firstName"
+                            v-model="firstName"
                         />
                         <ErrorMessage name="firstname" class="error_message" />
                     </div>
@@ -25,7 +25,7 @@
                             placeholder="Lastname*"
                             type="text"
                             class="input lastnameInput"
-                            v-model="form.lastName"
+                            v-model="lastName"
                         />
                         <ErrorMessage name="lastname" class="error_message" />
                     </div>
@@ -42,24 +42,52 @@
                     <ErrorMessage name="email" class="error_message" />
                 </div>
 
-                <div class="inputDiv">
+                <div class="inputDiv passwordWrapper">
                     <VField
                         name="password"
                         placeholder="Password*"
-                        type="password"
+                        :type="showRegisterPassword ? 'password' : 'text'"
                         class="input"
                         v-model="form.password"
                     />
+                    <span class="passwordSpan">
+                        <img
+                            v-if="showRegisterPassword"
+                            src="../assets/images/hide.png"
+                            alt="hide password"
+                            @click="showRegisterPasswordChange"
+                        />
+                        <img
+                            v-else
+                            src="../assets/images/show.png"
+                            alt="show password"
+                            @click="showRegisterPasswordChange"
+                        />
+                    </span>
                     <ErrorMessage name="password" class="error_message" />
                 </div>
 
-                <div class="inputDiv">
+                <div class="inputDiv passwordWrapper">
                     <VField
                         name="confirmPassword"
                         placeholder="Confirm Password*"
-                        type="password"
+                        :type="showConfirmPassword ? 'password' : 'text'"
                         class="input"
                     />
+                    <span class="passwordSpan">
+                        <img
+                            v-if="showConfirmPassword"
+                            src="../assets/images/hide.png"
+                            alt="hide password"
+                            @click="showConfirmPasswordChange"
+                        />
+                        <img
+                            v-else
+                            src="../assets/images/show.png"
+                            alt="show password"
+                            @click="showConfirmPasswordChange"
+                        />
+                    </span>
                     <ErrorMessage
                         name="confirmPassword"
                         class="error_message"
@@ -149,13 +177,19 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, addDoc } from "firebase/firestore";
 import { useRouter } from "vue-router";
+import { useCommonStore } from "@/stores/commonStore";
+import { storeToRefs } from "pinia";
 
+const commonStore = useCommonStore();
 const db = useFirestore();
 const router = useRouter();
+
+const { showConfirmPassword, showRegisterPassword } = storeToRefs(commonStore);
+const { showConfirmPasswordChange, showRegisterPasswordChange } = commonStore;
 
 const schema = {
     firstname: "required|alphaChar",
@@ -168,9 +202,10 @@ const schema = {
     gender: "gender",
 };
 
+const firstName = ref("");
+const lastName = ref("");
+
 const form = reactive({
-    firstName: "",
-    lastName: "",
     email: "",
     password: "",
     department: "",
@@ -184,9 +219,12 @@ const uniqueID = () => {
 
 const registerData = async () => {
     console.log("Register");
+    const fullName = `${firstName.value} ${lastName.value}`;
+
+    console.log(form);
 
     const data = await addDoc(collection(db, "users"), {
-        register: { ...form, empID: uniqueID() },
+        register: { ...form, empID: uniqueID(), fullName },
     });
     if (data.id) {
         router.replace({ name: "Login" });
@@ -195,31 +233,22 @@ const registerData = async () => {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
+@import "../assets/main.css";
 
-:root {
-    --font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    --primary-color: #115173;
-    --secondary-color: #6eb4d933;
-    --white-text: #f0f3fb;
-    --input-text: #000000a1;
+select,
+.form-group {
+    color: var(--input-text);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    font-family: "DM Sans", sans-serif;
-    background: #ffffff;
+.lastnameInput {
+    border-left: none !important;
 }
 
+/* form */
 .form-heading {
     font-weight: 900;
 }
 
-/* form */
 .registration {
     display: grid;
     place-items: center;
