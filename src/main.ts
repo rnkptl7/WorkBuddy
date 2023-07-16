@@ -2,7 +2,7 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { VueFire, VueFireAuth } from 'vuefire'
+import { VueFire } from 'vuefire'
 
 import App from './App.vue'
 import router from './router'
@@ -16,8 +16,7 @@ import * as directives from 'vuetify/directives'
 import { VDataTable } from 'vuetify/labs/VDataTable'
 
 // Icons
-import '@fortawesome/fontawesome-free/css/all.css';
-import { aliases, fa } from 'vuetify/iconsets/fa';
+import '@mdi/font/css/materialdesignicons.css'
 
 const vuetify = createVuetify({
   components: {
@@ -26,11 +25,7 @@ const vuetify = createVuetify({
   },
     directives,
     icons: {
-      defaultSet: 'fa',
-      aliases,
-      sets: {
-        fa,
-      },
+      defaultSet: 'mdi',
     },
   })
 

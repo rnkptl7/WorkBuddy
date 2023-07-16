@@ -1,7 +1,10 @@
 <template>
   <main>
     <section class="table-wrapper">
-      <TicketsTable />
+      <OpenTickets />
+    </section>
+    <section class="table-wrapper">
+      <TicketsHistory />
     </section>
 
     <section class="charts-wrapper">
@@ -27,13 +30,14 @@
 </template>
 
 <script setup lang="ts">
-  import TicketsTable from '../components/TicketsTable.vue';
+  import TicketsHistory from '../components/TicketsHistory.vue';
   import LineChart from '../components/LineChart.vue';
   import DoughnutChart from '../components/DoughnutChart.vue';
   import { useTicketStore } from '@/stores/ticketStore';
+import OpenTickets from '@/components/OpenTickets.vue';
 
-  const { fetchTickets } = useTicketStore()
-  fetchTickets()
+  const { fetchAllTickets } = useTicketStore()
+  fetchAllTickets()
 
 </script>
 
@@ -47,7 +51,8 @@
   }
 
   .table-wrapper {
-    padding: 2rem 0;
+    padding: 0.7rem 0;
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important; 
   }
 
   .charts-wrapper {

@@ -18,7 +18,6 @@ const { ticketsByCategory } = storeToRefs(useTicketStore());
 async function fetchData() {
     await fetchByCategory();
 }
-
 fetchData();
 
 const chartData = computed(() => {

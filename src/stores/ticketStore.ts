@@ -5,47 +5,75 @@ import { useFirestore } from "vuefire";
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export const useTicketStore = defineStore('ticketStore', () => {
-    const tickets = ref([]);
+    const openTickets = ref([]);
+    const closedTickets = ref([]);
+    const raisedTickets = ref([]);
+
     let ticketsByCategory = ref([]);
+    let ticketsByMonth = ref([]);
+
     const userId = "8myANlkdZmLQ3qccNAeE";
     const db = useFirestore();
 
-    async function fetchTickets() {
-        const q = query(collection(db, 'tickets'), where('userId', "==", userId))
-        const ticketList = await getDocs(q)
-        
-        tickets.value = [];
-        ticketList.forEach((ticket) => {
-          const data = ticket.data();
-          tickets.value.unshift({...data, id: ticket.id.slice(0,5) + ".", createdOn: formatDate(data), closedBy: "-"});
-        });
+    async function fetchTicketsByStatus() {
+      const q = query(collection(db, 'tickets'), where('userId', "==", userId));
+      const ticketList = await getDocs(q);
 
-        return tickets;
+      closedTickets.value = [];
+      openTickets.value = [];
+
+      ticketList.forEach((ticket) => {
+        const data = ticket.data();
+        if (data.status === 'Open'){
+          openTickets.value.unshift({...data, id: ticket.id.slice(0,5) + "."});
+        }
+        else {
+          closedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + "."});
+        }
+      });
     }
 
-    function formatDate(data) {
-        const seconds = data.createdOn.seconds;
-        const nanoseconds = data.createdOn.nanoseconds;
-        const date = moment.unix(seconds).add(nanoseconds / 1000000, 'milliseconds');
-        return date.format('DD-MM-YYYY');
+    fetchTicketsByStatus();
+
+    async function fetchAllTickets() {
+        const q = query(collection(db, 'tickets'), where('userId', "==", userId))
+        const ticketList = await getDocs(q);
+        
+        raisedTickets.value = [];
+
+        ticketList.forEach((ticket) => {
+          const data = ticket.data();
+          raisedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + "."});
+        });
+
+        return raisedTickets;
     }
 
     async function fetchByCategory() {
-        const tickets = await fetchTickets();
+        const tickets = await fetchAllTickets();
         
         let category = reactive({});
-        // for (const prop of Object.getOwnPropertyNames(ticketsByCategory)) {
-        //     delete ticketsByCategory[prop];
-        // }
 
         for (let ticket of tickets.value) {
             category[ticket.category] = category[ticket.category] ? category[ticket.category] + 1 : 1
         }
 
         ticketsByCategory.value = [category['Hardware'], category['Software'], category['Ontime'], category['HR Queries']]
+    }
 
-        console.log(ticketsByCategory.value)
+    async function fetchByMonths() {
+        const tickets = await fetchAllTickets();
+
+        let dates = reactive(new Array(12).fill(0));
+        
+        for (let ticket of tickets.value) {
+            const month = moment(ticket.createdOn, 'DD-MM-YYYY').month();
+
+            dates[month] = dates[month] + 1;
+        }
+
+        ticketsByMonth.value = dates;
     }
   
-    return { tickets, userId, fetchTickets, ticketsByCategory, fetchByCategory }
+    return { raisedTickets, openTickets, closedTickets, userId, fetchAllTickets, ticketsByCategory, fetchByCategory, fetchByMonths, ticketsByMonth, fetchTicketsByStatus }
 })

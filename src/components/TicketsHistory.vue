@@ -2,7 +2,7 @@
   <v-data-table
     v-model:expanded="expanded"
     :headers="ticketsHeaders"
-    :items="tickets"
+    :items="closedTickets"
     item-value="id"
     show-expand
     class="pb-1 rounded"
@@ -10,13 +10,13 @@
     <template v-slot:top>
       <v-toolbar flat color="#F0F3FB">
         <v-toolbar-title>
-            <div class="d-flex justify-space-between w-100 align-center title-wrapper">
-              <h3>My Tickets</h3>
-              <TicketForm @reload="reload"/>
+            <div>
+              <h3>Closed Tickets</h3>
             </div>
         </v-toolbar-title>
       </v-toolbar>
     </template>
+
     <template v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
@@ -24,6 +24,7 @@
         </td>
       </tr>
     </template>
+    
   </v-data-table>
 </template>
 
@@ -36,8 +37,7 @@
   import { useFirestore, useCollection } from "vuefire";
   import { collection, addDoc, getDocs, query, doc, getDoc, arrayUnion, updateDoc, where } from 'firebase/firestore';
 
-  const { tickets } = storeToRefs(useTicketStore())
-  console.log(tickets, "Tickets")
+  const { closedTickets } = storeToRefs(useTicketStore());
   
   const expanded = ref([]);
 
@@ -47,7 +47,6 @@
     { title: 'Created On', key: 'createdOn' },
     { title: 'Category', key: 'category' },
     { title: 'Priority', key: 'priority' },
-    { title: 'Status', key: 'status' },
     { title: 'Closed By', key: 'closedBy' },
     { title: '', key: 'data-table-expand' },
   ]);
@@ -60,9 +59,5 @@
 
 .v-toolbar-title__placeholder {
   overflow: visible !important;
-}
-
-.v-table {
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px !important;
 }
 </style>

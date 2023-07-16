@@ -89,6 +89,7 @@
 
 <script setup lang="ts">  
     import { ref, reactive } from 'vue';
+    import moment from 'moment';
     import { useTicketStore } from '@/stores/ticketStore';
     import { useFirestore } from "vuefire";
     import { collection, addDoc, doc, arrayUnion, updateDoc } from 'firebase/firestore';
@@ -104,24 +105,24 @@
       priority: "",
       createdOn: "",
       status: "Open",
-      closedBy: ""
+      closedBy: "-"
     })
 
-    const { fetchTickets, fetchByCategory } = useTicketStore();
+    const { fetchAllTickets, fetchByCategory, fetchByMonths, fetchTicketsByStatus } = useTicketStore();
     
     async function createTicket() {
       dialog.value = false;
 
       const userId = "8myANlkdZmLQ3qccNAeE"; //TODO: Localstorage
 
-      ticketData = {...ticketData, createdOn: new Date()}
+      ticketData = {...ticketData, createdOn: moment(new Date()).format('DD-MM-YYYY')}
 
       const ticket = await addDoc(collection(db, "tickets"), { userId: "8myANlkdZmLQ3qccNAeE", ...ticketData });
 
       const docRef = doc(db, "users", userId);
 
       await updateDoc(docRef, {
-        tickets: arrayUnion(ticket.id), // New Ticket in User
+        tickets: arrayUnion(ticket.id),
       });
 
       ticketData = {
@@ -134,8 +135,10 @@
         closedBy: "-"
       };
 
-      fetchTickets();
+      fetchTicketsByStatus();
+      fetchAllTickets();
       fetchByCategory();
+      fetchByMonths();
     }
 </script>
 

@@ -1,9 +1,13 @@
 <template>
-    <Line :data="data" :options="options" />
+    <Line :data="chartData" :options="options" />
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
+import { storeToRefs } from 'pinia';
+import { useTicketStore } from '@/stores/ticketStore';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,22 +16,31 @@ import {
   LineElement,
 } from 'chart.js'
 
+const { fetchByMonths } = useTicketStore();
+const { ticketsByMonth } = storeToRefs(useTicketStore());
 
-const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  datasets: [
-    {
-      label: 'Total Tickets',
-      backgroundColor: '#F993A2',
-      borderColor: "#F993A2",
-      data: [0, 0, 8, 30, 10, 40, 39, 10, 40, 39, 70, 40],
-      tension: 0.1,
-      fill: "#F993A2",
-      pointBackgroundColor: "#F96A65",
-      pointHoverBorderWidth: "3"
-    }
-  ]
+async function fetchData() {
+  await fetchByMonths();
 }
+fetchData();
+
+const chartData = computed(() => {
+  return {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
+      {
+        label: 'Total Tickets',
+        backgroundColor: '#F993A2',
+        borderColor: "#F993A2",
+        data: Array.from(ticketsByMonth.value),
+        tension: 0.1,
+        fill: "#F993A2",
+        pointBackgroundColor: "#F96A65",
+        pointHoverBorderWidth: "3"
+      }
+    ]
+  }
+})
 
 const options = {
   responsive: true,
@@ -40,6 +53,16 @@ const options = {
                     size: 14,
                     weight: "500"
                 }
+            }
+        },
+        tooltip: {
+            titleFont: {
+                size: 15,
+                family: '"DM Sans", sans-serif'
+            },
+            bodyFont: {
+                size: 14,
+                family: '"DM Sans", sans-serif'
             }
         }
     },
