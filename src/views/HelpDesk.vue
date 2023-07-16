@@ -1,7 +1,8 @@
 <template>
   <main>
-    <section class="table-wrapper">
+    <section>
       <OpenTickets />
+      <CloseTicketForm />
     </section>
     <section class="table-wrapper">
       <TicketsHistory />
@@ -35,6 +36,7 @@
   import DoughnutChart from '../components/DoughnutChart.vue';
   import { useTicketStore } from '@/stores/ticketStore';
 import OpenTickets from '@/components/OpenTickets.vue';
+import CloseTicketForm from '@/components/CloseTicketForm.vue';
 
   const { fetchAllTickets } = useTicketStore()
   fetchAllTickets()
@@ -51,7 +53,7 @@ import OpenTickets from '@/components/OpenTickets.vue';
   }
 
   .table-wrapper {
-    padding: 0.7rem 0;
+    margin: 1rem 0;
     box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important; 
   }
 

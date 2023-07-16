@@ -92,7 +92,7 @@
     import moment from 'moment';
     import { useTicketStore } from '@/stores/ticketStore';
     import { useFirestore } from "vuefire";
-    import { collection, addDoc, doc, arrayUnion, updateDoc } from 'firebase/firestore';
+    import { collection, addDoc, getDoc, doc, arrayUnion, updateDoc } from 'firebase/firestore';
 
     const db = useFirestore();
 
@@ -114,10 +114,12 @@
       dialog.value = false;
 
       const userId = "8myANlkdZmLQ3qccNAeE"; //TODO: Localstorage
+      const userInfo = await getDoc(doc(db, "users", userId));
+      const userName = userInfo.data()?.register.fullName;
 
       ticketData = {...ticketData, createdOn: moment(new Date()).format('DD-MM-YYYY')}
 
-      const ticket = await addDoc(collection(db, "tickets"), { userId: "8myANlkdZmLQ3qccNAeE", ...ticketData });
+      const ticket = await addDoc(collection(db, "tickets"), { userId, userName, ...ticketData });
 
       const docRef = doc(db, "users", userId);
 

@@ -8,27 +8,38 @@ export const useTicketStore = defineStore('ticketStore', () => {
     const openTickets = ref([]);
     const closedTickets = ref([]);
     const raisedTickets = ref([]);
-
-    let ticketsByCategory = ref([]);
-    let ticketsByMonth = ref([]);
-
-    const userId = "8myANlkdZmLQ3qccNAeE";
+    const ticketsByCategory = ref([]);
+    const ticketsByMonth = ref([]);
+    const showCloseTicketForm = ref(false);
+    const ticketToBeClosed = ref({});
+    const userId = ref(localStorage.getItem('userId'));
+    const userName = ref(localStorage.getItem('userName'));
+    const isAdmin = ref(localStorage.getItem('isAdmin'));
+ 
     const db = useFirestore();
+    const colRef = collection(db, 'tickets');
 
     async function fetchTicketsByStatus() {
-      const q = query(collection(db, 'tickets'), where('userId', "==", userId));
-      const ticketList = await getDocs(q);
+      let ticketList = [];
+      if (isAdmin.value) {
+        ticketList = await getDocs(colRef);
+      }
+      else {
+        const q = query(colRef, where('userId', "==", userId.value));
+        ticketList = await getDocs(q);
+      }
 
       closedTickets.value = [];
       openTickets.value = [];
 
       ticketList.forEach((ticket) => {
         const data = ticket.data();
+        
         if (data.status === 'Open'){
-          openTickets.value.unshift({...data, id: ticket.id.slice(0,5) + "."});
+          openTickets.value.unshift({...data, id: ticket.id});
         }
         else {
-          closedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + "."});
+          closedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + ".."});
         }
       });
     }
@@ -36,14 +47,20 @@ export const useTicketStore = defineStore('ticketStore', () => {
     fetchTicketsByStatus();
 
     async function fetchAllTickets() {
-        const q = query(collection(db, 'tickets'), where('userId', "==", userId))
-        const ticketList = await getDocs(q);
+        let ticketList;
+        if (isAdmin.value) {
+          ticketList = await getDocs(colRef);
+        }
+        else {
+          const q = query(colRef, where('userId', "==", userId.value));
+          ticketList = await getDocs(q);
+        }
         
         raisedTickets.value = [];
 
         ticketList.forEach((ticket) => {
           const data = ticket.data();
-          raisedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + "."});
+          raisedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + ".."});
         });
 
         return raisedTickets;
@@ -75,5 +92,5 @@ export const useTicketStore = defineStore('ticketStore', () => {
         ticketsByMonth.value = dates;
     }
   
-    return { raisedTickets, openTickets, closedTickets, userId, fetchAllTickets, ticketsByCategory, fetchByCategory, fetchByMonths, ticketsByMonth, fetchTicketsByStatus }
+    return { raisedTickets, openTickets, closedTickets, userId, userName, isAdmin, fetchAllTickets, ticketsByCategory, fetchByCategory, fetchByMonths, ticketsByMonth, fetchTicketsByStatus, showCloseTicketForm, ticketToBeClosed };
 })
