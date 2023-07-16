@@ -4,11 +4,15 @@
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
+    // "lib": ["ES2015"],
+    // "module": "ES2022",
+    // "target": "ES2018",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-  },
+    }
+  
+  }
 }
