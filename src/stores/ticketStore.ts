@@ -13,7 +13,7 @@ export const useTicketStore = defineStore('ticketStore', () => {
     const showCloseTicketForm = ref(false);
     const ticketToBeClosed = ref({});
     const userId = ref(localStorage.getItem('userId'));
-    const userName = ref(localStorage.getItem('userName'));
+    const userName = ref(localStorage.getItem('fullName'));
     const isAdmin = ref(localStorage.getItem('isAdmin'));
  
     const db = useFirestore();

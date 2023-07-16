@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <div class="logo">
-      <h1>HRMS</h1>
+      <h1>WorkBuddy</h1>
     </div>
     <div class="navbar-item">
       <div v-if="isLoggedIn">

@@ -9,7 +9,7 @@
           <v-container>
               <h2>Ticket Raised By {{ userName }}</h2>
               <v-divider class="py-1"></v-divider>
-                <VForm class="form" @submit.prevent="updateTicketStatus">
+                <VForm class="form" :validation-schema="schema" @submit="updateTicketStatus">
                     <div class="inputDiv">
                         <input type="text" :value="ticketToBeClosed.category" disabled >
                     </div>
@@ -31,13 +31,21 @@
                     </div>
 
                     <div class="inputDiv">
-                        <select name="status" v-model="ticketToBeClosed.status">
-                            <option value="Open" disabled>Open</option>
-                            <option value="Closed" selected>Closed</option>
+                        <VField
+                        name="status"
+                        :bails="false"
+                        v-slot="{ field }"
+                        v-model="ticketToBeClosed.status"
+                        >
+                        <select v-bind="field" class="input">
+                            <option disabled value="">Open</option>
+                            <option value="Closed">Close</option>
                         </select>
-                    </div>
-
-            <!-- <small>*indicates required field</small> -->
+                        <div class="error_message">
+                            Status should be Close to terminate a ticket
+                        </div>
+                        </VField>
+                </div>
 
             <v-spacer></v-spacer>
             <div class="d-flex justify-end">
@@ -60,6 +68,10 @@
     import { doc, updateDoc } from 'firebase/firestore';
 
     const db = useFirestore();
+
+    const schema = {
+        status: "required"
+    }
 
     async function updateTicketStatus() {
         console.log("status", ticketToBeClosed);

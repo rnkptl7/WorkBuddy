@@ -46,7 +46,7 @@ import CloseTicketForm from '@/components/CloseTicketForm.vue';
 <style scoped>
   main {
       padding: 0 1.5rem 0 1rem;
-      width: 80%;
+      width: 100%;
       max-width: 1500px;
       margin-inline: auto;
       overflow: auto;

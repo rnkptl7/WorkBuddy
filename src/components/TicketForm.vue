@@ -19,25 +19,29 @@
           <v-container>
               <h2>Raise an Issue</h2>
               <v-divider class="py-1"></v-divider>
-                <VForm class="form" @submit.prevent="createTicket">
-                    <div class="inputDiv">
-                    <select
-                        name="category"
-                        class="input"
-                        v-model="ticketData.category"
+                <VForm class="form" :validation-schema="schema" @submit="createTicket">
+                  <div class="inputDiv">
+                    <VField
+                      name="category"
+                      :bails="false"
+                      v-slot="{ field, errors }"
+                      v-model="ticketData.category"
                     >
-                    <option value="" disabled selected>I need help regarding*</option>
-                    <option value="Hardware">Hardware</option>
-                    <option value="Software">Software</option>
-                    <option value="HR Queries">HR Queries</option>
-                    <option value="Ontime">Ontime</option>
-
-                  </select>
-                    <ErrorMessage name="category" class="error_message" />
-                    </div>
+                      <select v-bind="field" class="input">
+                        <option disabled value="">I need help regarding*</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Software">Software</option>
+                        <option value="HR Queries">HR Queries</option>
+                        <option value="Ontime">Ontime</option>
+                      </select>
+                      <div class="error_message" v-for="err in errors" :key="err">
+                        {{ err }}
+                      </div>
+                    </VField>
+                  </div>
 
                     <div class="inputDiv">
-                    <input
+                    <VField
                         name="title"
                         placeholder="Issue in brief*"
                         type="text"
@@ -47,31 +51,39 @@
                     <ErrorMessage name="title" class="error_message" />
                     </div>
 
-                    <div class="inputDiv">
-                    <textarea
-                        name="description"
-                        placeholder="Detailed Description*"
-                        type="text"
-                        class="input"
-                        v-model="ticketData.description"
-                    ></textarea>
-                    <ErrorMessage name="description" class="error_message" />
-                    </div>
-
-                    <div class="inputDiv">
-                    <select
-                        name="priority"
-                        class="input"
-                        v-model="ticketData.priority"
+                <div class="inputDiv">
+                  <VField
+                      name="description"
+                      :bails="false"
+                      v-slot="{ field, errors }"
+                      v-model="ticketData.description"
                     >
-                    <option value="" disabled selected>Select Priority*</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
+                      <textarea v-bind="field" class="textarea" placeholder="Detailed Description*">
+                      </textarea>
+                      <div class="error_message" v-for="err in errors" :key="err">
+                        {{ err }}
+                      </div>
+                    </VField>
+                </div>
 
-                  </select>
-                    <ErrorMessage name="priority" class="error_message" />
-                    </div>
+                <div class="inputDiv">
+                  <VField
+                      name="priority"
+                      :bails="false"
+                      v-slot="{ field, errors }"
+                      v-model="ticketData.priority"
+                    >
+                      <select v-bind="field" class="input">
+                        <option disabled value="">Select Priority*</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                      </select>
+                      <div class="error_message" v-for="err in errors" :key="err">
+                        {{ err }}
+                      </div>
+                    </VField>
+                </div>
 
             <small>*indicates required field</small>
 
@@ -97,6 +109,13 @@
     const db = useFirestore();
 
     const dialog = ref(false);
+
+    const schema = {
+      category: "required",
+      title: "required",
+      description: "required",
+      priority: "required"
+    }
 
     let ticketData = reactive({
       category: "",
