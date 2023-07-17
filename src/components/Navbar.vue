@@ -64,6 +64,7 @@ const { mobileView, showNav } = storeToRefs(commonStore);
 const logout = () => {
   localStorage.setItem("isLoggedIn", false);
   localStorage.setItem("userId", null);
+  localStorage.removeItem("isAdmin");
   localStorage.setItem("fullName", null);
   isLoggedIn.value = false;
   fullname.value = "";

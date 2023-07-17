@@ -50,6 +50,8 @@
 import { reactive } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, getDocs } from "firebase/firestore";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 import router from "@/router";
 
 import { useAuthStore } from "@/stores/authStore";
@@ -59,6 +61,7 @@ import { storeToRefs } from "pinia";
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
 const db = useFirestore();
+const $toast = useToast();
 
 const { isLoggedIn, fullname } = storeToRefs(authStore);
 const { showPassword } = storeToRefs(commonStore);
@@ -82,7 +85,7 @@ const submitData = async () => {
   let userData;
   querySnapshot.forEach((doc) => {
     let { register } = doc.data();
-    console.log(register);
+    // console.log(register);
     if (form.email === register.email && form.password === register.password) {
       localStorage.setItem("userId", doc.id);
       localStorage.setItem("fullName", register.fullName);
@@ -91,6 +94,11 @@ const submitData = async () => {
   });
 
   if (userData) {
+    // console.log(userData.register.role);
+    if (userData.register.role === "admin") {
+      localStorage.setItem("isAdmin", true);
+    }
+
     localStorage.setItem("isLoggedIn", true);
     isLoggedIn.value = true;
     fullname.value = userData.register.fullName;
@@ -99,6 +107,10 @@ const submitData = async () => {
     alert("Invalid Credentials");
   }
 };
+
+$toast.success("User Login Successfully", {
+  position: "top-right",
+});
 </script>
 
 <style scoped>
