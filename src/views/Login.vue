@@ -44,7 +44,7 @@
             <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
             <v-btn type="reset">Clear</v-btn>
           </div>
-          <p class="text-medium-emphasis">*indicate required fields</p>
+          <p class="text-medium-emphasis">*indicates required field</p>
         </div>
       </VForm>
     </div>
@@ -68,7 +68,7 @@ const commonStore = useCommonStore();
 const db = useFirestore();
 const $toast = useToast();
 
-const { isLoggedIn, fullname, isAdmin, userId } = storeToRefs(authStore);
+const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
 const { showPassword } = storeToRefs(commonStore);
 const { showPasswordChange } = commonStore;
 
@@ -108,7 +108,7 @@ const submitData = async () => {
 
     localStorage.setItem("isLoggedIn", true);
     isLoggedIn.value = true;
-    fullname.value = userData.register.fullName;
+    fullName.value = userData.register.fullName;
     router.replace({ name: "Home" });
   } else {
     alert("Invalid Credentials");
