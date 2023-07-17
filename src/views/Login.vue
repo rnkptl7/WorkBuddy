@@ -44,7 +44,7 @@
             <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
             <v-btn type="reset">Clear</v-btn>
           </div>
-          <p class="text-medium-emphasis">*indicate required fields</p>
+          <p class="text-medium-emphasis">*indicates required field</p>
         </div>
       </VForm>
     </div>
@@ -112,7 +112,6 @@ const submitData = async () => {
     localStorage.setItem("isLoggedIn", true);
     isLoggedIn.value = true;
     fullName.value = userData.register.fullName;
-
     router.replace({ name: "Home" });
 
     fetchAllTickets();

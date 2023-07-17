@@ -1,20 +1,20 @@
 <template>
   <div class="navbar">
-    <div class="logo">
+    <router-link class="logo" to="/">
       <h1>WorkBuddy</h1>
-    </div>
+    </router-link>
     <div class="navbar-item">
       <div v-if="isLoggedIn">
         <ul>
           <li>
             <router-link :to="{ name: 'Profile' }">
-              <span class="d-flex mr-2"
-                ><img src="../assets/images/profile.png" alt="User Profile"
-              /></span>
+              <span class="d-flex mr-2">
+                <img src="../assets/images/profile.png" alt="User Profile"/>
+              </span>
               <span class="username">
                 {{ fullName }}
               </span>
-            </router-link>
+              </router-link>
           </li>
           <li>
             <button @click="logout">
@@ -27,19 +27,15 @@
             </button>
           </li>
           <li v-if="mobileView" class="hamburgerMenu">
-            <img
-              v-show="!showNav"
-              src="../assets/images/menu.png"
-              alt="hamburger-menu"
-              @click="showNav = !showNav"
-            />
-            <img
-              v-show="showNav"
-              class="closeIcon"
-              src="../assets/images/close.png"
-              alt="close-menu"
-              @click="showNav = !showNav"
-            />
+            <v-layout>
+              <div class="d-flex justify-center align-center h-100">
+                <img
+                  @click.stop="overlay = !overlay"
+                  src="../assets/images/menu.png"
+                  alt="hamburger-menu"
+                />
+              </div>
+            </v-layout>
           </li>
         </ul>
       </div>
@@ -61,6 +57,7 @@
 import { useAuthStore } from "@/stores/authStore";
 import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
@@ -71,7 +68,7 @@ const router = useRouter();
 const $toast = useToast();
 
 const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
-const { mobileView, showNav } = storeToRefs(commonStore);
+const { mobileView, overlay } = storeToRefs(commonStore);
 
 const logout = () => {
   localStorage.setItem("isLoggedIn", false);
@@ -96,12 +93,17 @@ window.addEventListener("resize", commonStore.handleView);
 @import "../assets/main.css";
 a.router-link-exact-active {
   border-bottom: 2px solid var(--primary-color);
-  background: var(--secondary-color);
+  font-weight: 600;
 }
 
+.logo.router-link-exact-active {
+  border-bottom: 0px solid;
+  background: none;
+}
 .navbar {
   background: #f0f3fb;
   height: 10vh;
+  max-height: 100px;
   position: sticky;
   top: 0;
   display: flex;
@@ -115,6 +117,7 @@ a.router-link-exact-active {
 .navbar .logo {
   padding: 15px 30px;
   color: var(--primary-color);
+  text-decoration: none;
 }
 
 .navbar .navbar-item ul {
@@ -133,7 +136,7 @@ a.router-link-exact-active {
   font-size: 20px;
   text-decoration: none;
   color: var(--primary-color);
-  padding: 1.4rem;
+  padding: 0.4rem;
   display: flex;
   align-items: center;
 }
@@ -152,10 +155,6 @@ img {
   margin-left: 10px;
 }
 
-.closeIcon {
-  width: 20px;
-}
-
 @media screen and (max-width: 675px) {
   .navbar .navbar-item ul li {
     margin: 0 0.2rem;
@@ -165,7 +164,7 @@ img {
   }
 }
 
-@media screen and (max-width: 610px) {
+@media screen and (max-width: 625px) {
   .username {
     display: none;
   }
@@ -179,14 +178,9 @@ img {
 }
 
 @media screen and (max-width: 480px) {
-  .navbar {
-    padding: 14px 7px;
-  }
-
   .navbar .logo {
     padding: 10px 5px;
   }
-
   .navbar .logo h1 {
     font-size: 24px;
   }
@@ -194,7 +188,7 @@ img {
     padding: 1rem 0.8rem;
   }
   img {
-    width: 20px;
+    width: 25px;
   }
 }
 </style>
