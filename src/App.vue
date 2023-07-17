@@ -3,14 +3,11 @@ import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
 
 import { useAuthStore } from "@/stores/authStore";
-import { useCommonStore } from "./stores/commonStore";
 import { storeToRefs } from "pinia";
 
 const authStore = useAuthStore();
-const commonStore = useCommonStore();
 
 const { isLoggedIn } = storeToRefs(authStore);
-const { showNav } = storeToRefs(commonStore);
 </script>
 
 <template>
@@ -51,7 +48,7 @@ const { showNav } = storeToRefs(commonStore);
     padding: 0rem;
   }
 }
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1250px) {
   .main-layout .main-content-margin {
     margin-left: 0rem;
   }
