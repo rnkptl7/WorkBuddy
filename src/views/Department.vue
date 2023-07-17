@@ -182,15 +182,15 @@ getUserDataFromDB();
   margin: 0;
   box-sizing: border-box;
   width: 100%;
-  max-width: 84vw;
+  max-width: 1500px;
 }
 
 /* Employees Directory's CSS */
 .department-title {
+  width: auto;
   margin: 10px;
   padding: 10px;
   font-size: 25px;
-  font-size: 27px;
   font-weight: 500;
   background-color: #f0f3fb;
   color: #115173;
@@ -329,6 +329,7 @@ getUserDataFromDB();
   }
   .v-row {
     display: grid;
+    grid-template-columns: auto auto;
   }
 }
 
@@ -338,6 +339,7 @@ getUserDataFromDB();
   }
   .v-row {
     display: grid;
+    grid-template-columns: auto auto;
   }
 }
 
@@ -347,6 +349,7 @@ getUserDataFromDB();
   }
   .v-row {
     display: grid;
+    grid-template-columns: auto auto;
   }
 }
 
