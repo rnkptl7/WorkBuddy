@@ -57,7 +57,7 @@ const { overlay } = storeToRefs(commonStore);
   display: block;
   padding: 0.7rem 4rem;
   text-decoration: none;
-  color: #000000ab;
+  color: var(--primary-color);
   font-size: 20px;
 }
 
