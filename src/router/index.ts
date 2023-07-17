@@ -8,7 +8,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      meta: {requiredAuth: true},
+      meta: {requiresAuth: true},
       component: () => import("@/views/Home.vue")
     },
     {
@@ -24,9 +24,15 @@ const router = createRouter({
       component: () => import('@/views/Login.vue')
     },
     {
+      path: "/helpdesk",
+      name: "Help",
+      meta: {requiresAuth: true},
+      component: () => import('@/views/HelpDesk.vue')
+    },
+    {
       path: '/profile',
       name: 'Profile',
-      meta: {requiredAuth: true},
+      meta: {requiresAuth: true},
       component: () => import('@/views/Profile.vue')
     }
   ],
@@ -38,7 +44,7 @@ router.beforeEach((to, from, next) => {
 
   commonStore.showNav = false;
 
-  if (to.meta.requiredAuth && !authStore.isAuthenticated()) {
+  if (to.meta.requiresAuth && !authStore.isAuthenticated()) {
     next("/login");
   } else if (
     to.meta.proctectedAdmin &&

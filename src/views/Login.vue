@@ -62,13 +62,16 @@ import router from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
+import { useTicketStore } from "@/stores/ticketStore";
 
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
+const ticketStore = useTicketStore();
 const db = useFirestore();
 const $toast = useToast();
 
 const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
+const { fetchAllTickets, fetchTicketsByStatus } = ticketStore;
 const { showPassword } = storeToRefs(commonStore);
 const { showPasswordChange } = commonStore;
 
@@ -88,7 +91,6 @@ const submitData = async () => {
   let userData;
   querySnapshot.forEach((doc) => {
     let { register } = doc.data();
-    // console.log(register);
     if (form.email === register.email && form.password === register.password) {
       localStorage.setItem("userId", doc.id);
       userId.value = doc.id;
@@ -101,7 +103,7 @@ const submitData = async () => {
     $toast.success("Logged In Successfully", {
       position: "top-right",
     });
-    // console.log(userData.register.role);
+
     if (userData.register.role === "admin") {
       localStorage.setItem("isAdmin", true);
       isAdmin.value = true;
@@ -111,6 +113,9 @@ const submitData = async () => {
     isLoggedIn.value = true;
     fullName.value = userData.register.fullName;
     router.replace({ name: "Home" });
+
+    fetchAllTickets();
+    fetchTicketsByStatus();
   } else {
     alert("Invalid Credentials");
   }

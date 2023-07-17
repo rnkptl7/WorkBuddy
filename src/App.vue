@@ -17,9 +17,11 @@ const { isLoggedIn } = storeToRefs(authStore);
       <Sidebar></Sidebar>
     </div>
     <div :class="[isLoggedIn ? 'main-content-margin' : 'main-content']">
-      <router-view v-slot="{ Component }">
-        <component :is="Component"></component>
-      </router-view>
+      <transition name="route" mode="out-in" appear>
+        <router-view v-slot="{ Component }">
+          <component :is="Component"></component>
+        </router-view>
+      </transition>
     </div>
   </div>
 </template>
@@ -34,7 +36,7 @@ const { isLoggedIn } = storeToRefs(authStore);
 }
 
 .main-layout .main-content-margin {
-  margin-left: 19rem;
+  margin-left: 15rem;
   padding: 10px;
 }
 
@@ -52,5 +54,18 @@ const { isLoggedIn } = storeToRefs(authStore);
   .main-layout .main-content-margin {
     margin-left: 0rem;
   }
+}
+
+.route-enter-from {
+  opacity: 0;
+  transform: translateX(-200px)
+}
+.route-enter-active,
+.route-leave-active {
+  transition: all .3s ease-out
+}
+.route-leave-to {
+  opacity: 0;
+  transform: translateX(0px)
 }
 </style>

@@ -21,6 +21,9 @@ body {
   background: #ffffff;
 }
 
+* {
+  box-sizing: border-box;
+}
 .form .passwordSpan {
   position: absolute;
   top: 22%;

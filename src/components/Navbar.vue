@@ -7,12 +7,14 @@
       <div v-if="isLoggedIn">
         <ul>
           <li>
-            <div class="d-flex align-center mr-2">
-              <img src="../assets/images/profile.png" alt="User Profile" />
-              <router-link :to="{ name: 'Profile' }">
+            <router-link :to="{ name: 'Profile' }">
+              <span class="d-flex mr-2">
+                <img src="../assets/images/profile.png" alt="User Profile"/>
+              </span>
+              <span class="username">
                 {{ fullName }}
+              </span>
               </router-link>
-            </div>
           </li>
           <li>
             <button @click="logout">

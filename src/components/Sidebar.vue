@@ -1,6 +1,7 @@
 <template>
   <aside class="sidebar-menu menu">
     <router-link :to="{ name: 'Home' }" exact> Home </router-link>
+    <router-link :to="{ name: 'Help' }">Help Me </router-link>
   </aside>
   <v-layout>
     <v-navigation-drawer v-model="overlay" temporary>
@@ -34,7 +35,7 @@ const { overlay } = storeToRefs(commonStore);
   position: fixed;
   z-index: 10;
   height: 90vh;
-  width: 14rem;
+  width: 15rem;
   background: #f0f3fb;
   box-shadow: var(--sidebar-shadow);
 }
