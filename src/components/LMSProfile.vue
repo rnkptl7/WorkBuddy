@@ -1,11 +1,11 @@
 <template>
+    <ApplyLeaveModal
+        :dialog="openRequestLeaveDialog"
+        @closeLeaveRequestModal="
+            openRequestLeaveDialog = !openRequestLeaveDialog
+        "
+    />
     <section class="LMS-wrapper d-flex flex-column pa-3">
-        <ApplyLeaveModal
-            :dialog="openRequestLeaveDialog"
-            @closeLeaveRequestModal="
-                openRequestLeaveDialog = !openRequestLeaveDialog
-            "
-        />
         <!-- Request Leave button -->
         <div class="LMS-button_container d-flex flex-row-reverse">
             <v-btn
@@ -158,5 +158,17 @@
     .pending-requests_cards > .pending_card {
         display: flex;
         flex: 1 1 auto;
+    }
+
+    @media screen and (max-width: 840px) {
+        .LMS-calendar_wrapper,
+        .LMS-pending_requests {
+            width: 100%;
+            margin: 0 !important;
+        }
+        .LMS-leave_history,
+        .LMS-information_container {
+            margin: 0 !important;
+        }
     }
 </style>
