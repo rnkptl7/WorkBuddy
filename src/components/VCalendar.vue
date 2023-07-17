@@ -1,6 +1,6 @@
 <template>
     <div class="DatePicker-wrapper">
-        <VCalendar :attributes="attributes" />
+        <VCalendar :attributes="attributes" borderless />
     </div>
 </template>
 
@@ -35,9 +35,4 @@
     });
 </script>
 
-<style scoped>
-    .DatePicker-wrapper {
-        min-width: 325px;
-        max-width: 375px;
-    }
-</style>
+<style scoped></style>

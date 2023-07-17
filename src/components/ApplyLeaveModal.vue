@@ -1,118 +1,107 @@
 <template>
-    <v-row justify="end">
-        <v-dialog v-model="props.dialog" persistent width="500">
-            <v-card>
-                <div class="pa-5">
-                    <h2>Request for Leave</h2>
-                    <v-divider class="py-1"></v-divider>
-                    <VForm class="form" @submit.prevent="submitRequest">
-                        <div class="inputDiv">
-                            <select
-                                name="category"
-                                class="input"
-                                v-model="leaveRequestInput.leaveCategory"
-                            >
-                                <option value="" disabled selected>
-                                    Leave Category*
-                                </option>
-                                <option value="Unplanned">Unplanned</option>
-                                <option value="Planned">Planned</option>
-                            </select>
-                            <ErrorMessage
-                                name="category"
-                                class="error_message"
-                            />
-                        </div>
-
-                        <div class="inputDiv">
-                            <input
-                                name="title"
-                                placeholder="Leave message*"
-                                type="text"
-                                class="input"
-                                v-model="leaveRequestInput.leaveMessage"
-                            />
-                            <ErrorMessage name="title" class="error_message" />
-                        </div>
-
-                        <div
-                            class="inputDiv flex-column justify-space-around w-100"
+    <!-- <v-row justify="end"> -->
+    <v-dialog v-model="props.dialog" persistent width="500">
+        <v-card>
+            <div class="pa-5">
+                <h2>Request for Leave</h2>
+                <v-divider class="py-1"></v-divider>
+                <VForm class="form" @submit.prevent="submitRequest">
+                    <div class="inputDiv">
+                        <select
+                            name="category"
+                            class="input"
+                            v-model="leaveRequestInput.leaveCategory"
                         >
-                            <div class="date_input_wrapper w-50">
-                                <label for="startDate ">Start Date</label>
-                                <input
-                                    name="startDate"
-                                    placeholder="Leave message*"
-                                    type="date"
-                                    class="input w-100"
-                                    v-model="leaveRequestInput.startDate"
-                                />
-                                <ErrorMessage
-                                    name="title"
-                                    class="error_message"
-                                />
-                            </div>
-                            <div class="date_input_wrapper w-50">
-                                <label for="endDate">End Date</label>
-                                <input
-                                    name="startDate"
-                                    placeholder=""
-                                    type="date"
-                                    class="input w-100"
-                                    v-model="leaveRequestInput.endDate"
-                                />
-                                <ErrorMessage
-                                    name="title"
-                                    class="error_message"
-                                />
-                            </div>
-                        </div>
+                            <option value="" disabled selected>
+                                Leave Category*
+                            </option>
+                            <option value="Unplanned">Unplanned</option>
+                            <option value="Planned">Planned</option>
+                        </select>
+                        <ErrorMessage name="category" class="error_message" />
+                    </div>
 
-                        <div class="inputDiv">
-                            <textarea
-                                name="description"
-                                placeholder="Description*"
-                                type="text"
-                                class="input"
-                                v-model="leaveRequestInput.description"
-                            />
-                            <ErrorMessage
-                                name="description"
-                                class="error_message"
-                            />
-                        </div>
+                    <div class="inputDiv">
+                        <input
+                            name="title"
+                            placeholder="Leave message*"
+                            type="text"
+                            class="input"
+                            v-model="leaveRequestInput.leaveMessage"
+                        />
+                        <ErrorMessage name="title" class="error_message" />
+                    </div>
 
-                        <div class="inputDiv">
+                    <div
+                        class="inputDiv flex-column justify-space-around w-100"
+                    >
+                        <div class="date_input_wrapper w-50">
+                            <label for="startDate ">Start Date</label>
                             <input
-                                name="title"
-                                placeholder="Requesting To*"
-                                type="email"
-                                class="input"
-                                v-model="leaveRequestInput.requestingToEmail"
+                                name="startDate"
+                                placeholder="Leave message*"
+                                type="date"
+                                class="input w-100"
+                                v-model="leaveRequestInput.startDate"
                             />
                             <ErrorMessage name="title" class="error_message" />
                         </div>
-
-                        <small>*indicates required field</small>
-
-                        <v-spacer></v-spacer>
-                        <div class="d-flex justify-end">
-                            <v-btn type="reset" @click="closeModal"
-                                >Cancel</v-btn
-                            >
-                            <v-btn
-                                class="me-4 text-white ml-2 btn-submit"
-                                type="submit"
-                                color="#115173"
-                            >
-                                Submit
-                            </v-btn>
+                        <div class="date_input_wrapper w-50">
+                            <label for="endDate">End Date</label>
+                            <input
+                                name="startDate"
+                                placeholder=""
+                                type="date"
+                                class="input w-100"
+                                v-model="leaveRequestInput.endDate"
+                            />
+                            <ErrorMessage name="title" class="error_message" />
                         </div>
-                    </VForm>
-                </div>
-            </v-card>
-        </v-dialog>
-    </v-row>
+                    </div>
+
+                    <div class="inputDiv">
+                        <textarea
+                            name="description"
+                            placeholder="Description*"
+                            type="text"
+                            class="input"
+                            v-model="leaveRequestInput.description"
+                        />
+                        <ErrorMessage
+                            name="description"
+                            class="error_message"
+                        />
+                    </div>
+
+                    <div class="inputDiv">
+                        <input
+                            name="title"
+                            placeholder="Requesting To*"
+                            type="email"
+                            class="input"
+                            v-model="leaveRequestInput.requestingToEmail"
+                        />
+                        <ErrorMessage name="title" class="error_message" />
+                    </div>
+
+                    <small>*indicates required field</small>
+
+                    <v-spacer></v-spacer>
+                    <div class="d-flex justify-end">
+                        <v-btn type="reset" @click="closeModal">Cancel</v-btn>
+                        <v-btn
+                            class="me-4 text-white ml-2 btn-submit"
+                            type="submit"
+                            color="#115173"
+                        >
+                            Submit
+                        </v-btn>
+                    </div>
+                </VForm>
+            </div>
+        </v-card>
+    </v-dialog>
+    <!-- </v-row> -->
 </template>
 
 <script setup lang="ts">
@@ -124,11 +113,13 @@
         setDoc,
         updateDoc,
     } from "firebase/firestore";
+    import { storeToRefs } from "pinia";
     import { reactive, ref } from "vue";
     import { useFirestore } from "vuefire";
     import { useLeavesStore } from "../stores/leaves";
-
-    const { getLeaves, userId } = useLeavesStore();
+    const leavesStore = useLeavesStore();
+    const { getLeaves, userId } = leavesStore;
+    const { leaveCountDetails } = storeToRefs(leavesStore);
 
     // Database reference
     const db = useFirestore();
@@ -169,14 +160,18 @@
             leaveRequestIds: arrayUnion(leave.id),
         });
 
-        leaveRequestInput = {
-            leaveCategory: "",
-            leaveMessage: "",
-            description: "",
-            startDate: new Date(),
-            endDate: new Date(),
-            requestingToEmail: "",
-            status: "",
+        await updateDoc(user, {
+            leavesDetails: {
+                TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
+                takenLeaves: leaveCountDetails.value.takenLeaves + 1,
+                leftLeaves: leaveCountDetails.value.leftLeaves - 1,
+            },
+        });
+
+        leavesStore.leaveCountDetails = {
+            TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
+            takenLeaves: leavesStore.leaveCountDetails.takenLeaves + 1,
+            leftLeaves: leavesStore.leaveCountDetails.leftLeaves - 1,
         };
         getLeaves();
         emits("closeLeaveRequestModal", false);

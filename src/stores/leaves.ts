@@ -16,7 +16,12 @@ function formatDate(data) {
 }
 
 export const useLeavesStore = defineStore("leaves", () => {
-    const userId = ref("8myANlkdZmLQ3qccNAeE");
+    const leaveCountDetails = ref({
+        TOTAL_LEAVES: 10,
+        takenLeaves: 4,
+        leftLeaves: 6,
+    });
+    const userId = ref("MuAZoXa58xiARtToZRHf");
     const database = useFirestore();
     const leaves = ref([]);
     let leavesDates = ref([]);
@@ -49,6 +54,7 @@ export const useLeavesStore = defineStore("leaves", () => {
         });
     }
     return {
+        leaveCountDetails,
         leaves,
         leavesDates,
         userId,

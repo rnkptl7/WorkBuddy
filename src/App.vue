@@ -18,7 +18,7 @@
 <style scoped>
     .main-layout {
         display: flex;
-        width: 100%;
+        width: 100vw;
         /* 100vw or 100% */
     }
 </style>
