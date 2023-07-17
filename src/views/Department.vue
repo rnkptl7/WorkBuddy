@@ -15,7 +15,10 @@
         sm="3"
       >
         <v-sheet :class="[getDepartmentClass(department.id)]">
-          <div class="department-name">{{ department.name }}</div>
+          <div class="department-name">
+            {{ department.name }}
+            Department
+          </div>
 
           <!-- Show empty text when there is no item -->
 
@@ -27,18 +30,34 @@
           </div>
 
           <div
-            v-for="(item, key) in getDepartmentItems(department.id)"
-            :key="key"
+            v-for="item in getDepartmentItems(department.id)"
+            :key="item.id"
             class="drag-el"
             draggable="true"
             @dragstart="startDrag($event, item)"
+            @dragenter.prevent
+            @dragover.prevent
           >
-            <v-card
-              :title="item.firstName"
-              text="Contact Info"
-              subtitle="Locations"
-              class="employee-card"
-            ></v-card>
+            <v-card class="employee-card">
+              <div class="employee-avatar">
+                <v-avatar
+                  class="department-user-icon"
+                  v-if="item.gender === 'Male'"
+                >
+                  <img src="@/assets/male.png" alt="male-user-Icon" />
+                </v-avatar>
+
+                <v-avatar class="department-user-icon" v-else>
+                  <img src="@/assets/woman.png" alt="female-user-Icon" />
+                </v-avatar>
+              </div>
+
+              <div class="employee-details">
+                <p class="title">Name: {{ item.fullName }}</p>
+                <p class="text">Email: {{ item.email }}</p>
+                <p class="text-subtitle-2">Location: India</p>
+              </div>
+            </v-card>
           </div>
         </v-sheet>
       </v-col>
@@ -47,34 +66,57 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useFirestore } from "vuefire";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 
 const departmentList = [
-  { id: 1, name: "Frontend Department", class: "frontend-dept" },
-  { id: 2, name: "Backend Department", class: "backend-dept" },
-  { id: 3, name: "DevOps Department", class: "devops-dept" },
-  { id: 4, name: "QA Department", class: "qa-dept" },
+  { id: 1, name: "frontend", class: "frontend-dept" },
+  { id: 2, name: "backend", class: "backend-dept" },
+  { id: 3, name: "devOps", class: "devops-dept" },
+  { id: 4, name: "ui-ux", class: "uiux-dept" },
 ];
 
 //--------------------Sets necessary data for dragging an item--------------------//
+
+const draggedItem = ref({});
 
 const startDrag = (event, item) => {
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.id);
+  console.log("itemID", item.userID);
+  draggedItem.value = item;
+  console.log(draggedItem, "Dragged");
 };
-
 //--------------------Handles dropping an item into a department, updating its departmentId--------------------//
 
-const onDrop = (event, departmentId) => {
+const onDrop = async (event, departmentId) => {
   const itemID = event.dataTransfer.getData("itemID");
-  const item = displayUserData.value.find((item) => item.id == itemID);
-  item.departmentId = departmentId;
-};
 
-//--------------------Returns the CSS class name for a department based on its id--------------------//
+  let item;
+  if (departmentId === 1) {
+    item = frontendDept.find((item) => item.id == itemID);
+  } else if (departmentId === 2) {
+    item = backendDept.find((item) => item.id == itemID);
+  } else if (departmentId === 3) {
+    item = devopsDept.find((item) => item.id == itemID);
+  } else if (departmentId === 4) {
+    item = uiuxDept.find((item) => item.id == itemID);
+  }
+  console.log("onDrop: ", departmentId);
+
+  //--------------------Update data in Firebase--------------------//
+
+  console.log("userID-----", draggedItem.value.userID);
+  const employeeDataRef = doc(db, "users", draggedItem.value.userID);
+
+  await updateDoc(employeeDataRef, {
+    "register.department": departmentList[departmentId - 1].name,
+  });
+
+  getUserDataFromDB();
+};
 
 const getDepartmentClass = (departmentId) => {
   return (
@@ -86,44 +128,49 @@ const getDepartmentClass = (departmentId) => {
 //--------------------Get User Data From Firebase and Display it on DOM--------------------//
 
 const db = useFirestore();
-let frontendDept = ref([]);
-let backendDept = ref([]);
-let devopsDept = ref([]);
-let qaDept = ref([]);
-// let allUserList = ref({});
+let frontendDept = reactive([]);
+let backendDept = reactive([]);
+let devopsDept = reactive([]);
+let uiuxDept = reactive([]);
 
 async function getUserDataFromDB() {
-  const getUserDataFromDB = await getDocs(collection(db, "users"));
+  frontendDept.length = 0;
+  backendDept.length = 0;
+  devopsDept.length = 0;
+  uiuxDept.length = 0;
 
+  const getUserDataFromDB = await getDocs(collection(db, "users"));
   getUserDataFromDB.forEach((doc) => {
-    const displayUserData = {
-      firstName: doc.data().register.firstName,
-      lastName: doc.data().register.lastName,
+    let displayUserData = {
+      fullName: doc.data().register.fullName,
       department: doc.data().register.department,
       email: doc.data().register.email,
+      location: "India",
+      gender: doc.data().register.gender,
+      userID: doc.id,
     };
 
-    if ((doc.id, doc.data().register.department === "qa")) {
-      qaDept.value.push({ ...displayUserData, departmentId: 4 });
-    } else if ((doc.id, doc.data().register.department === "frontend")) {
-      frontendDept.value.push({ ...displayUserData, departmentId: 1 });
-    } else if ((doc.id, doc.data().register.department === "backend")) {
-      backendDept.value.push({ ...displayUserData, departmentId: 2 });
+    if (doc.data().register.department === "ui-ux") {
+      uiuxDept.push({ ...displayUserData, departmentId: 4 });
+    } else if (doc.data().register.department === "frontend") {
+      frontendDept.push({ ...displayUserData, departmentId: 1 });
+    } else if (doc.data().register.department === "backend") {
+      backendDept.push({ ...displayUserData, departmentId: 2 });
     } else {
-      devopsDept.value.push({ ...displayUserData, departmentId: 3 });
+      devopsDept.push({ ...displayUserData, departmentId: 3 });
     }
   });
 }
 
 const getDepartmentItems = (departmentId) => {
   if (departmentId == 1) {
-    return frontendDept.value;
+    return frontendDept;
   } else if (departmentId == 2) {
-    return backendDept.value;
+    return backendDept;
   } else if (departmentId == 3) {
-    return devopsDept.value;
+    return devopsDept;
   } else if (departmentId == 4) {
-    return qaDept.value;
+    return uiuxDept;
   }
 };
 
@@ -143,6 +190,9 @@ getUserDataFromDB();
   margin: 10px;
   padding: 10px;
   font-size: 25px;
+  font-size: 27px;
+  font-weight: 500;
+  background-color: #f0f3fb;
 }
 
 .v-row {
@@ -156,15 +206,24 @@ getUserDataFromDB();
 .frontend-dept,
 .backend-dept,
 .devops-dept,
-.qa-dept {
+.uiux-dept {
   border-radius: 3px;
   font-size: 20px;
-  min-height: 70vh;
-  background: #d8e2e6a4;
+  min-height: 100vh;
+  background: #7f83854f;
 }
 
 /* Card's CSS */
 
+.employee-avtar {
+  text-align: left;
+}
+.employee-details {
+  text-align: left;
+}
+.employee-details .text {
+  font-size: 15px;
+}
 .drag-el {
   display: flex;
   justify-content: center;
@@ -183,13 +242,19 @@ getUserDataFromDB();
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 27px;
+  font-weight: 500;
 }
 
 .employee-card {
-  width: 95%;
+  width: 96%;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
   border-radius: 5px;
   margin-top: 15px;
+  display: flex;
+}
+.employee-avtar {
+  width: 10vw;
 }
 
 .empty-placeholder {
@@ -199,5 +264,17 @@ getUserDataFromDB();
   padding: 10px;
   border-radius: 5px;
   color: #555555;
+}
+
+.department-user-icon img {
+  width: 70px;
+  text-align: left;
+}
+
+.department-user-icon {
+  text-align: left;
+  position: absolute;
+  left: 0px;
+  top: 4px;
 }
 </style>
