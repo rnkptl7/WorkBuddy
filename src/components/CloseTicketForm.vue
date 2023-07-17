@@ -7,7 +7,7 @@
       >
         <v-card>
           <v-container>
-              <h2>Ticket Raised By {{ userName }}</h2>
+              <h2>Ticket Raised By {{ ticketToBeClosed.userName }}</h2>
               <v-divider class="py-1"></v-divider>
               <VForm class="form" :validation-schema="schema" @submit="updateTicketStatus">
                     <div class="inputDiv">
@@ -41,8 +41,8 @@
                         <option disabled value="">Open</option>
                         <option value="Closed">Closed</option>
                       </select>
-                      <div class="error_message" v-if="errors">
-                        Status should be Closed to terminate ticket
+                      <div class="error_message" v-for="err in errors" :key="err">
+                        Status should be Closed to terminate a ticket
                       </div>
                     </VField>
                 </div>
@@ -62,7 +62,7 @@
 <script setup lang="ts">
     import { storeToRefs } from 'pinia';
     import { useTicketStore } from '@/stores/ticketStore';
-    const { showCloseTicketForm, ticketToBeClosed, userName } = storeToRefs(useTicketStore());
+    const { showCloseTicketForm, ticketToBeClosed, fullName } = storeToRefs(useTicketStore());
     const { fetchTicketsByStatus } = useTicketStore(); 
     import { useFirestore } from "vuefire";
     import { doc, updateDoc } from 'firebase/firestore';
@@ -70,20 +70,17 @@
     const db = useFirestore();
 
     const schema = {
-        status: "required"
+        status: "required",
     }
 
     async function updateTicketStatus() {
-        console.log("status", ticketToBeClosed);
-        console.log("username", userName.value);
-        
         
         if (ticketToBeClosed.value.status === "Closed") {
             const docRef = doc(db, "tickets", ticketToBeClosed.value.id);
 
             await updateDoc(docRef, {
                 status: "Closed",
-                closedBy: userName.value
+                closedBy: fullName.value
             });
 
             fetchTicketsByStatus();

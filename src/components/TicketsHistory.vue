@@ -53,6 +53,12 @@
   margin-right: 2rem;
 }
 
+@media screen and (max-width: 400px) {
+    .title-wrapper .btn {
+        margin-right: 1rem !important;
+    }
+}
+
 .v-toolbar-title__placeholder {
   overflow: visible !important;
 }

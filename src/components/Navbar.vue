@@ -12,7 +12,7 @@
                 ><img src="../assets/images/profile.png" alt="User Profile"
               /></span>
               <span class="username">
-                {{ fullname }}
+                {{ fullName }}
               </span>
             </router-link>
           </li>
@@ -70,7 +70,7 @@ const commonStore = useCommonStore();
 const router = useRouter();
 const $toast = useToast();
 
-const { isLoggedIn, fullname, isAdmin, userId } = storeToRefs(authStore);
+const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
 const { mobileView, showNav } = storeToRefs(commonStore);
 
 const logout = () => {
@@ -81,7 +81,7 @@ const logout = () => {
   isLoggedIn.value = false;
   isAdmin.value = "";
   userId.value = "";
-  fullname.value = "";
+  fullName.value = "";
   $toast.success("Logout Successfully", {
     position: "top-right",
   });

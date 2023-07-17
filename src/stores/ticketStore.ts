@@ -13,8 +13,7 @@ export const useTicketStore = defineStore('ticketStore', () => {
     const ticketsByMonth = ref([]);
     const showCloseTicketForm = ref(false);
     const ticketToBeClosed = ref({});
-
-    const { userId, fullName: userName, isAdmin } = storeToRefs(useAuthStore());
+    const { userId, fullName, isAdmin } = storeToRefs(useAuthStore());
 
  
     const db = useFirestore();
@@ -94,5 +93,5 @@ export const useTicketStore = defineStore('ticketStore', () => {
         ticketsByMonth.value = dates;
     }
   
-    return { raisedTickets, openTickets, closedTickets, userId, userName, isAdmin, fetchAllTickets, ticketsByCategory, fetchByCategory, fetchByMonths, ticketsByMonth, fetchTicketsByStatus, showCloseTicketForm, ticketToBeClosed };
+    return { raisedTickets, openTickets, closedTickets, userId, fullName, isAdmin, fetchAllTickets, ticketsByCategory, fetchByCategory, fetchByMonths, ticketsByMonth, fetchTicketsByStatus, showCloseTicketForm, ticketToBeClosed };
 })

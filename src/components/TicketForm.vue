@@ -104,7 +104,7 @@
     import moment from 'moment';
     import { useTicketStore } from '@/stores/ticketStore';
     import { useFirestore } from "vuefire";
-    import { collection, addDoc, getDoc, doc, arrayUnion, updateDoc } from 'firebase/firestore';
+    import { collection, addDoc, doc, arrayUnion, updateDoc } from 'firebase/firestore';
 
     const db = useFirestore();
 
@@ -127,14 +127,17 @@
       closedBy: "-"
     })
 
-    const { fetchAllTickets, fetchByCategory, fetchByMonths, fetchTicketsByStatus, userName, userId } = useTicketStore();
+    const { fetchAllTickets, fetchByCategory, fetchByMonths, fetchTicketsByStatus, fullName, userId } = useTicketStore();
+    
+    console.log("USERNAME", fullName);
+    console.log("USERID", userId)
     
     async function createTicket() {
       dialog.value = false;
 
       ticketData = {...ticketData, createdOn: moment(new Date()).format('DD-MM-YYYY')}
 
-      const ticket = await addDoc(collection(db, "tickets"), { userId, userName, ...ticketData });
+      const ticket = await addDoc(collection(db, "tickets"), { userId, userName: fullName, ...ticketData });
 
       const docRef = doc(db, "users", userId);
 
@@ -161,6 +164,10 @@
 
 
 <style>
+  .v-card {
+    color: var(--primary-color)
+  }
+
   .btn {
     display: flex;
     justify-content: center;

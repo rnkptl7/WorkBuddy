@@ -70,7 +70,7 @@ const ticketStore = useTicketStore();
 const db = useFirestore();
 const $toast = useToast();
 
-const { isLoggedIn, fullname, isAdmin, userId } = storeToRefs(authStore);
+const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
 const { fetchAllTickets, fetchTicketsByStatus } = ticketStore;
 const { showPassword } = storeToRefs(commonStore);
 const { showPasswordChange } = commonStore;
@@ -91,7 +91,6 @@ const submitData = async () => {
   let userData;
   querySnapshot.forEach((doc) => {
     let { register } = doc.data();
-    // console.log(register);
     if (form.email === register.email && form.password === register.password) {
       localStorage.setItem("userId", doc.id);
       userId.value = doc.id;
@@ -104,7 +103,7 @@ const submitData = async () => {
     $toast.success("Logged In Successfully", {
       position: "top-right",
     });
-    // console.log(userData.register.role);
+
     if (userData.register.role === "admin") {
       localStorage.setItem("isAdmin", true);
       isAdmin.value = true;
@@ -112,7 +111,7 @@ const submitData = async () => {
 
     localStorage.setItem("isLoggedIn", true);
     isLoggedIn.value = true;
-    fullname.value = userData.register.fullName;
+    fullName.value = userData.register.fullName;
 
     router.replace({ name: "Home" });
 

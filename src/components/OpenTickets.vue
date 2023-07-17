@@ -56,15 +56,11 @@
 
     function closeTicket(ticket) {
         showCloseTicketForm.value = true;
-        ticketToBeClosed.value = ticket;
+        ticketToBeClosed.value = {...ticket, status: ""};
     }
 </script>
 
 <style scoped>
-.title-wrapper .btn {
-  margin-right: 2rem;
-}
-
 .v-table {
     box-shadow: none !important;
     margin-bottom: 1.5rem !important;
