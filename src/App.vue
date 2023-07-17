@@ -34,7 +34,7 @@ const { isLoggedIn } = storeToRefs(authStore);
 }
 
 .main-layout .main-content-margin {
-  margin-left: 19rem;
+  margin-left: 15rem;
   padding: 10px;
 }
 

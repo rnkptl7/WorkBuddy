@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="department-title">Department</div>
+    <div class="department-title"><strong>Department</strong></div>
 
     <!-- Employees Directory -->
 
@@ -44,11 +44,14 @@
                   class="department-user-icon"
                   v-if="item.gender === 'Male'"
                 >
-                  <img src="@/assets/male.png" alt="male-user-Icon" />
+                  <img src="@/assets/images/male.png" alt="male-user-Icon" />
                 </v-avatar>
 
                 <v-avatar class="department-user-icon" v-else>
-                  <img src="@/assets/woman.png" alt="female-user-Icon" />
+                  <img
+                    src="@/assets/images/female.png"
+                    alt="female-user-Icon"
+                  />
                 </v-avatar>
               </div>
 
@@ -71,10 +74,10 @@ import { useFirestore } from "vuefire";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 
 const departmentList = [
-  { id: 1, name: "frontend", class: "frontend-dept" },
-  { id: 2, name: "backend", class: "backend-dept" },
-  { id: 3, name: "devOps", class: "devops-dept" },
-  { id: 4, name: "ui-ux", class: "uiux-dept" },
+  { id: 1, name: "Frontend", class: "frontend-dept" },
+  { id: 2, name: "Backend", class: "backend-dept" },
+  { id: 3, name: "DevOps", class: "devops-dept" },
+  { id: 4, name: "Ui-Ux", class: "uiux-dept" },
 ];
 
 //--------------------Sets necessary data for dragging an item--------------------//
@@ -149,13 +152,12 @@ async function getUserDataFromDB() {
       userID: doc.id,
       role: doc.data().register.role,
     };
-    console.log(displayUserData.role);
 
-    if (doc.data().register.department === "ui-ux") {
+    if (doc.data().register.department === "Ui-Ux") {
       uiuxDept.push({ ...displayUserData, departmentId: 4 });
-    } else if (doc.data().register.department === "frontend") {
+    } else if (doc.data().register.department === "Frontend") {
       frontendDept.push({ ...displayUserData, departmentId: 1 });
-    } else if (doc.data().register.department === "backend") {
+    } else if (doc.data().register.department === "Backend") {
       backendDept.push({ ...displayUserData, departmentId: 2 });
     } else {
       devopsDept.push({ ...displayUserData, departmentId: 3 });
@@ -182,8 +184,8 @@ getUserDataFromDB();
 * {
   margin: 0;
   box-sizing: border-box;
-  color: black;
   width: 100%;
+  max-width: 84vw;
 }
 
 /* Employees Directory's CSS */
@@ -194,6 +196,9 @@ getUserDataFromDB();
   font-size: 27px;
   font-weight: 500;
   background-color: #f0f3fb;
+  color: #115173;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  max-width: 1530px;
 }
 
 .v-row {
@@ -208,16 +213,16 @@ getUserDataFromDB();
 .backend-dept,
 .devops-dept,
 .uiux-dept {
-  border-radius: 3px;
   font-size: 20px;
   min-height: 90vh;
-  background: #7f83854f;
+  background: #f0f3fb;
 }
 
 /* Card's CSS */
 
-.employee-avtar {
+.employee-avatar {
   text-align: left;
+  width: 65%;
 }
 .employee-details {
   text-align: left;
@@ -225,10 +230,17 @@ getUserDataFromDB();
 .employee-details .text {
   font-size: 15px;
 }
+
+.title,
+.text,
+.text-subtitle-2 {
+  padding: 7px 0px;
+}
+
 .drag-el {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .card-title {
@@ -248,7 +260,7 @@ getUserDataFromDB();
 }
 
 .employee-card {
-  width: 96%;
+  width: 90%;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
   border-radius: 5px;
   margin-top: 15px;
@@ -267,15 +279,17 @@ getUserDataFromDB();
   color: #555555;
 }
 
-.department-user-icon img {
-  width: 70px;
-  text-align: left;
-}
-
 .department-user-icon {
   text-align: left;
   position: absolute;
-  left: 0px;
-  top: 4px;
+  left: 27px;
+  top: 35px;
+}
+
+@media only screen and (max-width: 1786px) and (min-width: 1300px) {
+  .department-title,
+  .department-name {
+    font-size: 25px;
+  }
 }
 </style>
