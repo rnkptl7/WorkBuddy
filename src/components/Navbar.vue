@@ -50,49 +50,6 @@
             </div>
         </div>
     </div>
-    <div class="navbar-item">
-      <div v-if="isLoggedIn">
-        <ul>
-          <li>
-            <router-link :to="{ name: 'Profile' }">
-              <span class="d-flex mr-2"
-                ><img src="../assets/images/profile.png" alt=""
-              /></span>
-              {{ fullname }}</router-link
-            >
-          </li>
-          <li>
-            <button @click="logout">Logout</button>
-          </li>
-          <li v-if="mobileView" class="hamburgerMenu">
-            <img
-              v-show="!showNav"
-              src="../assets/images/menu.png"
-              alt="hamburger-menu"
-              @click="showNav = !showNav"
-            />
-            <img
-              v-show="showNav"
-              class="closeIcon"
-              src="../assets/images/close.png"
-              alt="close-menu"
-              @click="showNav = !showNav"
-            />
-          </li>
-        </ul>
-      </div>
-      <div v-else>
-        <ul>
-          <li>
-            <router-link :to="{ name: 'Login' }">Login </router-link>
-          </li>
-          <li>
-            <router-link :to="{ name: 'Register' }">Register </router-link>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -109,12 +66,12 @@ const { isLoggedIn, fullname } = storeToRefs(authStore);
 const { mobileView, showNav } = storeToRefs(commonStore);
 
 const logout = () => {
-  localStorage.setItem("isLoggedIn", false);
-  localStorage.setItem("userId", null);
-  localStorage.setItem("fullName", null);
-  isLoggedIn.value = false;
-  fullname.value = "";
-  router.replace({ name: "Login" });
+    localStorage.setItem("isLoggedIn", false);
+    localStorage.setItem("userId", null);
+    localStorage.setItem("fullName", null);
+    isLoggedIn.value = false;
+    fullname.value = "";
+    router.replace({ name: "Login" });
 };
 
 commonStore.handleView();
@@ -129,15 +86,15 @@ a.router-link-exact-active {
 }
 
 .navbar {
-  background: #f0f3fb;
-  height: 10vh;
-  position: sticky;
-  top: 0;
-  display: flex;
-  padding: 20px 30px;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
+    background: #f0f3fb;
+    height: 10vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    padding: 20px 30px;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
 }
 
 .navbar .logo {
@@ -152,9 +109,9 @@ a.router-link-exact-active {
 }
 
 .navbar .navbar-item ul li {
-  font-size: 20px;
-  color: var(--primary-color);
-  margin: 0 0.7rem;
+    font-size: 20px;
+    color: var(--primary-color);
+    margin: 0 0.7rem;
 }
 
 .navbar .navbar-item ul li a {
@@ -172,46 +129,46 @@ a.router-link-exact-active {
 }
 
 .hamburgerMenu {
-  width: 30px;
-  cursor: pointer;
+    width: 30px;
+    cursor: pointer;
 }
 
 img {
-  width: 27px;
-  display: flex;
-  margin-left: 10px;
+    width: 27px;
+    display: flex;
+    margin-left: 10px;
 }
 
 .closeIcon {
-  width: 20px;
+    width: 20px;
 }
 
 @media screen and (max-width: 575px) {
-  .navbar .navbar-item ul li {
-    margin: 0 0.2rem;
-  }
-  .navbar .navbar-item ul li a {
-    padding: 1rem;
-  }
+    .navbar .navbar-item ul li {
+        margin: 0 0.2rem;
+    }
+    .navbar .navbar-item ul li a {
+        padding: 1rem;
+    }
 }
 
 @media screen and (max-width: 520px) {
-  .navbar {
-    padding: 14px 7px;
-  }
+    .navbar {
+        padding: 14px 7px;
+    }
 
-  .navbar .logo {
-    padding: 10px 5px;
-  }
-  .navbar .navbar-item ul li {
-    margin: 0 0.2rem;
-  }
-  .navbar .navbar-item ul li a {
-    padding: 0.2rem;
-  }
+    .navbar .logo {
+        padding: 10px 5px;
+    }
+    .navbar .navbar-item ul li {
+        margin: 0 0.2rem;
+    }
+    .navbar .navbar-item ul li a {
+        padding: 0.2rem;
+    }
 
-  img {
-    width: 21px;
-  }
+    img {
+        width: 21px;
+    }
 }
 </style>

@@ -1,54 +1,50 @@
 <template>
-    <main>
+    <main class="flex-fill">
+        <div class="text-center">
+            <v-btn class="ma-2" rounded @click="toggleModal">
+                Add Achievements
+            </v-btn>
+        </div>
         <v-timeline>
             <v-timeline-item
-                v-for="(year, i) in years"
-                :key="i"
-                :color="year.color"
+                v-for="(achievement, index) in achievements"
+                :key="index"
                 small
             >
                 <template v-slot:opposite>
-                    <span
-                        :class="`headline font-weight-bold ${year.color}--text`"
-                        v-text="year.year"
-                    ></span>
+                    <div
+                        :class="`pt-1 headline font-weight-bold`"
+                        v-text="achievement.titleDate"
+                    ></div>
                 </template>
-                <div class="py-4">
+                <div>
                     <h2
-                        :class="`headline font-weight-light mb-4 ${year.color}--text`"
+                        :class="`mt-n1 headline text-amber font-weight-light mb-4`"
                     >
-                        Lorem ipsum
+                        {{ achievement.title }}
                     </h2>
                     <div>
-                        Lorem ips, an vim zril disputando voluptatibus, vix an
-                        salutandi sententiae.
+                        {{ achievement.titleDescription }}
                     </div>
                 </div>
             </v-timeline-item>
         </v-timeline>
     </main>
 </template>
+
 <script setup>
-const years = [
-    {
-        color: "cyan",
-        year: "1960",
-    },
-    {
-        color: "green",
-        year: "1970",
-    },
-    {
-        color: "pink",
-        year: "1980",
-    },
-    {
-        color: "amber",
-        year: "1990",
-    },
-    {
-        color: "orange",
-        year: "2000",
-    },
-];
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useProfileStore } from "../../stores/profileStore";
+
+const store = useProfileStore();
+const { achievements, openModal: dialog } = storeToRefs(store);
+const { getAchievement } = store;
+
+function toggleModal() {
+    dialog.value = true;
+}
+onMounted(async () => {
+    await getAchievement();
+});
 </script>
