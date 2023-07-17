@@ -1,44 +1,95 @@
 <template>
     <div
-        class="leave-detail_card d-flex flex-fill align-center justify-space-between border rounded-lg my-2"
+        class="leave-detail_card d-flex flex-column align-center border rounded-lg my-2 pa-3"
     >
-        <div class="ld-card_logo ma-2 d-flex flex-column align-start">
-            <h3>From</h3>
-            <span>
-                {{ leave.startDate }}
-            </span>
-            <h3>To</h3>
-            <span>
-                {{ leave.endDate }}
-            </span>
-        </div>
-        <div class="ld-card-body d-flex flex-column ma-2">
-            <h3>{{ leave.leaveMessage }}</h3>
-            <div class="ld-category d-flex flex-row">
-                <span
-                    class="border rounded-pill px-2 text-caption text-uppercase"
-                    >{{ leave.leaveCategory }}</span
-                >
+        <div class="d-flex flex-row">
+            <div class="ld-card_logo d-flex flex-column align-start">
+                <h3>From</h3>
+                <span>
+                    {{ leave.startDate }}
+                </span>
+                <h3>To</h3>
+                <span>
+                    {{ leave.endDate }}
+                </span>
             </div>
-            <div class="ld-card-body_description">
-                <p>{{ trmimedDescrition }}</p>
+            <div class="ld-card-body d-flex flex-column ma-2">
+                <h3>{{ leave.leaveMessage }}</h3>
+                <div class="ld-category d-flex flex-row">
+                    <span
+                        class="border rounded-pill px-2 text-caption text-uppercase"
+                        >{{ leave.leaveCategory }}</span
+                    >
+                </div>
+                <div class="ld-card-body_description">
+                    <p>{{ trmimedDescrition }}</p>
+                </div>
             </div>
         </div>
         <div>
-            <v-btn
-                rounded
-                v-if="isAdmin"
-                color="green"
-                @click="adminActions({ action: 'approve' })"
-                >Approve</v-btn
+            <v-btn rounded color="blue" @click="dialog = true"
+                >View Details</v-btn
             >
-            <v-btn
-                rounded
-                v-if="isAdmin"
-                color="red"
-                @click="adminActions({ action: 'reject' })"
-                >Reject</v-btn
-            >
+
+            <v-dialog v-model="dialog" persistent width="500">
+                <v-card>
+                    <!-- <div class="d-flex flex-row-reverse pr-5 pt-5"></div> -->
+                    <div class="pa-5">
+                        <div class="ld-card-body">
+                            <div
+                                class="d-flex flex-row justify-space-between align-center"
+                            >
+                                <div
+                                    class="ld-category d-flex flex-row align-center"
+                                >
+                                    <h2>{{ leave.leaveMessage }}</h2>
+                                    <span
+                                        class="border rounded-pill px-2 text-caption text-uppercase mx-2"
+                                        >{{ leave.leaveCategory }}</span
+                                    >
+                                </div>
+                                <i
+                                    class="fa fa-times"
+                                    aria-hidden="true"
+                                    @click="dialog = false"
+                                ></i>
+                            </div>
+
+                            <div
+                                class="ld-card_logo d-flex flex-row align-center"
+                            >
+                                <h3>From</h3>
+                                <span>
+                                    {{ leave.startDate }}
+                                </span>
+                                <h3>To</h3>
+                                <span>
+                                    {{ leave.endDate }}
+                                </span>
+                            </div>
+
+                            <div class="ld-modal-card-body_description">
+                                <p>Description:- {{ leave.description }}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row-reverse" v-if="isAdmin">
+                            <v-btn
+                                rounded
+                                color="green"
+                                @click="adminActions({ action: 'approve' })"
+                                class="ml-3"
+                                >Approve</v-btn
+                            >
+                            <v-btn
+                                rounded
+                                color="red"
+                                @click="adminActions({ action: 'reject' })"
+                                >Reject</v-btn
+                            >
+                        </div>
+                    </div>
+                </v-card>
+            </v-dialog>
         </div>
     </div>
 </template>
@@ -50,6 +101,9 @@
     import { useFirestore } from "vuefire";
     const { leave, isAdmin } = defineProps(["leave", "isAdmin"]);
     import { useLeavesStore } from "../stores/leaves";
+
+    const dialog = ref(false);
+    const leavesStore = useLeavesStore();
 
     const logoDateString = computed(() => {
         const date = formatDate(leave.startDate);
@@ -77,13 +131,25 @@
 
     async function adminActions({ action }) {
         // return async function () {
+
         const db = useFirestore();
         const leaveReferance = doc(db, "leaves", leave.id);
         console.log(action);
         await updateDoc(leaveReferance, {
             status: action === "approve" ? "Approved" : "rejected",
         });
-        await useLeavesStore().getLeaves();
+        console.log;
+        if (action == "reject") {
+            leavesStore.leaveCountDetails = {
+                TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
+                takenLeaves: leavesStore.leaveCountDetails.takenLeaves - 1,
+                leftLeaves: leavesStore.leaveCountDetails.leftLeaves + 1,
+            };
+            console.log(leavesStore.leaveCountDetails);
+        }
+
+        await leavesStore.getLeaves();
+        dialog.value = false;
         // };
     }
 </script>
@@ -91,14 +157,21 @@
 <style scoped>
     .leave-detail_card {
         background-color: #f0f3fb;
-        min-width: 300px;
+        /* min-width: 300px; */
         height: fit-content;
     }
     .ld-category > span {
         background-color: rgb(255, 240, 220);
         color: orangered;
     }
-    .ld-card_logo > h3 {
-        /* width: 70px; */
+    .ld-modal-card-body_description {
+        min-height: 50px;
+    }
+    .ld-card_logo {
+        min-width: fit-content;
+    }
+    .ld-card_logo h3,
+    .ld-card_logo span {
+        margin-inline-end: 10px;
     }
 </style>
