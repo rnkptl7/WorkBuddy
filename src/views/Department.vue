@@ -85,36 +85,35 @@ const startDrag = (event, item) => {
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.id);
-  console.log("itemID", item.userID);
+
   draggedItem.value = item;
-  console.log(draggedItem, "Dragged");
 };
 //--------------------Handles dropping an item into a department, updating its departmentId--------------------//
 
 const onDrop = async (event, departmentId) => {
   const itemID = event.dataTransfer.getData("itemID");
 
-  let item;
-  if (departmentId === 1) {
-    item = frontendDept.find((item) => item.id == itemID);
-  } else if (departmentId === 2) {
-    item = backendDept.find((item) => item.id == itemID);
-  } else if (departmentId === 3) {
-    item = devopsDept.find((item) => item.id == itemID);
-  } else if (departmentId === 4) {
-    item = uiuxDept.find((item) => item.id == itemID);
+  const dragAndDropAlert = window.confirm(`Are You Sure?`);
+  if (dragAndDropAlert === true) {
+    let item;
+    if (departmentId === 1) {
+      item = frontendDept.find((item) => item.id == itemID);
+    } else if (departmentId === 2) {
+      item = backendDept.find((item) => item.id == itemID);
+    } else if (departmentId === 3) {
+      item = devopsDept.find((item) => item.id == itemID);
+    } else {
+      item = uiuxDept.find((item) => item.id == itemID);
+    }
+
+    //--------------------Update data in Firebase--------------------//
+
+    const employeeDataRef = doc(db, "users", draggedItem.value.userID);
+
+    await updateDoc(employeeDataRef, {
+      "register.department": departmentList[departmentId - 1].name,
+    });
   }
-  console.log("onDrop: ", departmentId);
-
-  //--------------------Update data in Firebase--------------------//
-
-  console.log("userID-----", draggedItem.value.userID);
-  const employeeDataRef = doc(db, "users", draggedItem.value.userID);
-
-  await updateDoc(employeeDataRef, {
-    "register.department": departmentList[departmentId - 1].name,
-  });
-
   getUserDataFromDB();
 };
 
@@ -148,7 +147,9 @@ async function getUserDataFromDB() {
       location: "India",
       gender: doc.data().register.gender,
       userID: doc.id,
+      role: doc.data().register.role,
     };
+    console.log(displayUserData.role);
 
     if (doc.data().register.department === "ui-ux") {
       uiuxDept.push({ ...displayUserData, departmentId: 4 });
@@ -209,7 +210,7 @@ getUserDataFromDB();
 .uiux-dept {
   border-radius: 3px;
   font-size: 20px;
-  min-height: 100vh;
+  min-height: 90vh;
   background: #7f83854f;
 }
 
