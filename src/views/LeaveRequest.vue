@@ -1,13 +1,25 @@
 <template>
-    <section class="leave-request-section-wrapper border my-3">
-        <div class="d-flex border ma-2">
-            <v-btn class="mx-2" rounded @click="activeComponent = LMSProfile"
-                >Profile</v-btn
+    <section class="leave-request-section-wrapper my-3">
+        <div class="lr-section-navigation d-flex ma-3">
+            <v-btn
+                class="mx-2 selected-button"
+                rounded
+                @click="activeComponent = LMSProfile"
             >
-            <v-btn class="mx-2" rounded @click="activeComponent = ApprovalsVue">
-                Approvals</v-btn
+                Profile
+            </v-btn>
+            <v-btn
+                class="mx-2 selected-button"
+                rounded
+                @click="activeComponent = ApprovalsVue"
             >
+                Approvals
+            </v-btn>
+            <!-- 
+            <v-btn class="mx-2" rounded>Profile</v-btn>
+            <v-btn class="mx-2" rounded> Approvals</v-btn> -->
         </div>
+        <v-divider class="mx-3"></v-divider>
         <!-- <KeepAlive> -->
         <component class="my-2" :is="activeComponent" />
         <!-- </KeepAlive> -->
@@ -25,5 +37,12 @@
     .leave-request-section-wrapper {
         width: min(1200px, 100%);
         margin-inline: auto;
+    }
+    .lr-section-navigation {
+        /* box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important; */
+    }
+    .selected-button {
+        color: var(--primary-color);
+        background: var(--secondary-color);
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div
-        class="leave-detail_card d-flex flex-column align-center border rounded-lg my-2 pa-3"
+        class="leave-detail_card d-flex flex-column align-center rounded-lg my-2 pa-3"
     >
         <div class="d-flex flex-row">
             <div class="ld-card_logo d-flex flex-column align-start">
@@ -97,6 +97,7 @@
 <script setup lang="ts">
     import { arrayUnion, doc, updateDoc } from "firebase/firestore";
     import moment from "moment";
+    import { storeToRefs } from "pinia";
     import { computed, ref } from "vue";
     import { useFirestore } from "vuefire";
     const { leave, isAdmin } = defineProps(["leave", "isAdmin"]);
@@ -104,6 +105,7 @@
 
     const dialog = ref(false);
     const leavesStore = useLeavesStore();
+    const { userId, leaveCountDetails } = storeToRefs(leavesStore);
 
     const logoDateString = computed(() => {
         const date = formatDate(leave.startDate);
@@ -134,12 +136,20 @@
 
         const db = useFirestore();
         const leaveReferance = doc(db, "leaves", leave.id);
-        console.log(action);
         await updateDoc(leaveReferance, {
             status: action === "approve" ? "Approved" : "rejected",
         });
-        console.log;
+        const user = doc(db, "users", userId.value);
+
         if (action == "reject") {
+            console.log(action);
+            await updateDoc(user, {
+                leavesDetails: {
+                    TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
+                    takenLeaves: leaveCountDetails.value.takenLeaves - 1,
+                    leftLeaves: leaveCountDetails.value.leftLeaves + 1,
+                },
+            });
             leavesStore.leaveCountDetails = {
                 TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
                 takenLeaves: leavesStore.leaveCountDetails.takenLeaves - 1,
@@ -166,6 +176,7 @@
     }
     .ld-modal-card-body_description {
         min-height: 50px;
+        word-break: break-all;
     }
     .ld-card_logo {
         min-width: fit-content;

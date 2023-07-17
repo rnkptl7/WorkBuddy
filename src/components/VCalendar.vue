@@ -23,7 +23,7 @@
             const leave = {
                 content: {
                     style: {
-                        color: item.status === "pending" ? "red" : "purple",
+                        color: item.status === "pending" ? "white" : "white",
                     },
                 },
                 highlight: item.status === "pending" ? "yellow" : "blue",

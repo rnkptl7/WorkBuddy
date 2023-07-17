@@ -1,5 +1,5 @@
 <template>
-    <section class="LMS-wrapper d-flex flex-column pa-3 border">
+    <section class="LMS-wrapper d-flex flex-column pa-3">
         <ApplyLeaveModal
             :dialog="openRequestLeaveDialog"
             @closeLeaveRequestModal="
@@ -7,28 +7,27 @@
             "
         />
         <!-- Request Leave button -->
-        <div class="LMS-button_container my-2 border flex-row-reverse">
+        <div class="LMS-button_container d-flex flex-row-reverse">
             <v-btn
-                class="my-3"
+                class="my-1 mr-3"
                 rounded
                 variant="outlined"
-                color="grey-darken-3"
+                color="blue-darken-3"
                 @click="openRequestLeaveDialog = !openRequestLeaveDialog"
-                >Request for Leave</v-btn
+            >
+                Request for Leave</v-btn
             >
         </div>
         <div
-            class="LMS-information_container d-flex flex-row flex-wrap justify-space-around pa border mb-3"
+            class="LMS-information_container d-flex flex-row flex-wrap justify-center rounded"
         >
             <!-- Calendar and Leave count wrapper -->
-            <div
-                class="LMS-calendar_wrapper d-flex flex-column justify-space-around justify-lg-center"
-            >
+            <div class="LMS-calendar_wrapper d-flex flex-column justify-center">
                 <div class="LMS-calendar d-flex justify-center">
                     <VCalendarVue />
                 </div>
                 <div
-                    class="LMS-leave_balance ma-3 d-flex flex-column align-space-between justify-center"
+                    class="LMS-leave_balance mx-auto d-flex flex-column align-space-between justify-center pa-3"
                 >
                     <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
                         <div class="leaves_count pa-3">
@@ -38,6 +37,11 @@
                             </h3>
                             <h6>Expires on: January 26th, 2024</h6>
                         </div>
+                        <v-divider
+                            v-if="!isMobile"
+                            :thickness="2"
+                            vertical
+                        ></v-divider>
                         <div class="leaves_count pa-3">
                             <h3>
                                 Leaves Taken:
@@ -55,23 +59,29 @@
                     </div>
                 </div>
             </div>
+            <v-divider
+                v-if="!isMobile"
+                :vertical="true"
+                :thickness="2"
+                class="ma-5"
+            ></v-divider>
             <!-- Pending Leave Requests -->
             <div
                 class="LMS-pending_requests d-flex flex-column align-center pa-3"
             >
                 <h3>Your Pending Requests:</h3>
                 <div class="pending-requests_cards d-flex flex-column">
-                    <div v-for="(item, index) in leaves" :key="index">
+                    <template v-for="(item, index) in leaves" :key="index">
                         <LeaveRequestCardVue
                             v-if="item.status === 'pending'"
                             :leave="item"
                         />
-                    </div>
+                    </template>
                 </div>
             </div>
         </div>
         <!-- Leave History Table -->
-        <div class="border d-flex">
+        <div class="LMS-leave_history d-flex rounded">
             <LeaveHistory :leaveHistory="leaves" />
         </div>
     </section>
@@ -84,12 +94,15 @@
     import VCalendarVue from "./VCalendar.vue";
     import ApplyLeaveModal from "./ApplyLeaveModal.vue";
     import { useLeavesStore } from "../stores/leaves";
+    import { useCommonStore } from "../stores/commonStore";
     import { onMounted, watch } from "vue";
 
     import { reactive, ref } from "vue";
     import { useAppCheck, useCollection, useFirestore } from "vuefire";
     import { collection } from "firebase/firestore";
     import { storeToRefs } from "pinia";
+
+    const { mobileView: isMobile } = storeToRefs(useCommonStore());
 
     // Fetching all leaves collection
     // const db = useFirestore();
@@ -118,13 +131,25 @@
         border: 1px dashed grey;
     }
     /* Custom small cards for Leaves analytics */
-    .LMS-leave_balance .leaves_count {
+    .LMS-leave_balance {
+        width: fit-content;
         border-radius: 5%;
-        border: 1px dashed grey;
+        border: 2px dashed var(--secondary-color);
         margin-block: 1rem;
     }
+    .LMS-calendar_wrapper,
     .LMS-pending_requests {
-        width: 50%;
+        margin: 2rem;
+        width: 40%;
+    }
+    /* .LMS-information_container, */
+    .LMS-leave_history,
+    .LMS-information_container {
+        margin: 1rem;
+        box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .LMS-pending_requests {
         max-height: 580px;
     }
     .pending-requests_cards {

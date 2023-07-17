@@ -1,7 +1,7 @@
 <template>
     <aside class="sidebar-menu" :class="{ showSidebar: showNav }">
         <router-link :to="{ name: 'Home' }"> Home </router-link>
-        <router-link :to="{ name: 'leaveRequest' }">Leave Requests</router-link>
+        <router-link :to="{ name: 'leaveRequest' }">Leaves</router-link>
     </aside>
 </template>
 

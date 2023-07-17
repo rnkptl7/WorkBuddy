@@ -5,7 +5,7 @@
             <div class="pa-5">
                 <h2>Request for Leave</h2>
                 <v-divider class="py-1"></v-divider>
-                <VForm class="form" @submit.prevent="submitRequest">
+                <VForm class="form" @submit="submitRequest">
                     <div class="inputDiv">
                         <select
                             name="category"
