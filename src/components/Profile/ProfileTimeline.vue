@@ -38,13 +38,14 @@ import { useProfileStore } from "../../stores/profileStore";
 
 const store = useProfileStore();
 const { achievements, openModal: dialog } = storeToRefs(store);
-const { getAchievement } = store;
+const { getAchievement, getLeavesRecord } = store;
 
 function toggleModal() {
     dialog.value = true;
 }
 onMounted(async () => {
     await getAchievement();
+    await getLeavesRecord();
 });
 </script>
 <style scoped>

@@ -145,6 +145,7 @@ onMounted(async () => {
     border-radius: 5%;
     border-left: 5px solid var(--primary-color);
     width: 10rem;
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15);
 }
 .profile-details {
     display: flex;

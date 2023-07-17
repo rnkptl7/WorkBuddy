@@ -5,6 +5,7 @@
         <div v-if="toggleValue" class="mt-5 profiles">
             <div class="left-profile">
                 <ProfileDetails />
+                <ProfileLeaves />
             </div>
 
             <div class="right-profile"><ProfileTimeline /></div>
@@ -19,11 +20,10 @@
 import { ref } from "vue";
 import ProfileIcon from "../components/Profile/ProfileIcon.vue";
 import AchievementModal from "../components/Profile/AchievementModal.vue";
-
 import ProfileDetails from "../components/Profile/ProfileDetails.vue";
 import ProfileTimeline from "../components/Profile/ProfileTimeline.vue";
 import ProfileInfo from "../components/Profile/ProfileInfo.vue";
-// import ProfileLeaves from "../components/Profile/ProfileLeaves.vue";
+import ProfileLeaves from "../components/Profile/ProfileLeaves.vue";
 
 const toggleValue = ref(true);
 function toggleFunc(isProfileSelected) {
