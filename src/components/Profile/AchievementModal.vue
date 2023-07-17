@@ -3,48 +3,64 @@
         <v-dialog v-model="dialog" persistent width="500">
             <v-card>
                 <div class="pa-5">
-                    <h2>Add Achievements</h2>
+                    <h2 class="achievement-header">Add Achievements</h2>
                     <v-divider class="py-1"></v-divider>
-                    <VForm class="form" @submit="updateAchievement">
-                        <div
-                            class="inputDiv flex-column justify-space-around w-100"
-                        >
-                            <div class="date_input_wrapper w-50">
-                                <label for="titleDate ">Date</label>
-                                <input
+                    <VForm
+                        class="form"
+                        @submit="updateAchievement"
+                        :validation-schema="achievementSchema"
+                    >
+                        <div class="inputDiv">
+                            <div class="date_input_wrapper w-100">
+                                <label for="titleDate "
+                                    >Achievement Date:</label
+                                >
+                                <VField
                                     name="titleDate"
                                     type="date"
-                                    class="input w-100"
+                                    class="input w-50"
                                     v-model="achievement.titleDate"
+                                />
+                                <ErrorMessage
+                                    name="titleDate"
+                                    class="error_message"
+                                />
+                            </div>
+                            <div class="inputDiv">
+                                <VField
+                                    name="title"
+                                    placeholder="Achievement Title*"
+                                    type="text"
+                                    class="input"
+                                    v-model="achievement.title"
+                                    required
                                 />
                                 <ErrorMessage
                                     name="title"
                                     class="error_message"
                                 />
                             </div>
-                        </div>
-                        <div class="inputDiv">
-                            <input
-                                name="title"
-                                placeholder="Achievement Title*"
-                                type="text"
-                                class="input"
-                                v-model="achievement.title"
-                            />
-                            <ErrorMessage name="title" class="error_message" />
-                        </div>
-                        <div class="inputDiv">
-                            <textarea
-                                name="titleDescription"
-                                placeholder="Description*"
-                                type="text"
-                                class="input"
-                                v-model="achievement.titleDescription"
-                            />
-                            <ErrorMessage
-                                name="titleDescription"
-                                class="error_message"
-                            />
+                            <div class="inputDiv">
+                                <VField
+                                    name="titleDescription"
+                                    v-slot="{ field, errors }"
+                                    :bails="false"
+                                    v-model="achievement.titleDescription"
+                                >
+                                    <textarea
+                                        v-bind="field"
+                                        class="textarea"
+                                        placeholder="Detailed Description*"
+                                    />
+                                    <div
+                                        class="error_message"
+                                        v-for="err in errors"
+                                        :key="err"
+                                    >
+                                        {{ err }}
+                                    </div>
+                                </VField>
+                            </div>
                         </div>
 
                         <small>*indicates required field</small>
@@ -69,7 +85,7 @@
     </v-row>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useProfileStore } from "../../stores/profileStore";
 import { reactive, ref, onMounted, watch } from "vue";
 import { useFirestore } from "vuefire";
@@ -82,6 +98,11 @@ const { getAchievement } = store;
 const { openModal: dialog, userId: userId } = storeToRefs(store);
 const db = useFirestore();
 
+const achievementSchema = {
+    titleDate: "required",
+    title: "required|alphaSpaces",
+    titleDescription: "required|alphaSpaces",
+};
 let achievement = reactive({
     titleDate: "",
     title: "",
@@ -107,6 +128,9 @@ async function updateAchievement() {
 }
 </script>
 <style scoped>
+.achievement-header {
+    color: #115173;
+}
 .btn {
     display: flex;
     justify-content: center;
@@ -135,7 +159,6 @@ async function updateAchievement() {
 
 .form .inputDiv {
     margin: 15px 0;
-    display: flex;
 }
 
 .form .inputDiv input,

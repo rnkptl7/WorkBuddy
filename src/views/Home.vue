@@ -62,7 +62,7 @@ function showTime() {
     hours = 12;
   }
 
-  if (hours > 12) {
+  if (hours >= 12) {
     hours = hours - 12;
     session = "PM";
   }

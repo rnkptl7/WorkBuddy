@@ -1,7 +1,7 @@
 <template>
     <div class="navbar">
         <div class="logo">
-            <h1>HRMS</h1>
+            <h1>WorkBuddy</h1>
         </div>
         <div class="navbar-item">
             <div v-if="isLoggedIn">
@@ -9,13 +9,24 @@
                     <li>
                         <router-link :to="{ name: 'Profile' }">
                             <span class="d-flex mr-2"
-                                ><img src="../assets/images/profile.png" alt=""
+                                ><img
+                                    src="../assets/images/profile.png"
+                                    alt="User Profile"
                             /></span>
-                            {{ fullname }}</router-link
-                        >
+                            <span class="username">
+                                {{ fullname }}
+                            </span>
+                        </router-link>
                     </li>
                     <li>
-                        <button @click="logout">Logout</button>
+                        <button @click="logout">
+                            <span class="logoutTxt">Logout</span>
+                            <img
+                                class="logoutIcon"
+                                src="../assets/images/logout.png"
+                                alt=""
+                            />
+                        </button>
                     </li>
                     <li v-if="mobileView" class="hamburgerMenu">
                         <img
@@ -57,20 +68,29 @@ import { useAuthStore } from "@/stores/authStore";
 import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
 const router = useRouter();
+const $toast = useToast();
 
-const { isLoggedIn, fullname } = storeToRefs(authStore);
+const { isLoggedIn, fullname, isAdmin, userId } = storeToRefs(authStore);
 const { mobileView, showNav } = storeToRefs(commonStore);
 
 const logout = () => {
     localStorage.setItem("isLoggedIn", false);
-    localStorage.setItem("userId", null);
-    localStorage.setItem("fullName", null);
+    localStorage.removeItem("userId");
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("fullName");
     isLoggedIn.value = false;
+    isAdmin.value = "";
+    userId.value = "";
     fullname.value = "";
+    $toast.success("Logout Successfully", {
+        position: "top-right",
+    });
     router.replace({ name: "Login" });
 };
 
@@ -95,6 +115,7 @@ a.router-link-exact-active {
     justify-content: space-between;
     align-items: center;
     z-index: 10;
+    box-shadow: var(--box-shadow);
 }
 
 .navbar .logo {
@@ -123,6 +144,9 @@ a.router-link-exact-active {
     align-items: center;
 }
 
+.navbar .logoutIcon {
+    display: none;
+}
 .hamburgerMenu {
     width: 30px;
     cursor: pointer;
@@ -143,7 +167,7 @@ img {
     width: 20px;
 }
 
-@media screen and (max-width: 575px) {
+@media screen and (max-width: 675px) {
     .navbar .navbar-item ul li {
         margin: 0 0.2rem;
     }
@@ -152,7 +176,20 @@ img {
     }
 }
 
-@media screen and (max-width: 520px) {
+@media screen and (max-width: 610px) {
+    .username {
+        display: none;
+    }
+    .navbar .logoutIcon {
+        display: block;
+        margin-top: 10px;
+    }
+    .navbar .logoutTxt {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 480px) {
     .navbar {
         padding: 14px 7px;
     }
@@ -160,15 +197,15 @@ img {
     .navbar .logo {
         padding: 10px 5px;
     }
-    .navbar .navbar-item ul li {
-        margin: 0 0.2rem;
+
+    .navbar .logo h1 {
+        font-size: 24px;
     }
     .navbar .navbar-item ul li a {
-        padding: 0.2rem;
+        padding: 1rem 0.8rem;
     }
-
     img {
-        width: 21px;
+        width: 20px;
     }
 }
 </style>

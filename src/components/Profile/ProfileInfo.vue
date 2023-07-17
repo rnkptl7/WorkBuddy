@@ -12,3 +12,10 @@ import EmployeeProfile from "../Profile/ProfileInfo/EmployeeProfile.vue";
 import ProfessionalProfile from "../Profile/ProfileInfo/ProfessionalProfile.vue";
 import OtherProfile from "../Profile/ProfileInfo/OtherProfile.vue";
 </script>
+<style scoped>
+.main-field {
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+}
+</style>
