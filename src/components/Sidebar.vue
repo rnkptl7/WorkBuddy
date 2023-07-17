@@ -1,31 +1,83 @@
 <template>
-  <aside class="sidebar-menu">
-    Sidebar
-    <router-link :to="{ name: 'Home' }"> Home </router-link>
-    <router-link :to="{ name: 'Login' }">Login </router-link>
-    <router-link :to="{ name: 'Register' }">Register </router-link>
+  <aside class="sidebar-menu menu">
+    <router-link :to="{ name: 'Home' }" exact> Home </router-link>
   </aside>
+  <v-layout>
+    <v-navigation-drawer v-model="overlay" temporary>
+      <div class="d-flex justify-space-between align-center px-3 py-5">
+        <h1>WorkBuddy</h1>
+        <img
+          class="closeIcon"
+          src="../assets/images/close.png"
+          alt="close-menu"
+          @click="overlay = !overlay"
+        />
+      </div>
+      <div class="menu">
+        <router-link :to="{ name: 'Home' }" exact> Home </router-link>
+      </div>
+    </v-navigation-drawer>
+  </v-layout>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useCommonStore } from "@/stores/commonStore";
+import { storeToRefs } from "pinia";
+
+const commonStore = useCommonStore();
+
+const { overlay } = storeToRefs(commonStore);
+</script>
 
 <style scoped>
 .sidebar-menu {
+  position: fixed;
+  z-index: 10;
   height: 90vh;
-  width: 18rem;
+  width: 14rem;
   background: #f0f3fb;
+  box-shadow: var(--sidebar-shadow);
 }
 
-.sidebar-menu a {
+.position_left {
+  display: none;
+}
+
+.menu a {
   display: block;
-  margin: 5px 0;
-  padding: 1rem;
-  border-radius: 0 10px 10px 0;
+  padding: 0.7rem 4rem;
   text-decoration: none;
   color: #000000ab;
+  font-size: 20px;
 }
 
-.sidebar-menu a.router-link-exact-active {
-  background-color: rgb(162, 253, 255);
+.sidebar-menu a:nth-of-type(1) {
+  margin-top: 0;
+}
+
+.menu a.router-link-exact-active {
+  border-right: 5px solid var(--primary-color);
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.closeIcon {
+  width: 20px;
+  cursor: pointer;
+}
+
+.v-navigation-drawer {
+  background: var(--white-text);
+}
+
+h1 {
+  color: var(--primary-color);
+}
+
+@media screen and (max-width: 1250px) {
+  .sidebar-menu {
+    display: none;
+  }
 }
 </style>
