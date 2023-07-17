@@ -1,30 +1,29 @@
 <template>
-    <main class="flex-fill">
+    <main class="flex-fill timeline">
         <div class="text-center">
             <v-btn class="ma-2" rounded @click="toggleModal">
                 Add Achievements
             </v-btn>
         </div>
-        <v-timeline>
+        <v-timeline line-thickness="5" line-color="#6eb4d933">
             <v-timeline-item
                 v-for="(achievement, index) in achievements"
                 :key="index"
                 small
+                dot-color="#115173 "
+                size="20"
             >
-                <template v-slot:opposite>
-                    <div
-                        :class="`pt-1 headline font-weight-bold`"
-                        v-text="achievement.titleDate"
-                    ></div>
-                </template>
                 <div>
-                    <h2
-                        :class="`mt-n1 headline text-amber font-weight-light mb-4`"
-                    >
-                        {{ achievement.title }}
-                    </h2>
                     <div>
-                        {{ achievement.titleDescription }}
+                        <p :class="`font-weight-regular text-h6 `">
+                            {{ achievement.title }}
+                        </p>
+                        <p :class="`font-weight-regular text-h7 `">
+                            {{ achievement.titleDate }}
+                        </p>
+                        <p :class="`font-italic title-descprition`">
+                            {{ achievement.titleDescription }}
+                        </p>
                     </div>
                 </div>
             </v-timeline-item>
@@ -48,3 +47,20 @@ onMounted(async () => {
     await getAchievement();
 });
 </script>
+<style scoped>
+.headline {
+    color: var(--primary-color);
+    font-size: 20px;
+}
+.text-h6,
+.text-h7 {
+    color: var(--primary-color);
+}
+.v-timeline-divider__dot {
+    height: 10px !important;
+    width: 10px !important;
+}
+.title-descprition {
+    width: 150px;
+}
+</style>

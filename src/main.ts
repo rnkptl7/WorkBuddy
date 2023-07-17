@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { VueFire, VueFireAuth } from "vuefire";
+import "../src/assets/main.css";
 
 import App from "./App.vue";
 import router from "./router";

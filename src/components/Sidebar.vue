@@ -40,7 +40,7 @@ const { showNav } = storeToRefs(commonStore);
     color: var(--white-text);
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1250px) {
     .sidebar-menu {
         left: -30%;
         display: none;

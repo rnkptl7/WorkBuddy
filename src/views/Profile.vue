@@ -2,8 +2,7 @@
     <section class="flex-fill">
         <ProfileIcon @toggle="toggleFunc" />
         <AchievementModal />
-        <v-divider></v-divider>
-        <div v-if="toggleValue" class="profiles">
+        <div v-if="toggleValue" class="mt-5 profiles">
             <div class="left-profile">
                 <ProfileDetails />
             </div>
@@ -45,5 +44,21 @@ function toggleFunc(isProfileSelected) {
     display: flex;
     flex-direction: row;
     width: 100%;
+}
+@media screen and (max-width: 900px) {
+    .profiles {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .left-profile {
+        width: 100%;
+    }
+    .right-profile {
+        display: flex;
+        flex-flow: row wrap;
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
 </style>

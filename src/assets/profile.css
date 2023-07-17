@@ -11,7 +11,7 @@ fieldset {
     margin: 20px;
 }
 legend {
-    background: orange;
+    background: var(--secondary-color);
     padding: 5px 10px;
     border-radius: 10px;
 }
@@ -21,7 +21,7 @@ legend {
     display: flex;
 }
 .legend-input label {
-    width: 25%;
+    width: 30%;
 }
 .legend-input input,
 select {
@@ -41,7 +41,7 @@ select {
     position: relative;
 }
 .editable .input {
-    border-bottom: 1px solid orange;
+    border-bottom: 1px solid var(--secondary-color);
     width: 50%;
 }
 @media screen and (max-width: 1200px) {

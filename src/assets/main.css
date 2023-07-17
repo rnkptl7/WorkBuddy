@@ -17,7 +17,9 @@ body {
     font-family: "DM Sans", sans-serif;
     background: #ffffff;
 }
-
+button:hover {
+    background-color: var(--secondary-color);
+}
 .form .passwordSpan {
     position: absolute;
     top: 22%;

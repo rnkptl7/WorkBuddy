@@ -51,7 +51,7 @@ const { showNav } = storeToRefs(commonStore);
         padding: 0rem;
     }
 }
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1250px) {
     .main-layout .main-content-margin {
         margin-left: 0rem;
     }

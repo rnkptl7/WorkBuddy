@@ -1,21 +1,21 @@
 <template>
     <main>
         <div class="avatar-icon ma-5">
-            <v-avatar size="150px" class="mx-10">
+            <v-avatar class="v-avatar-image mx-10">
                 <v-img
                     alt="Avatar"
                     src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
                 ></v-img>
             </v-avatar>
             <div class="user-name m-5">
-                <p class="text-h3">
+                <p class="avatar-name">
                     {{ fullName }}
                 </p>
-                <p class="text-h5">{{ department }} {{ role }}</p>
+                <p class="avatar-dept">{{ department }} {{ role }}</p>
             </div>
         </div>
         <div class="ma-5">
-            <v-slide-group>
+            <div class="button-box mb-2">
                 <v-btn
                     class="ma-2"
                     rounded
@@ -32,7 +32,8 @@
                 >
                     Personal Info
                 </v-btn>
-            </v-slide-group>
+            </div>
+            <v-divider color="blue" thickness="3"></v-divider>
         </div>
     </main>
 </template>
@@ -76,11 +77,42 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
+.v-avatar-image {
+    width: 120px;
+    height: 120px;
+}
+.avatar-name {
+    font-size: 30px;
+}
+.avatar-dept {
+    font-size: 20px;
+    color: var(--primary-color);
+}
 .avatar-icon {
     display: flex;
     align-items: center;
 }
 .selected-button {
-    color: orangered;
+    color: var(--primary-color);
+    background: var(--secondary-color);
+}
+@media screen and (max-width: 820px) {
+    .v-avatar-image {
+        width: 100px;
+        height: 100px;
+    }
+    .avatar-name {
+        font-size: 25px;
+    }
+}
+@media screen and (max-width: 540px) {
+    .v-avatar-image {
+        width: 80px;
+        height: 80px;
+    }
+    .button-box {
+        display: flex;
+        justify-content: center;
+    }
 }
 </style>

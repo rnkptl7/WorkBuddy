@@ -1,6 +1,6 @@
 <template>
     <main class="profile-details">
-        <v-card class="ma-5 card" width="10rem">
+        <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -10,7 +10,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem">
+        <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -20,7 +20,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem">
+        <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -30,7 +30,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem" v-if="TOTAL_LEAVES">
+        <v-card class="ma-5 card" v-if="TOTAL_LEAVES">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -40,7 +40,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem" v-if="leftLeaves">
+        <v-card class="ma-5 card" v-if="leftLeaves">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -50,7 +50,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem" v-if="takenLeaves">
+        <v-card class="ma-5 card" v-if="takenLeaves">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -60,7 +60,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem" v-if="totalExp">
+        <v-card class="ma-5 card" v-if="totalExp">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -72,7 +72,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem" v-if="jdate">
+        <v-card class="ma-5 card" v-if="jdate">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -82,7 +82,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" width="10rem" v-if="cdate">
+        <v-card class="ma-5 card" v-if="cdate">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h5 mb-1">
@@ -133,13 +133,32 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
+.profile-details {
+    display: flex;
+    justify-content: flex-start;
+}
+.v-list-item-title {
+    color: #115173;
+}
 .v-card {
     background: #f0f3fb;
     border-radius: 5%;
-    border-left: 5px solid orange;
+    border-left: 5px solid var(--primary-color);
+    width: 10rem;
 }
 .profile-details {
     display: flex;
     flex-flow: row wrap;
+}
+@media screen and (max-width: 420px) {
+    .v-card {
+        width: 8rem;
+    }
+}
+@media screen and (max-width: 1250px) {
+    .profile-details {
+        display: flex;
+        justify-content: center;
+    }
 }
 </style>

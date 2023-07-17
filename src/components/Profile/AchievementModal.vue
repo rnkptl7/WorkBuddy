@@ -3,14 +3,16 @@
         <v-dialog v-model="dialog" persistent width="500">
             <v-card>
                 <div class="pa-5">
-                    <h2>Add Achievements</h2>
+                    <h2 class="achievement-header">Add Achievements</h2>
                     <v-divider class="py-1"></v-divider>
                     <VForm class="form" @submit="updateAchievement">
                         <div
                             class="inputDiv flex-column justify-space-around w-100"
                         >
                             <div class="date_input_wrapper w-50">
-                                <label for="titleDate ">Date</label>
+                                <label for="titleDate "
+                                    >Achievement Date:</label
+                                >
                                 <input
                                     name="titleDate"
                                     type="date"
@@ -30,6 +32,7 @@
                                 type="text"
                                 class="input"
                                 v-model="achievement.title"
+                                required
                             />
                             <ErrorMessage name="title" class="error_message" />
                         </div>
@@ -107,6 +110,9 @@ async function updateAchievement() {
 }
 </script>
 <style scoped>
+.achievement-header {
+    color: #115173;
+}
 .btn {
     display: flex;
     justify-content: center;

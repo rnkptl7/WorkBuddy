@@ -1,5 +1,9 @@
 <template>
-    <VForm :class="{ editable: !isEdit }" @submit="updateProfessionalInfo">
+    <VForm
+        :class="{ editable: !isEdit }"
+        @submit="updateProfessionalInfo"
+        :validation-schema="professionalSchema"
+    >
         <fieldset>
             <legend>Profession al Details:</legend>
             <div class="legend-input">
