@@ -152,8 +152,13 @@
           </VField>
         </div>
 
-        <v-btn class="me-4 btn-submit" type="submit"> Submit </v-btn>
-        <v-btn type="reset">Clear</v-btn>
+        <div class="d-flex justify-space-between">
+          <div>
+            <v-btn class="me-4 btn-submit" type="submit"> Submit </v-btn>
+            <v-btn type="reset">Clear</v-btn>
+          </div>
+          <p class="text-medium-emphasis">*indicate required fields</p>
+        </div>
       </VForm>
     </div>
   </div>

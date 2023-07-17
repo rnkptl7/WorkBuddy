@@ -44,7 +44,7 @@
             <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
             <v-btn type="reset">Clear</v-btn>
           </div>
-          <p>*indicate required fields</p>
+          <p class="text-medium-emphasis">*indicate required fields</p>
         </div>
       </VForm>
     </div>
@@ -68,7 +68,7 @@ const commonStore = useCommonStore();
 const db = useFirestore();
 const $toast = useToast();
 
-const { isLoggedIn, fullname } = storeToRefs(authStore);
+const { isLoggedIn, fullname, isAdmin, userId } = storeToRefs(authStore);
 const { showPassword } = storeToRefs(commonStore);
 const { showPasswordChange } = commonStore;
 
@@ -91,6 +91,7 @@ const submitData = async () => {
     // console.log(register);
     if (form.email === register.email && form.password === register.password) {
       localStorage.setItem("userId", doc.id);
+      userId.value = doc.id;
       localStorage.setItem("fullName", register.fullName);
       userData = doc.data();
     }
@@ -103,6 +104,7 @@ const submitData = async () => {
     // console.log(userData.register.role);
     if (userData.register.role === "admin") {
       localStorage.setItem("isAdmin", true);
+      isAdmin.value = true;
     }
 
     localStorage.setItem("isLoggedIn", true);
