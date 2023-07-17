@@ -29,7 +29,7 @@ const router = createRouter({
       meta: {requiredAuth: true},
       component: () => import('@/views/Profile.vue')
     }
-  ]
+  ],
 })
 
 router.beforeEach((to, from, next) => {

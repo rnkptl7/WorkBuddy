@@ -7,7 +7,8 @@ export const useCommonStore = defineStore('commonStore', {
             showNav: false,
             showPassword: true,
             showRegisterPassword: true,
-            showConfirmPassword: true
+            showConfirmPassword: true,
+            overlay: false
       }
     },
     actions: {

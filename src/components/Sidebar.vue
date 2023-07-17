@@ -1,7 +1,23 @@
 <template>
-  <aside class="sidebar-menu" :class="{ showSidebar: showNav }">
-    <router-link :to="{ name: 'Home' }"> Home </router-link>
+  <aside class="sidebar-menu menu">
+    <router-link :to="{ name: 'Home' }" exact> Home </router-link>
   </aside>
+  <v-layout>
+    <v-navigation-drawer v-model="overlay" temporary>
+      <div class="d-flex justify-space-between align-center px-3 py-5">
+        <h1>WorkBuddy</h1>
+        <img
+          class="closeIcon"
+          src="../assets/images/close.png"
+          alt="close-menu"
+          @click="overlay = !overlay"
+        />
+      </div>
+      <div class="menu">
+        <router-link :to="{ name: 'Home' }" exact> Home </router-link>
+      </div>
+    </v-navigation-drawer>
+  </v-layout>
 </template>
 
 <script setup lang="ts">
@@ -9,7 +25,8 @@ import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
 
 const commonStore = useCommonStore();
-const { showNav } = storeToRefs(commonStore);
+
+const { overlay } = storeToRefs(commonStore);
 </script>
 
 <style scoped>
@@ -19,37 +36,48 @@ const { showNav } = storeToRefs(commonStore);
   height: 90vh;
   width: 14rem;
   background: #f0f3fb;
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--sidebar-shadow);
 }
 
 .position_left {
   display: none;
 }
 
-.sidebar-menu a {
+.menu a {
   display: block;
-  margin: 5px 0;
   padding: 0.7rem 4rem;
-  border-radius: 0 10px 10px 0;
   text-decoration: none;
   color: #000000ab;
   font-size: 20px;
 }
 
-.sidebar-menu a.router-link-exact-active {
-  background-color: var(--primary-color);
-  color: var(--white-text);
+.sidebar-menu a:nth-of-type(1) {
+  margin-top: 0;
+}
+
+.menu a.router-link-exact-active {
+  border-right: 5px solid var(--primary-color);
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.closeIcon {
+  width: 20px;
+  cursor: pointer;
+}
+
+.v-navigation-drawer {
+  background: var(--white-text);
+}
+
+h1 {
+  color: var(--primary-color);
 }
 
 @media screen and (max-width: 1250px) {
   .sidebar-menu {
-    left: -30%;
     display: none;
-  }
-
-  .showSidebar {
-    left: 0%;
-    display: block;
   }
 }
 </style>

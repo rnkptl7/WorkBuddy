@@ -157,7 +157,7 @@
             <v-btn class="me-4 btn-submit" type="submit"> Submit </v-btn>
             <v-btn type="reset">Clear</v-btn>
           </div>
-          <p class="text-medium-emphasis">*indicate required fields</p>
+          <p class="text-medium-emphasis">*indicates required field</p>
         </div>
       </VForm>
     </div>
