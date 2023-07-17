@@ -1,24 +1,27 @@
 <template>
-  <aside class="sidebar-menu menu">
-    <router-link :to="{ name: 'Home' }" exact> Home </router-link>
-    <router-link :to="{ name: 'Help' }">Help Me </router-link>
-  </aside>
-  <v-layout>
-    <v-navigation-drawer v-model="overlay" temporary>
-      <div class="d-flex justify-space-between align-center px-3 py-5">
-        <h1>WorkBuddy</h1>
-        <img
-          class="closeIcon"
-          src="../assets/images/close.png"
-          alt="close-menu"
-          @click="overlay = !overlay"
-        />
-      </div>
-      <div class="menu">
+    <aside class="sidebar-menu menu">
         <router-link :to="{ name: 'Home' }" exact> Home </router-link>
-      </div>
-    </v-navigation-drawer>
-  </v-layout>
+        <router-link :to="{ name: 'Help' }">Help Me </router-link>
+        <router-link :to="{ name: 'Profile' }">Profile </router-link>
+    </aside>
+    <v-layout>
+        <v-navigation-drawer v-model="overlay" temporary>
+            <div class="d-flex justify-space-between align-center px-3 py-5">
+                <h1>WorkBuddy</h1>
+                <img
+                    class="closeIcon"
+                    src="../assets/images/close.png"
+                    alt="close-menu"
+                    @click="overlay = !overlay"
+                />
+            </div>
+            <div class="menu">
+                <router-link :to="{ name: 'Home' }" exact> Home </router-link>
+                <router-link :to="{ name: 'Help' }">Help Me </router-link>
+                <router-link :to="{ name: 'Profile' }">Profile </router-link>
+            </div>
+        </v-navigation-drawer>
+    </v-layout>
 </template>
 
 <script setup lang="ts">
@@ -32,53 +35,53 @@ const { overlay } = storeToRefs(commonStore);
 
 <style scoped>
 .sidebar-menu {
-  position: fixed;
-  z-index: 10;
-  height: 90vh;
-  width: 15rem;
-  background: #f0f3fb;
-  box-shadow: var(--sidebar-shadow);
+    position: fixed;
+    z-index: 10;
+    height: 90vh;
+    width: 15rem;
+    background: #f0f3fb;
+    box-shadow: var(--sidebar-shadow);
 }
 
 .position_left {
-  display: none;
+    display: none;
 }
 
 .menu a {
-  display: block;
-  padding: 0.7rem 4rem;
-  text-decoration: none;
-  color: #000000ab;
-  font-size: 20px;
+    display: block;
+    padding: 0.7rem 4rem;
+    text-decoration: none;
+    color: #000000ab;
+    font-size: 20px;
 }
 
 .sidebar-menu a:nth-of-type(1) {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 .menu a.router-link-exact-active {
-  border-right: 5px solid var(--primary-color);
-  background: var(--secondary-color);
-  color: var(--primary-color);
-  font-weight: 500;
+    border-right: 5px solid var(--primary-color);
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    font-weight: 500;
 }
 
 .closeIcon {
-  width: 20px;
-  cursor: pointer;
+    width: 20px;
+    cursor: pointer;
 }
 
 .v-navigation-drawer {
-  background: var(--white-text);
+    background: var(--white-text);
 }
 
 h1 {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 @media screen and (max-width: 1250px) {
-  .sidebar-menu {
-    display: none;
-  }
+    .sidebar-menu {
+        display: none;
+    }
 }
 </style>

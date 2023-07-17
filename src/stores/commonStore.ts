@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const useCommonStore = defineStore('commonStore', {
+export const useCommonStore = defineStore("commonStore", {
     state: () => {
         return {
             mobileView: false,
@@ -8,8 +8,8 @@ export const useCommonStore = defineStore('commonStore', {
             showPassword: true,
             showRegisterPassword: true,
             showConfirmPassword: true,
-            overlay: false
-      }
+            overlay: false,
+        };
     },
     actions: {
         handleView() {
@@ -17,13 +17,13 @@ export const useCommonStore = defineStore('commonStore', {
             this.mobileView = window.innerWidth <= 1250;
         },
         showPasswordChange() {
-            this.showPassword = !this.showPassword
+            this.showPassword = !this.showPassword;
         },
         showConfirmPasswordChange() {
             this.showConfirmPassword = !this.showConfirmPassword;
         },
         showRegisterPasswordChange() {
             this.showRegisterPassword = !this.showRegisterPassword;
-        }
-    }
-  })
+        },
+    },
+});
