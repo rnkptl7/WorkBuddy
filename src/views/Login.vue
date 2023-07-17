@@ -47,6 +47,40 @@
                 <v-btn type="reset">Clear</v-btn>
             </VForm>
         </div>
+
+        <div class="inputDiv passwordWrapper">
+          <VField
+            name="password"
+            placeholder="Password*"
+            :type="showPassword ? 'password' : 'text'"
+            class="input"
+            v-model="form.password"
+          />
+          <span class="passwordSpan">
+            <img
+              v-if="showPassword"
+              src="../assets/images/hide.png"
+              alt="hide password"
+              @click="showPasswordChange"
+            />
+            <img
+              v-else
+              src="../assets/images/show.png"
+              alt="show password"
+              @click="showPasswordChange"
+            />
+          </span>
+          <ErrorMessage name="password" class="error_message" />
+        </div>
+
+        <div class="d-flex justify-space-between">
+          <div>
+            <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
+            <v-btn type="reset">Clear</v-btn>
+          </div>
+          <p class="text-medium-emphasis">*indicates required field</p>
+        </div>
+      </VForm>
     </div>
 </template>
 
@@ -54,6 +88,8 @@
 import { reactive } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, getDocs } from "firebase/firestore";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 import router from "@/router";
 
 import { useAuthStore } from "@/stores/authStore";
@@ -63,8 +99,9 @@ import { storeToRefs } from "pinia";
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
 const db = useFirestore();
+const $toast = useToast();
 
-const { isLoggedIn, fullname } = storeToRefs(authStore);
+const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
 const { showPassword } = storeToRefs(commonStore);
 const { showPasswordChange } = commonStore;
 
@@ -79,32 +116,37 @@ const schema = {
 };
 
 const submitData = async () => {
-    console.log("submit");
+  const querySnapshot = await getDocs(collection(db, "users"));
 
-    const querySnapshot = await getDocs(collection(db, "users"));
-
-    let userData;
-    querySnapshot.forEach((doc) => {
-        let { register } = doc.data();
-        console.log(register);
-        if (
-            form.email === register.email &&
-            form.password === register.password
-        ) {
-            localStorage.setItem("userId", doc.id);
-            localStorage.setItem("fullName", register.fullName);
-            userData = doc.data();
-        }
-    });
-
-    if (userData) {
-        localStorage.setItem("isLoggedIn", true);
-        isLoggedIn.value = true;
-        fullname.value = userData.register.fullName;
-        router.replace({ name: "Home" });
-    } else {
-        alert("Invalid Credentials");
+  let userData;
+  querySnapshot.forEach((doc) => {
+    let { register } = doc.data();
+    // console.log(register);
+    if (form.email === register.email && form.password === register.password) {
+      localStorage.setItem("userId", doc.id);
+      userId.value = doc.id;
+      localStorage.setItem("fullName", register.fullName);
+      userData = doc.data();
     }
+  });
+
+  if (userData) {
+    $toast.success("Logged In Successfully", {
+      position: "top-right",
+    });
+    // console.log(userData.register.role);
+    if (userData.register.role === "admin") {
+      localStorage.setItem("isAdmin", true);
+      isAdmin.value = true;
+    }
+
+    localStorage.setItem("isLoggedIn", true);
+    isLoggedIn.value = true;
+    fullName.value = userData.register.fullName;
+    router.replace({ name: "Home" });
+  } else {
+    alert("Invalid Credentials");
+  }
 };
 </script>
 

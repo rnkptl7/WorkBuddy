@@ -8,13 +8,13 @@ export const useCommonStore = defineStore("commonStore", {
             showPassword: true,
             showRegisterPassword: true,
             showConfirmPassword: true,
-            openModal: false,
-        };
+            overlay: false
+      }
     },
     actions: {
         handleView() {
             console.log("Resize");
-            this.mobileView = window.innerWidth <= 1000;
+            this.mobileView = window.innerWidth <= 1250;
         },
         showPasswordChange() {
             this.showPassword = !this.showPassword;

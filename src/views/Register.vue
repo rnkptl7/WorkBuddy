@@ -123,6 +123,8 @@
               <option disabled value="">Select a role*</option>
               <option value="admin">Admin</option>
               <option value="employee">Employee</option>
+              <option value="manager">Manager</option>
+              <option value="trainee">Trainee</option>
             </select>
             <div class="error_message" v-for="err in errors" :key="err">
               {{ err }}
@@ -142,7 +144,7 @@
               <option value="frontend">Frontend</option>
               <option value="backend">Backend</option>
               <option value="hr">DevOps</option>
-              <option value="qa">QA</option>
+              <option value="ui-ux">UI/UX</option>
             </select>
             <div class="error_message" v-for="err in errors" :key="err">
               {{ err }}
@@ -150,8 +152,13 @@
           </VField>
         </div>
 
-        <v-btn class="me-4 btn-submit" type="submit"> Submit </v-btn>
-        <v-btn type="reset">Clear</v-btn>
+        <div class="d-flex justify-space-between">
+          <div>
+            <v-btn class="me-4 btn-submit" type="submit"> Submit </v-btn>
+            <v-btn type="reset">Clear</v-btn>
+          </div>
+          <p class="text-medium-emphasis">*indicates required field</p>
+        </div>
       </VForm>
     </div>
 </template>
@@ -163,10 +170,13 @@ import { collection, addDoc } from "firebase/firestore";
 import { useRouter } from "vue-router";
 import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
 const commonStore = useCommonStore();
 const db = useFirestore();
 const router = useRouter();
+const $toast = useToast();
 
 const { showConfirmPassword, showRegisterPassword } = storeToRefs(commonStore);
 const { showConfirmPasswordChange, showRegisterPasswordChange } = commonStore;
@@ -207,6 +217,9 @@ const registerData = async () => {
     register: { ...form, empID: uniqueID(), fullName },
   });
   if (data.id) {
+    $toast.success("Registered Successfully", {
+      position: "top-right",
+    });
     router.replace({ name: "Login" });
   }
 };
