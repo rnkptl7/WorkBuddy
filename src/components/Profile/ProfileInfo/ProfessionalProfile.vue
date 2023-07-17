@@ -1,11 +1,11 @@
 <template>
     <VForm
         :class="{ editable: !isEdit }"
-        @submit="updateProfessionalInfo"
         :validation-schema="professionalSchema"
+        @submit="updateProfessionalInfo"
     >
         <fieldset>
-            <legend>Profession al Details:</legend>
+            <legend>Professional Details:</legend>
             <div class="legend-input">
                 <label for="qualification">Qualification:</label>
                 <VField name="qualification" :bails="false" v-slot="{ errors }">
@@ -30,15 +30,18 @@
             </div>
             <div class="legend-input">
                 <label for="cdate">Career Start Date:</label>
-                <VField
-                    name="cdate"
-                    type="date"
-                    class="input"
-                    v-model="professional.cdate"
-                    :disabled="isEdit"
-                />
-                <ErrorMessage name="cdate" class="error_message" />
+                <div>
+                    <VField
+                        name="cdate"
+                        type="date"
+                        class="input"
+                        v-model="professional.cdate"
+                        :disabled="isEdit"
+                    />
+                    <ErrorMessage name="cdate" class="error_message" />
+                </div>
             </div>
+
             <div class="legend-input">
                 <label for="totalExp">Total Experience:</label>
                 <VField
@@ -76,7 +79,7 @@
     </VForm>
 </template>
 <script setup>
-import { reactive, ref, onMounted, computed } from "vue";
+import { reactive, ref, onMounted, computed, watch } from "vue";
 import { useFirestore } from "vuefire";
 import {
     doc,
@@ -108,11 +111,13 @@ const professionalSchema = {
         const inputDate = new Date(value);
         const joiningDate = new Date(jdate);
         const dateInFutureError = "Date cannot be ahead of Joining Date";
-        if (inputDate >= joiningDate) {
+        if (inputDate > joiningDate) {
             return dateInFutureError;
         }
+        return true;
     },
 };
+
 function calculateExperience() {
     const experience = new Date(professional.experience);
     const expInMilliSecond = Date.now() - experience.getTime();
@@ -126,6 +131,7 @@ let professional = reactive({
     cdate: "",
     totalExp: "",
 });
+
 let professionalCopy = {};
 const priorData = async () => {
     const docSnap = await getDoc(doc(db, "users", key));
@@ -141,10 +147,24 @@ const priorData = async () => {
         return;
     }
 };
+
+watch(
+    () => professional.cdate,
+    (newValue) => {
+        const diff = new Date() - new Date(newValue);
+        const seconds = diff / 1000;
+        const years = Math.floor(seconds / 31536000);
+        const months = Math.floor((seconds % 31536000) / 86400 / 30);
+        professional.totalExp = `${years}Y ${months}M`;
+    },
+    { deep: true }
+);
+
 const updateProfessionalInfo = async () => {
     console.log("::::::::::::::::");
+    console.log("Updating");
     await updateDoc(doc(db, "users", key), {
-        professional: { ...professional },
+        professional,
     });
     toggleEdit();
     console.log(professional, "::::::::::::::::");

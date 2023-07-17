@@ -1,6 +1,12 @@
 <template>
-    <main class="doughnut-wrapper">
-        <Doughnut :data="chartData" :options="options" />
+    <main class="doughnut-container rounded pa-5">
+        <div class="chart-title">
+            <p class="text-center font-weight-bold text-h6">Leaves Record</p>
+            <v-divider class="mt-2"></v-divider>
+        </div>
+        <div class="doughnut-wrapper">
+            <Doughnut :data="chartData" :options="options" />
+        </div>
     </main>
 </template>
 
@@ -74,9 +80,18 @@ const options = {
     height: 350px;
     width: 350px;
 }
-
+.doughnut-container {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 350px;
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15);
+}
+.chart-title {
+    color: var(--primary-color);
+}
 @media screen and (max-width: 1250px) {
-    .doughnut-wrapper {
+    .doughnut-container {
         display: flex;
         margin: auto;
     }

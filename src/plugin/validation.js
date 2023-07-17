@@ -7,6 +7,7 @@ import {
 } from "vee-validate";
 import {
     required,
+    numeric,
     min,
     max,
     alpha,
@@ -39,6 +40,7 @@ export default {
         defineRule("gender", required);
         defineRule("alphaSpaces", alphaSpaces);
         defineRule("alphaNum", alphaNum);
+        defineRule("numeric", numeric);
 
         configure({
             generateMessage: (ctx) => {
@@ -48,6 +50,7 @@ export default {
                     max: `The ${ctx.field} field must not exceed ${ctx.rule.params} letters.`,
                     alphaChar: `The ${ctx.field} field may contain alphabetic characters`,
                     integer: `The ${ctx.field} field must be an integer.`,
+                    numeric: `The ${ctx.field} field must be a numeric value`,
                     URL: `The ${ctx.field} field must be a URL`,
                     email: `The ${ctx.field} field must be valid an email`,
                     regex: `The ${ctx.field} field must contain at least one numeric digit and a special character`,

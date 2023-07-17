@@ -21,6 +21,7 @@ legend {
 .legend-input {
     margin: 15px 0;
     display: flex;
+    align-items: center;
 }
 .legend-input label {
     width: 30%;
@@ -38,13 +39,16 @@ select {
 :disabled {
     cursor: not-allowed;
 }
+
 .error_message {
     color: red;
     position: relative;
+    display: block;
+    padding-left: 1rem;
 }
+
 .editable .input {
     border-bottom: 1px solid var(--secondary-color);
-    width: 50%;
 }
 @media screen and (max-width: 1200px) {
     form {

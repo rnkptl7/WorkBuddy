@@ -14,7 +14,7 @@
                     type="text"
                     class="input"
                     v-model="personal.fullName"
-                    :disabled="isEdit"
+                    disabled
                 />
                 <ErrorMessage name="name" class="error_message" />
             </div>
@@ -56,16 +56,19 @@
             <ErrorMessage name="address" class="error_message" />
             <div class="legend-input">
                 <label for="fname">Mobile No:</label>
-                <VField
-                    name="mobile"
-                    placeholder="Enter your number"
-                    type="number"
-                    class="input"
-                    v-model="personal.mobile"
-                    :disabled="isEdit"
-                />
-                <ErrorMessage name="mobile" class="error_message" />
+                <div>
+                    <VField
+                        name="mobile"
+                        placeholder="Enter your number"
+                        type="number"
+                        class="input"
+                        v-model="personal.mobile"
+                        :disabled="isEdit"
+                    />
+                    <ErrorMessage name="mobile" class="error_message" />
+                </div>
             </div>
+
             <div class="button-box" v-if="true">
                 <v-slide-group>
                     <v-btn
@@ -122,7 +125,6 @@ const toggleEdit = () => (isEdit.value = !isEdit.value);
 const personalSchema = {
     fullName: "alphaSpaces",
     gender: "gender",
-    address: "alphaSpaces",
     mobile: "integer|min:10|max:10",
     dob: (value) => {
         const inputDate = new Date(value);

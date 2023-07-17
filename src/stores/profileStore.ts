@@ -19,6 +19,9 @@ export const useProfileStore = defineStore("profileStore", {
             const docSnap = await getDoc(doc(db, "users", this.userId));
             if (docSnap.exists()) {
                 this.achievements = docSnap.data().achievementList || [];
+                this.achievements.sort(function (a, b) {
+                    return new Date(a.titleDate) - new Date(b.titleDate);
+                });
             }
         },
         async getLeavesRecord() {

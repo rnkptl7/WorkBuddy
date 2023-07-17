@@ -43,14 +43,19 @@
                     <ErrorMessage name="password" class="error_message" />
                 </div>
 
-        <div class="d-flex justify-space-between">
-          <div>
-            <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
-            <v-btn type="reset">Clear</v-btn>
-          </div>
-          <p class="text-medium-emphasis">*indicate required fields</p>
+                <div class="d-flex justify-space-between">
+                    <div>
+                        <v-btn class="me-4 btn-submit" type="submit"
+                            >Login</v-btn
+                        >
+                        <v-btn type="reset">Clear</v-btn>
+                    </div>
+                    <p class="text-medium-emphasis">
+                        *indicate required fields
+                    </p>
+                </div>
+            </VForm>
         </div>
-      </VForm>
     </div>
 </template>
 
@@ -86,37 +91,40 @@ const schema = {
 };
 
 const submitData = async () => {
-  const querySnapshot = await getDocs(collection(db, "users"));
+    const querySnapshot = await getDocs(collection(db, "users"));
 
-  let userData;
-  querySnapshot.forEach((doc) => {
-    let { register } = doc.data();
-    // console.log(register);
-    if (form.email === register.email && form.password === register.password) {
-      localStorage.setItem("userId", doc.id);
-      userId.value = doc.id;
-      localStorage.setItem("fullName", register.fullName);
-      userData = doc.data();
-    }
-  });
-
-  if (userData) {
-    $toast.success("Logged In Successfully", {
-      position: "top-right",
+    let userData;
+    querySnapshot.forEach((doc) => {
+        let { register } = doc.data();
+        // console.log(register);
+        if (
+            form.email === register.email &&
+            form.password === register.password
+        ) {
+            localStorage.setItem("userId", doc.id);
+            userId.value = doc.id;
+            localStorage.setItem("fullName", register.fullName);
+            userData = doc.data();
+        }
     });
-    // console.log(userData.register.role);
-    if (userData.register.role === "admin") {
-      localStorage.setItem("isAdmin", true);
-      isAdmin.value = true;
-    }
 
-    localStorage.setItem("isLoggedIn", true);
-    isLoggedIn.value = true;
-    fullname.value = userData.register.fullName;
-    router.replace({ name: "Home" });
-  } else {
-    alert("Invalid Credentials");
-  }
+    if (userData) {
+        $toast.success("Logged In Successfully", {
+            position: "top-right",
+        });
+        // console.log(userData.register.role);
+        if (userData.register.role === "admin") {
+            localStorage.setItem("isAdmin", true);
+            isAdmin.value = true;
+        }
+
+        localStorage.setItem("isLoggedIn", true);
+        isLoggedIn.value = true;
+        fullname.value = userData.register.fullName;
+        router.replace({ name: "Home" });
+    } else {
+        alert("Invalid Credentials");
+    }
 };
 </script>
 
