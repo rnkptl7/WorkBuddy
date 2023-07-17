@@ -12,7 +12,24 @@
     margin: 0;
     padding: 0;
 }
+
 body {
     font-family: "DM Sans", sans-serif;
     background: #ffffff;
+}
+
+.form .passwordSpan {
+    position: absolute;
+    top: 22%;
+    right: 16px;
+}
+
+.form .passwordSpan img {
+    width: 21px;
+    cursor: pointer;
+}
+
+.form .passwordWrapper {
+    position: relative;
+    height: 3.4rem;
 }
