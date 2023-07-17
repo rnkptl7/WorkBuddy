@@ -39,8 +39,13 @@
           <ErrorMessage name="password" class="error_message" />
         </div>
 
-        <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
-        <v-btn type="reset">Clear</v-btn>
+        <div class="d-flex justify-space-between">
+          <div>
+            <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
+            <v-btn type="reset">Clear</v-btn>
+          </div>
+          <p>*indicate required fields</p>
+        </div>
       </VForm>
     </div>
   </div>
@@ -78,8 +83,6 @@ const schema = {
 };
 
 const submitData = async () => {
-  console.log("submit");
-
   const querySnapshot = await getDocs(collection(db, "users"));
 
   let userData;
@@ -94,6 +97,9 @@ const submitData = async () => {
   });
 
   if (userData) {
+    $toast.success("Logged In Successfully", {
+      position: "top-right",
+    });
     // console.log(userData.register.role);
     if (userData.register.role === "admin") {
       localStorage.setItem("isAdmin", true);
@@ -107,10 +113,6 @@ const submitData = async () => {
     alert("Invalid Credentials");
   }
 };
-
-$toast.success("User Login Successfully", {
-  position: "top-right",
-});
 </script>
 
 <style scoped>

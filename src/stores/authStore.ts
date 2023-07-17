@@ -11,13 +11,16 @@ export const useAuthStore = defineStore('authStore', {
     },
     actions: {
         isAuthenticated() {
-            const loggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
+        const loggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
+        const userId = localStorage.getItem("userId");
+        
         this.isLoggedIn = loggedIn;
             return (
               loggedIn !== null &&
               loggedIn !== undefined &&
               loggedIn !== "" &&
-              loggedIn
+              loggedIn && 
+              userId
             );
           },
     }

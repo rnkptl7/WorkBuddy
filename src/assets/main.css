@@ -5,6 +5,7 @@
   --secondary-color: #6eb4d933;
   --white-text: #f0f3fb;
   --input-text: #000000a1;
+  --box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -32,4 +33,15 @@ body {
 .form .passwordWrapper {
   position: relative;
   height: 3.4rem;
+}
+
+/* Toast */
+.v-toast__item {
+  position: relative;
+  top: 8%;
+  right: 2%;
+}
+
+.v-toast__item--success {
+  background-color: var(--primary-color) !important;
 }

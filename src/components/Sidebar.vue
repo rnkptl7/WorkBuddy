@@ -19,7 +19,7 @@ const { showNav } = storeToRefs(commonStore);
   height: 90vh;
   width: 14rem;
   background: #f0f3fb;
-  box-shadow: 0px 10px 10px -4px black;
+  box-shadow: var(--box-shadow);
 }
 
 .position_left {
@@ -41,7 +41,7 @@ const { showNav } = storeToRefs(commonStore);
   color: var(--white-text);
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1250px) {
   .sidebar-menu {
     left: -30%;
     display: none;

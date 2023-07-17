@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <div class="logo">
-      <h1>HRMS</h1>
+      <h1>WorkBuddy</h1>
     </div>
     <div class="navbar-item">
       <div v-if="isLoggedIn">
@@ -53,21 +53,26 @@ import { useAuthStore } from "@/stores/authStore";
 import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
-
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
 const router = useRouter();
+const $toast = useToast();
 
 const { isLoggedIn, fullname } = storeToRefs(authStore);
 const { mobileView, showNav } = storeToRefs(commonStore);
 
 const logout = () => {
   localStorage.setItem("isLoggedIn", false);
-  localStorage.setItem("userId", null);
+  localStorage.removeItem("userId");
   localStorage.removeItem("isAdmin");
-  localStorage.setItem("fullName", null);
+  localStorage.removeItem("fullName");
   isLoggedIn.value = false;
   fullname.value = "";
+  $toast.success("Logout Successfully", {
+    position: "top-right",
+  });
   router.replace({ name: "Login" });
 };
 
@@ -92,6 +97,7 @@ a.router-link-exact-active {
   justify-content: space-between;
   align-items: center;
   z-index: 10;
+  box-shadow: var(--box-shadow);
 }
 
 .navbar .logo {
