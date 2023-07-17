@@ -35,9 +35,4 @@
     });
 </script>
 
-<style scoped>
-    .DatePicker-wrapper {
-        min-width: 325px;
-        max-width: 375px;
-    }
-</style>
+<style scoped></style>

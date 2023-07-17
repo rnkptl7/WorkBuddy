@@ -1,13 +1,15 @@
 <template>
-    <section class="w-100">
-        <div class="d-flex">
-            <v-btn rounded @click="activeComponent = LMSProfile">Profile</v-btn>
-            <v-btn rounded @click="activeComponent = ApprovalsVue">
+    <section class="leave-request-section-wrapper border my-3">
+        <div class="d-flex border ma-2">
+            <v-btn class="mx-2" rounded @click="activeComponent = LMSProfile"
+                >Profile</v-btn
+            >
+            <v-btn class="mx-2" rounded @click="activeComponent = ApprovalsVue">
                 Approvals</v-btn
             >
         </div>
         <!-- <KeepAlive> -->
-        <component :is="activeComponent" />
+        <component class="my-2" :is="activeComponent" />
         <!-- </KeepAlive> -->
     </section>
 </template>
@@ -19,4 +21,9 @@
     const activeComponent = ref(LMSProfile);
 </script>
 
-<style scoped></style>
+<style scoped>
+    .leave-request-section-wrapper {
+        width: min(1200px, 100%);
+        margin-inline: auto;
+    }
+</style>

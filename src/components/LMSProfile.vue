@@ -1,5 +1,5 @@
 <template>
-    <section class="LMS-wrapper d-flex flex-column pa-3 mx-auto">
+    <section class="LMS-wrapper d-flex flex-column pa-3 border">
         <ApplyLeaveModal
             :dialog="openRequestLeaveDialog"
             @closeLeaveRequestModal="
@@ -18,7 +18,7 @@
             >
         </div>
         <div
-            class="LMS-information_container d-flex flex-row flex-wrap justify-space-around rounded-lg pa-3 w-100"
+            class="LMS-information_container d-flex flex-row flex-wrap justify-space-around pa border mb-3"
         >
             <!-- Calendar and Leave count wrapper -->
             <div
@@ -32,16 +32,25 @@
                 >
                     <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
                         <div class="leaves_count pa-3">
-                            <h3>Leaves Left: 8</h3>
+                            <h3>
+                                Leaves Left:
+                                {{ leaveCountDetails?.leftLeaves }}
+                            </h3>
                             <h6>Expires on: January 26th, 2024</h6>
                         </div>
                         <div class="leaves_count pa-3">
-                            <h3>Leaves Taken: 2</h3>
+                            <h3>
+                                Leaves Taken:
+                                {{ leaveCountDetails?.takenLeaves }}
+                            </h3>
                             <h4></h4>
                         </div>
                     </div>
                     <div class="leaves_count pa-3">
-                        <h3>Total Allowances: 10</h3>
+                        <h3>
+                            Total Allowances:
+                            {{ leaveCountDetails?.TOTAL_LEAVES }}
+                        </h3>
                         <h6>For Year: 2023-24</h6>
                     </div>
                 </div>
@@ -62,11 +71,14 @@
             </div>
         </div>
         <!-- Leave History Table -->
-        <LeaveHistory :leaveHistory="leaves" />
+        <div class="border d-flex">
+            <LeaveHistory :leaveHistory="leaves" />
+        </div>
     </section>
 </template>
 
 <script setup lang="ts">
+    const TOTAL_ALLOWANCES = 10;
     import LeaveRequestCardVue from "./LeaveRequestCard.vue";
     import LeaveHistory from "./LeaveHistory.vue";
     import VCalendarVue from "./VCalendar.vue";
@@ -83,7 +95,8 @@
     // const db = useFirestore();
     // const leaves = useCollection(collection(db, "leaves"));
 
-    const { leaves } = storeToRefs(useLeavesStore());
+    const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
+    // console.log(leaveCountDetails.value.takenLeaves);
     const { getLeaves } = useLeavesStore();
     onMounted(async () => {
         await getLeaves();
@@ -93,7 +106,7 @@
 
 <style scoped>
     .LMS-wrapper {
-        width: 80%;
+        /* width: 80%; */
     }
     .LMS_container {
         background: whitesmoke;
