@@ -21,7 +21,6 @@
           </div>
 
           <!-- Show empty text when there is no item -->
-
           <div
             v-if="getDepartmentItems(department.id).length === 0"
             class="empty-placeholder"
@@ -44,12 +43,15 @@
                   class="department-user-icon"
                   v-if="item.gender === 'Male'"
                 >
-                  <img src="@/assets/images/male.png" alt="male-user-Icon" />
+                  <img
+                    src="@/assets/images/profile-male.png"
+                    alt="male-user-Icon"
+                  />
                 </v-avatar>
 
                 <v-avatar class="department-user-icon" v-else>
                   <img
-                    src="@/assets/images/female.png"
+                    src="@/assets/images/profile-female.png"
                     alt="female-user-Icon"
                   />
                 </v-avatar>
@@ -58,7 +60,7 @@
               <div class="employee-details">
                 <p class="title">Name: {{ item.fullName }}</p>
                 <p class="text">Email: {{ item.email }}</p>
-                <p class="text-subtitle-2">Location: India</p>
+                <p class="text-subtitle-2">Location: Ahmedabad - Gujarat</p>
               </div>
             </v-card>
           </div>
@@ -81,38 +83,35 @@ const departmentList = [
 ];
 
 //--------------------Sets necessary data for dragging an item--------------------//
-
 const draggedItem = ref({});
-
 const startDrag = (event, item) => {
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.id);
-
   draggedItem.value = item;
 };
+
 //--------------------Handles dropping an item into a department, updating its departmentId--------------------//
-
 const onDrop = async (event, departmentId) => {
-  const itemID = event.dataTransfer.getData("itemID");
+  const dragUserID = event.dataTransfer.getData("dragUserID");
 
-  const dragAndDropAlert = window.confirm(`Are You Sure?`);
+  const dragAndDropAlert = window.confirm(
+    `This Functionality will change user department! Are you sure want to change?`
+  );
   if (dragAndDropAlert === true) {
-    let item;
+    let dragUser;
     if (departmentId === 1) {
-      item = frontendDept.find((item) => item.id == itemID);
+      dragUser = frontendDept.find((dragUser) => dragUser.id == dragUserID);
     } else if (departmentId === 2) {
-      item = backendDept.find((item) => item.id == itemID);
+      dragUser = backendDept.find((dragUser) => dragUser.id == dragUserID);
     } else if (departmentId === 3) {
-      item = devopsDept.find((item) => item.id == itemID);
+      dragUser = devopsDept.find((dragUser) => dragUser.id == dragUserID);
     } else {
-      item = uiuxDept.find((item) => item.id == itemID);
+      dragUser = uiuxDept.find((dragUser) => dragUser.id == dragUserID);
     }
 
     //--------------------Update data in Firebase--------------------//
-
     const employeeDataRef = doc(db, "users", draggedItem.value.userID);
-
     await updateDoc(employeeDataRef, {
       "register.department": departmentList[departmentId - 1].name,
     });
@@ -128,7 +127,6 @@ const getDepartmentClass = (departmentId) => {
 };
 
 //--------------------Get User Data From Firebase and Display it on DOM--------------------//
-
 const db = useFirestore();
 let frontendDept = reactive([]);
 let backendDept = reactive([]);
@@ -147,7 +145,6 @@ async function getUserDataFromDB() {
       fullName: doc.data().register.fullName,
       department: doc.data().register.department,
       email: doc.data().register.email,
-      location: "India",
       gender: doc.data().register.gender,
       userID: doc.id,
       role: doc.data().register.role,
@@ -159,7 +156,7 @@ async function getUserDataFromDB() {
       frontendDept.push({ ...displayUserData, departmentId: 1 });
     } else if (doc.data().register.department === "Backend") {
       backendDept.push({ ...displayUserData, departmentId: 2 });
-    } else {
+    } else if (doc.data().register.department === "DevOps") {
       devopsDept.push({ ...displayUserData, departmentId: 3 });
     }
   });
@@ -198,7 +195,6 @@ getUserDataFromDB();
   background-color: #f0f3fb;
   color: #115173;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-  max-width: 1530px;
 }
 
 .v-row {
@@ -214,7 +210,7 @@ getUserDataFromDB();
 .devops-dept,
 .uiux-dept {
   font-size: 20px;
-  min-height: 90vh;
+  height: 70vh;
   background: #f0f3fb;
 }
 
@@ -222,10 +218,11 @@ getUserDataFromDB();
 
 .employee-avatar {
   text-align: left;
-  width: 65%;
+  width: 35%;
 }
 .employee-details {
   text-align: left;
+  width: 65%;
 }
 .employee-details .text {
   font-size: 15px;
@@ -234,7 +231,9 @@ getUserDataFromDB();
 .title,
 .text,
 .text-subtitle-2 {
-  padding: 7px 0px;
+  padding: 5px 0px;
+  font-size: 21px;
+  font-weight: 400;
 }
 
 .drag-el {
@@ -260,10 +259,12 @@ getUserDataFromDB();
 }
 
 .employee-card {
-  width: 90%;
+  width: 100%;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
   border-radius: 5px;
   margin-top: 15px;
+  margin-left: 5%;
+  margin-right: 5%;
   display: flex;
 }
 .employee-avtar {
@@ -280,16 +281,102 @@ getUserDataFromDB();
 }
 
 .department-user-icon {
-  text-align: left;
-  position: absolute;
-  left: 27px;
-  top: 35px;
+  margin-top: 10%;
+  margin-left: 10%;
 }
 
-@media only screen and (max-width: 1786px) and (min-width: 1300px) {
-  .department-title,
+@media only screen and (max-width: 1786px) and (min-width: 1500px) {
   .department-name {
-    font-size: 25px;
+    font-size: 20px;
+  }
+
+  .title,
+  .text {
+    font-size: 20px;
+  }
+
+  .text-subtitle-2 {
+    font-size: 13px !important;
+  }
+
+  .employee-details {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 1500px) and (min-width: 1380px) {
+  .department-name {
+    font-size: 20px;
+  }
+
+  .title,
+  .text {
+    font-size: 18px;
+  }
+
+  .text-subtitle-2 {
+    font-size: 12px !important;
+  }
+
+  .employee-details {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 1380px) and (min-width: 1230px) {
+  * {
+    max-width: 96vw;
+  }
+  .v-row {
+    display: grid;
+  }
+}
+
+@media only screen and (max-width: 1230px) and (min-width: 1100px) {
+  * {
+    max-width: 96vw;
+  }
+  .v-row {
+    display: grid;
+  }
+}
+
+@media only screen and (max-width: 1100px) and (min-width: 746px) {
+  * {
+    max-width: 96vw;
+  }
+  .v-row {
+    display: grid;
+  }
+}
+
+@media only screen and (max-width: 746px) and (min-width: 600px) {
+  * {
+    max-width: 96vw;
+  }
+  .v-row {
+    display: grid;
+  }
+}
+
+@media only screen and (max-width: 600px) and (min-width: 320px) {
+  * {
+    max-width: 96vw;
+  }
+  .v-row {
+    display: grid;
+  }
+
+  .department-name {
+    font-size: 20px;
+  }
+  .title,
+  .text {
+    font-size: 18px;
+  }
+
+  .text-subtitle-2 {
+    font-size: 13px !important;
   }
 }
 </style>
