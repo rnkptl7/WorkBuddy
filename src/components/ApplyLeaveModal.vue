@@ -1,87 +1,132 @@
 <template>
     <!-- <v-row justify="end"> -->
-    <v-dialog v-model="props.dialog" persistent width="500">
+    <v-dialog v-model="props.dialog" persistent width="600">
         <v-card>
-            <div class="pa-5">
+            <v-container class="pa-0">
+                <!-- <div class="pa-5"> -->
                 <h2>Request for Leave</h2>
                 <v-divider class="py-1"></v-divider>
-                <VForm class="form" @submit="submitRequest">
+                <VForm
+                    class="form"
+                    @submit="submitRequest"
+                    :validation-schema="validationSchema"
+                >
                     <div class="inputDiv">
-                        <select
-                            name="category"
+                        <vField
+                            name="leaveCategory"
+                            :bails="false"
                             class="input"
+                            v-slot="{ field, errors }"
                             v-model="leaveRequestInput.leaveCategory"
                         >
-                            <option value="" disabled selected>
-                                Leave Category*
-                            </option>
-                            <option value="Unplanned">Unplanned</option>
-                            <option value="Planned">Planned</option>
-                        </select>
-                        <ErrorMessage name="category" class="error_message" />
+                            <select
+                                name="category"
+                                class="input"
+                                v-bind="field"
+                            >
+                                <option value="" disabled selected>
+                                    Leave Category*
+                                </option>
+                                <option value="Unplanned">Unplanned</option>
+                                <option value="Planned">Planned</option>
+                            </select>
+                            <div
+                                class="error_message"
+                                v-for="err in errors"
+                                :key="err"
+                            >
+                                {{ err }}
+                            </div>
+                        </vField>
                     </div>
 
                     <div class="inputDiv">
-                        <input
-                            name="title"
+                        <vField
+                            name="leaveMessage"
                             placeholder="Leave message*"
                             type="text"
                             class="input"
+                            :validateOnInput="true"
                             v-model="leaveRequestInput.leaveMessage"
                         />
-                        <ErrorMessage name="title" class="error_message" />
+                        <ErrorMessage
+                            name="leaveMessage"
+                            class="error_message"
+                        />
                     </div>
 
                     <div
                         class="inputDiv flex-column justify-space-around w-100"
                     >
                         <div class="date_input_wrapper w-50">
-                            <label for="startDate ">Start Date</label>
-                            <input
+                            <label>Start Date</label>
+                            <vField
                                 name="startDate"
-                                placeholder="Leave message*"
+                                placeholder="‎"
                                 type="date"
                                 class="input w-100"
                                 v-model="leaveRequestInput.startDate"
                             />
-                            <ErrorMessage name="title" class="error_message" />
+                            <ErrorMessage
+                                name="startDate"
+                                class="error_message"
+                            />
                         </div>
                         <div class="date_input_wrapper w-50">
-                            <label for="endDate">End Date</label>
-                            <input
-                                name="startDate"
-                                placeholder=""
+                            <label>End Date</label>
+
+                            <vField
+                                name="endDate"
+                                placeholder="‎"
                                 type="date"
                                 class="input w-100"
                                 v-model="leaveRequestInput.endDate"
                             />
-                            <ErrorMessage name="title" class="error_message" />
+                            <ErrorMessage
+                                name="endDate"
+                                class="error_message"
+                            />
                         </div>
                     </div>
 
                     <div class="inputDiv">
-                        <textarea
+                        <vField
                             name="description"
-                            placeholder="Description*"
-                            type="text"
-                            class="input"
+                            :bails="false"
+                            v-slot="{ field, errors }"
                             v-model="leaveRequestInput.description"
-                        />
-                        <ErrorMessage
-                            name="description"
-                            class="error_message"
-                        />
+                        >
+                            <textarea
+                                type="text"
+                                placeholder="Description*"
+                                id="description"
+                                class="input"
+                                name="description"
+                                rows="3"
+                                v-bind="field"
+                            />
+                            <div
+                                class="error_message"
+                                v-for="err in errors"
+                                :key="err"
+                            >
+                                {{ err }}
+                            </div>
+                        </vField>
                     </div>
 
                     <div class="inputDiv">
-                        <input
-                            name="title"
-                            placeholder="Requesting To*"
+                        <vField
+                            name="requestingToEmail"
+                            placeholder="Requesting to Email*"
                             type="email"
-                            class="input"
+                            class="input w-100"
                             v-model="leaveRequestInput.requestingToEmail"
                         />
-                        <ErrorMessage name="title" class="error_message" />
+                        <ErrorMessage
+                            name="requestingToEmail"
+                            class="error_message"
+                        />
                     </div>
 
                     <small>*indicates required field</small>
@@ -98,7 +143,8 @@
                         </v-btn>
                     </div>
                 </VForm>
-            </div>
+            </v-container>
+            <!-- </div> -->
         </v-card>
     </v-dialog>
     <!-- </v-row> -->
@@ -123,10 +169,79 @@
 
     // Database reference
     const db = useFirestore();
+    const today = new Date();
 
     const dialog = ref(false);
     const props = defineProps(["dialog"]);
     const emits = defineEmits(["closeLeaveRequestModal"]);
+    const validationSchema = reactive({
+        leaveCategory: "required",
+        leaveMessage: "required",
+        description: "required|min:30",
+        startDate: (value) => {
+            if (value) {
+                const date = new Date(value);
+                let yesterday = new Date();
+                let tomorrow = new Date();
+                // Define the minimum and maximum dates
+                if (leaveRequestInput.leaveCategory == "Unplanned") {
+                    tomorrow.setDate(tomorrow.getDate() + 2);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                } else if (leaveRequestInput.leaveCategory == "Planned") {
+                    yesterday.setDate(yesterday.getDate() + 3);
+                    return date > yesterday
+                        ? true
+                        : `Start Date should above ${yesterday}`;
+                }
+                return date > yesterday && date <= tomorrow
+                    ? true
+                    : `Start Date should between ${yesterday} and ${tomorrow}`;
+            } else {
+                return "Please choose a Start Date.";
+            }
+        },
+        endDate: (value) => {
+            if (value) {
+                const date = new Date(value);
+                let yesterday = new Date(leaveRequestInput.startDate);
+                let tomorrow = new Date(leaveRequestInput.startDate);
+                // Define the minimum and maximum dates
+
+                if (leaveRequestInput.startDate > date) {
+                    return "End date should be greater than Start date.";
+                } else {
+                    if (leaveRequestInput.leaveCategory == "Unplanned") {
+                        // console.log(leaveRequestInput.leaveCategory);
+                        tomorrow.setDate(tomorrow.getDate() + 3);
+                        yesterday.setDate(yesterday.getDate() + 1);
+                    } else if (leaveRequestInput.leaveCategory == "Planned") {
+                        // console.log(leaveRequestInput.leaveCategory);
+                        // console.log(leaveRequestInput.startDate);
+                        tomorrow.setDate(
+                            tomorrow.getDate() +
+                                leaveCountDetails.value.leftLeaves
+                        );
+                        console.log(tomorrow);
+                        return date <= tomorrow
+                            ? true
+                            : `End Date should below ${tomorrow}`;
+                    }
+                    return date >= yesterday && date <= tomorrow
+                        ? true
+                        : `End Date should between ${yesterday} and ${tomorrow}`;
+                }
+            } else {
+                return "Please choose a End Date.";
+            }
+        },
+        requestingToEmail: "required|email",
+    });
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 4);
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() + 1);
+    let minDate = ref(yesterday);
+    let maxDate = ref(tomorrow);
 
     let leaveRequestInput = reactive({
         leaveCategory: "",
@@ -207,7 +322,8 @@
 
     .form .inputDiv {
         margin: 15px 0;
-        display: flex;
+        /* display: flex;
+        flex-direction: column; */
     }
 
     .form .inputDiv input,

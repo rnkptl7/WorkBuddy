@@ -13,9 +13,9 @@
                     {{ leave.endDate }}
                 </span>
             </div>
-            <div class="ld-card-body d-flex flex-column ma-2">
+            <div class="ld-card-body d-flex flex-column mx-4 mb-5">
                 <h3>{{ leave.leaveMessage }}</h3>
-                <div class="ld-category d-flex flex-row">
+                <div class="ld-category d-flex flex-row my-3">
                     <span
                         class="border rounded-pill px-2 text-caption text-uppercase"
                         >{{ leave.leaveCategory }}</span
@@ -174,8 +174,8 @@
         background-color: rgb(255, 240, 220);
         color: orangered;
     }
-    .ld-modal-card-body_description {
-        min-height: 50px;
+    p {
+        /* min-height: 50px; */
         word-break: break-all;
     }
     .ld-card_logo {

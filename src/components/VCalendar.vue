@@ -35,4 +35,13 @@
     });
 </script>
 
-<style scoped></style>
+<style>
+    .vc-pane {
+        width: 400px;
+    }
+    @media screen and (max-width: 1050px) {
+        .vc-pane {
+            width: 300px;
+        }
+    }
+</style>

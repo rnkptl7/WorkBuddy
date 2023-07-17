@@ -2,17 +2,20 @@
     <section class="d-flex flex-row flex-fill w-100">
         <!-- Pending Leave Requests -->
         <div
-            class="LMS-pending_requests d-flex flex-fill flex-column align-center pa-3 w-75"
+            class="admin-pending_requests d-flex flex-fill flex-column align-center pa-3 w-100"
         >
             <h3>Your Pending Requests:</h3>
-            <div class="pending-requests_cards d-flex flex-column">
-                <div v-for="(item, index) in leavesStore.leaves" :key="index">
+            <div class="pending-requests_cards">
+                <template
+                    v-for="(item, index) in leavesStore.leaves"
+                    :key="index"
+                >
                     <LeaveRequestCard
                         :leave="item"
                         :isAdmin="true"
                         v-if="item.status === 'pending'"
                     />
-                </div>
+                </template>
             </div>
         </div>
     </section>
@@ -29,6 +32,15 @@
 </script>
 
 <style scoped>
-    .LMS-pending_requests {
+    .pending-requests_cards {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-column-gap: 4rem;
+    }
+
+    @media screen and (max-width: 950px) {
+        .pending-requests_cards {
+            grid-template-columns: auto;
+        }
     }
 </style>
