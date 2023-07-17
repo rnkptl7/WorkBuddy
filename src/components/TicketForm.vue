@@ -127,14 +127,10 @@
       closedBy: "-"
     })
 
-    const { fetchAllTickets, fetchByCategory, fetchByMonths, fetchTicketsByStatus } = useTicketStore();
+    const { fetchAllTickets, fetchByCategory, fetchByMonths, fetchTicketsByStatus, userName, userId } = useTicketStore();
     
     async function createTicket() {
       dialog.value = false;
-
-      const userId = "8myANlkdZmLQ3qccNAeE"; //TODO: Localstorage
-      const userInfo = await getDoc(doc(db, "users", userId));
-      const userName = userInfo.data()?.register.fullName;
 
       ticketData = {...ticketData, createdOn: moment(new Date()).format('DD-MM-YYYY')}
 

@@ -1,8 +1,6 @@
 <template>
   <aside class="sidebar-menu" :class="{ showSidebar: showNav }">
     <router-link :to="{ name: 'Home' }"> Home </router-link>
-    <router-link :to="{ name: 'Login' }">Login </router-link>
-    <router-link :to="{ name: 'Register' }">Register </router-link>
     <router-link :to="{ name: 'Help' }">Help Me </router-link>
   </aside>
 </template>
@@ -18,8 +16,9 @@ const { showNav } = storeToRefs(commonStore);
 <style scoped>
 .sidebar-menu {
   position: fixed;
+  z-index: 10;
   height: 90vh;
-  width: 14rem;
+  width: 15rem;
   background: #f0f3fb;
   box-shadow: 0px 10px 10px -4px black;
 }

@@ -9,7 +9,7 @@
           <v-container>
               <h2>Ticket Raised By {{ userName }}</h2>
               <v-divider class="py-1"></v-divider>
-                <VForm class="form" :validation-schema="schema" @submit="updateTicketStatus">
+              <VForm class="form" :validation-schema="schema" @submit="updateTicketStatus">
                     <div class="inputDiv">
                         <input type="text" :value="ticketToBeClosed.category" disabled >
                     </div>
@@ -30,21 +30,21 @@
                         <input type="text" :value="ticketToBeClosed.priority" disabled>
                     </div>
 
-                    <div class="inputDiv">
-                        <VField
-                        name="status"
-                        :bails="false"
-                        v-slot="{ field }"
-                        v-model="ticketToBeClosed.status"
-                        >
-                        <select v-bind="field" class="input">
-                            <option disabled value="">Open</option>
-                            <option value="Closed">Close</option>
-                        </select>
-                        <div class="error_message">
-                            Status should be Close to terminate a ticket
-                        </div>
-                        </VField>
+                <div class="inputDiv">
+                  <VField
+                      name="status"
+                      :bails="false"
+                      v-slot="{ field, errors }"
+                      v-model="ticketToBeClosed.status"
+                    >
+                      <select v-bind="field" class="input" name="status">
+                        <option disabled value="">Open</option>
+                        <option value="Closed">Closed</option>
+                      </select>
+                      <div class="error_message" v-if="errors">
+                        Status should be Closed to terminate ticket
+                      </div>
+                    </VField>
                 </div>
 
             <v-spacer></v-spacer>

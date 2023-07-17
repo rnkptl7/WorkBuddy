@@ -1,4 +1,5 @@
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
+import { useAuthStore } from "./authStore";
 import moment from 'moment';
 import { ref, reactive } from 'vue';
 import { useFirestore } from "vuefire";
@@ -12,21 +13,22 @@ export const useTicketStore = defineStore('ticketStore', () => {
     const ticketsByMonth = ref([]);
     const showCloseTicketForm = ref(false);
     const ticketToBeClosed = ref({});
-    const userId = ref(localStorage.getItem('userId'));
-    const userName = ref(localStorage.getItem('fullName'));
-    const isAdmin = ref(localStorage.getItem('isAdmin'));
+
+    const { userId, fullName: userName, isAdmin } = storeToRefs(useAuthStore());
+
  
     const db = useFirestore();
     const colRef = collection(db, 'tickets');
 
     async function fetchTicketsByStatus() {
       let ticketList = [];
+      
       if (isAdmin.value) {
         ticketList = await getDocs(colRef);
       }
       else {
         const q = query(colRef, where('userId', "==", userId.value));
-        ticketList = await getDocs(q);
+        ticketList = await getDocs(q);  
       }
 
       closedTickets.value = [];

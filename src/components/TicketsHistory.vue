@@ -11,7 +11,7 @@
       <v-toolbar flat color="#F0F3FB">
         <v-toolbar-title>
             <div>
-              <h3>Closed Tickets</h3>
+              <h3 class="title">Closed Tickets</h3>
             </div>
         </v-toolbar-title>
       </v-toolbar>
@@ -29,13 +29,9 @@
 </template>
 
 <script setup>
-  import TicketForm from './TicketForm.vue';
-  import { ref, reactive } from 'vue';
-  import moment from 'moment'
+  import { ref } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useTicketStore } from '@/stores/ticketStore';
-  import { useFirestore, useCollection } from "vuefire";
-  import { collection, addDoc, getDocs, query, doc, getDoc, arrayUnion, updateDoc, where } from 'firebase/firestore';
 
   const { closedTickets } = storeToRefs(useTicketStore());
   
@@ -59,5 +55,9 @@
 
 .v-toolbar-title__placeholder {
   overflow: visible !important;
+}
+
+.title {
+  color: var(--primary-color);
 }
 </style>

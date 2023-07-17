@@ -55,12 +55,15 @@ import router from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
+import { useTicketStore } from "@/stores/ticketStore";
 
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
+const ticketStore = useTicketStore();
 const db = useFirestore();
 
-const { isLoggedIn, fullname } = storeToRefs(authStore);
+const { isLoggedIn, fullname,  } = storeToRefs(authStore);
+const { fetchAllTickets, fetchTicketsByStatus } = ticketStore;
 const { showPassword } = storeToRefs(commonStore);
 const { showPasswordChange } = commonStore;
 
@@ -94,7 +97,11 @@ const submitData = async () => {
     localStorage.setItem("isLoggedIn", true);
     isLoggedIn.value = true;
     fullname.value = userData.register.fullName;
+
     router.replace({ name: "Home" });
+
+    fetchAllTickets();
+    fetchTicketsByStatus();
   } else {
     alert("Invalid Credentials");
   }

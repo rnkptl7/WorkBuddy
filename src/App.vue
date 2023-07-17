@@ -37,7 +37,7 @@ const { showNav } = storeToRefs(commonStore);
 }
 
 .main-layout .main-content-margin {
-  margin-left: 14rem;
+  margin-left: 15rem;
   padding: 10px;
 }
 

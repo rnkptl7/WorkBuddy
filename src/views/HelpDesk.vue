@@ -11,7 +11,7 @@
     <section class="charts-wrapper">
       
       <section class="chart-wrapper rounded">
-        <h3 class="chart-description pl-1">All Tickets</h3>
+        <h3 class="chart-title pl-1">All Tickets</h3>
         <v-divider class="my-2"></v-divider>
         <div class="line-wrapper">
           <LineChart />
@@ -19,7 +19,7 @@
       </section>
 
       <section class="chart-wrapper rounded">
-        <h3 class="chart-description pl-1">Issues by type</h3>
+        <h3 class="chart-title pl-1">Issues by type</h3>
         <v-divider class="mt-2"></v-divider>
         <div class="doughnut-wrapper">
           <DoughnutChart />
@@ -69,6 +69,10 @@ import CloseTicketForm from '@/components/CloseTicketForm.vue';
   .chart-wrapper {
     box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
     padding: 1rem;
+  }
+
+  .chart-title {
+    color: var(--primary-color);
   }
 
   .line-wrapper, .doughnut-wrapper {

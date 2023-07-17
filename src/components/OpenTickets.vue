@@ -3,7 +3,7 @@
         <v-toolbar flat color="#F0F3FB">
             <v-toolbar-title>
                 <div class="d-flex justify-space-between w-100 align-center title-wrapper">
-                    <h3>Open Tickets</h3>
+                    <h3 class="title">Open Tickets</h3>
                     <TicketForm />
                 </div>
             </v-toolbar-title>
@@ -75,5 +75,9 @@
     height: 25px;
     object-fit: contain;
     cursor: pointer;
+}
+
+.title {
+    color: var(--primary-color);
 }
 </style>

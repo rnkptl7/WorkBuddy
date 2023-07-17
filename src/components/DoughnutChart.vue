@@ -1,5 +1,4 @@
 <template>
-    <!-- {{ Array.from(tickets.value) }} -->
     <Doughnut :data="chartData" :options="options" />
 </template>
     

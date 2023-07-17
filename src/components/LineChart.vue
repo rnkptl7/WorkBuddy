@@ -19,10 +19,24 @@ import {
 const { fetchByMonths } = useTicketStore();
 const { ticketsByMonth } = storeToRefs(useTicketStore());
 
-async function fetchData() {
+async function fetchData(): Promise<void> {
   await fetchByMonths();
 }
 fetchData();
+
+// interface chart {
+//   labels: string[],
+//   datasets: {
+//     label: string,
+//     backgroundColor: string,
+//     borderColor: string,
+//     data: string[],
+//     tension: number,
+//     fill: string,
+//     pointBackgroundColor: string,
+//     pointHoverBorderWidth: string
+//   }[]
+// }
 
 const chartData = computed(() => {
   return {
