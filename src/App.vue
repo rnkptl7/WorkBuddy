@@ -3,14 +3,11 @@ import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
 
 import { useAuthStore } from "@/stores/authStore";
-import { useCommonStore } from "./stores/commonStore";
 import { storeToRefs } from "pinia";
 
 const authStore = useAuthStore();
-const commonStore = useCommonStore();
 
 const { isLoggedIn } = storeToRefs(authStore);
-const { showNav } = storeToRefs(commonStore);
 </script>
 
 <template>

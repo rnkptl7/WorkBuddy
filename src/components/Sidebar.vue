@@ -15,10 +15,11 @@ const { showNav } = storeToRefs(commonStore);
 <style scoped>
 .sidebar-menu {
     position: fixed;
+    z-index: 10;
     height: 90vh;
     width: 14rem;
     background: #f0f3fb;
-    box-shadow: 0px 10px 10px -4px black;
+    box-shadow: var(--box-shadow);
 }
 
 .position_left {

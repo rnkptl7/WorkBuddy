@@ -14,7 +14,7 @@ export const useCommonStore = defineStore("commonStore", {
     actions: {
         handleView() {
             console.log("Resize");
-            this.mobileView = window.innerWidth <= 1000;
+            this.mobileView = window.innerWidth <= 1250;
         },
         showPasswordChange() {
             this.showPassword = !this.showPassword;
