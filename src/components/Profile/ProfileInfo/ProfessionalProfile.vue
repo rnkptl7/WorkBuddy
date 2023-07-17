@@ -1,26 +1,24 @@
 <template>
-    <VForm
-        :validation-schema="professionalSchema"
-        :class="{ editable: !isEdit }"
-        @submit="updateProfessionalInfo"
-    >
+    <VForm :class="{ editable: !isEdit }" @submit="updateProfessionalInfo">
         <fieldset>
-            <legend>Professional Details:</legend>
+            <legend>Profession al Details:</legend>
             <div class="legend-input">
-                <label for="qualification">Qualification :</label>
-                <VField
-                    name="qualification"
-                    :bails="false"
-                    v-slot="{ field, errors }"
-                    v-model="professional.qualification"
-                >
-                    <select v-bind="field" class="input" :disabled="isEdit">
-                        <option disabled value="">Select Your Degree ></option>
-                        <option value="btech">B.E/B.Tech</option>
-                        <option value="mtech">M.Tech</option>
-                        <option value="diploma">Diploma</option>
-                        <option value="hsc/ssc">HSC/SSC</option>
-                    </select>
+                <label for="qualification">Qualification:</label>
+                <VField name="qualification" :bails="false" v-slot="{ errors }">
+                    <input
+                        list="qualification"
+                        id="country"
+                        name="qualification"
+                        v-model="professional.qualification"
+                        :disabled="isEdit"
+                        class="input"
+                    />
+                    <datalist id="qualification">
+                        <option value="M.Tech"></option>
+                        <option value="B.Tech/B.E"></option>
+                        <option value="Diploma"></option>
+                        <option value="HSC/SSC"></option>
+                    </datalist>
                     <div class="error_message" v-for="err in errors" :key="err">
                         {{ err }}
                     </div>
@@ -35,18 +33,21 @@
                     v-model="professional.cdate"
                     :disabled="isEdit"
                 />
+                <ErrorMessage name="cdate" class="error_message" />
             </div>
             <div class="legend-input">
                 <label for="totalExp">Total Experience:</label>
                 <VField
                     name="totalExp"
-                    type="number"
+                    type="integer"
                     class="input"
                     disabled
                     v-model="professional.totalExp"
                 />
             </div>
-            <div class="button-box" v-if="isAdmin == 'admin'">
+            <ErrorMessage name="totalExp" class="error_message" />
+
+            <div class="button-box" v-if="true">
                 <v-slide-group>
                     <v-btn
                         v-if="isEdit"
@@ -99,23 +100,22 @@ const closeForm = () => {
 const isEdit = ref(true);
 const toggleEdit = () => (isEdit.value = !isEdit.value);
 const professionalSchema = {
-    qualification: "alphaSpaces",
-    totalExp: "required",
     cdate: (value) => {
         const inputDate = new Date(value);
-        const today = new Date();
-        const lastDate = new Date("1923-12-31");
-        const dateInFutureError = "Date cannot be in the future";
-        const dateInPastError = "Date cannot be earlier than 01-01-1924";
-        if (inputDate >= jdate) {
+        const joiningDate = new Date(jdate);
+        const dateInFutureError = "Date cannot be ahead of Joining Date";
+        if (inputDate >= joiningDate) {
             return dateInFutureError;
-        } else if (inputDate <= lastDate) {
-            return dateInPastError;
-        } else {
-            return true;
         }
     },
 };
+function calculateExperience() {
+    const experience = new Date(professional.experience);
+    const expInMilliSecond = Date.now() - experience.getTime();
+    const expDate = new Date(expInMilliSecond);
+    const calculatedExperience = Math.abs(expDate.getUTCFullYear() - 1970);
+    professional.experience = calculatedExperience;
+}
 let jdate;
 let professional = reactive({
     qualification: "",
@@ -126,8 +126,8 @@ let professionalCopy = {};
 const priorData = async () => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
-        console.log(docSnap.data().professional);
-        jdate = docSnap.data().register.jdate;
+        jdate = docSnap.data().employee.jdate;
+        console.log(jdate, "///////////");
         professional.cdate = docSnap.data().professional.cdate || "";
         professional.totalExp = docSnap.data().professional.totalExp || "";
         professional.qualification =
@@ -138,10 +138,12 @@ const priorData = async () => {
     }
 };
 const updateProfessionalInfo = async () => {
+    console.log("::::::::::::::::");
     await updateDoc(doc(db, "users", key), {
         professional: { ...professional },
     });
     toggleEdit();
+    console.log(professional, "::::::::::::::::");
 };
 </script>
 <style scoped>

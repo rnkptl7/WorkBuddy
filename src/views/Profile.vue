@@ -1,11 +1,13 @@
 <template>
     <section class="flex-fill">
         <ProfileIcon @toggle="toggleFunc" />
+        <AchievementModal />
         <v-divider></v-divider>
         <div v-if="toggleValue" class="profiles">
             <div class="left-profile">
                 <ProfileDetails />
             </div>
+
             <div class="right-profile"><ProfileTimeline /></div>
         </div>
         <div v-else>
@@ -17,9 +19,12 @@
 <script setup>
 import { ref } from "vue";
 import ProfileIcon from "../components/Profile/ProfileIcon.vue";
+import AchievementModal from "../components/Profile/AchievementModal.vue";
+
 import ProfileDetails from "../components/Profile/ProfileDetails.vue";
 import ProfileTimeline from "../components/Profile/ProfileTimeline.vue";
 import ProfileInfo from "../components/Profile/ProfileInfo.vue";
+// import ProfileLeaves from "../components/Profile/ProfileLeaves.vue";
 
 const toggleValue = ref(true);
 function toggleFunc(isProfileSelected) {

@@ -94,6 +94,7 @@ a.router-link-exact-active {
     padding: 20px 30px;
     justify-content: space-between;
     align-items: center;
+    z-index: 10;
 }
 
 .navbar .logo {
@@ -127,6 +128,11 @@ a.router-link-exact-active {
     cursor: pointer;
 }
 
+.hamburgerMenu {
+    width: 30px;
+    cursor: pointer;
+}
+
 img {
     width: 27px;
     display: flex;
@@ -137,17 +143,32 @@ img {
     width: 20px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 575px) {
+    .navbar .navbar-item ul li {
+        margin: 0 0.2rem;
+    }
     .navbar .navbar-item ul li a {
-        font-size: 18px;
         padding: 1rem;
     }
 }
 
-@media screen and (max-width: 560px) {
+@media screen and (max-width: 520px) {
+    .navbar {
+        padding: 14px 7px;
+    }
+
+    .navbar .logo {
+        padding: 10px 5px;
+    }
+    .navbar .navbar-item ul li {
+        margin: 0 0.2rem;
+    }
     .navbar .navbar-item ul li a {
-        font-size: 18px;
-        padding: 1rem;
+        padding: 0.2rem;
+    }
+
+    img {
+        width: 21px;
     }
 }
 </style>
