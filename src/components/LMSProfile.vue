@@ -62,12 +62,7 @@
       <!-- Pending Leave Requests -->
       <div class="LMS-pending_requests d-flex flex-column align-center pa-3">
         <h3>Your Pending Requests:</h3>
-        <!-- <div
-          class="pendingLeaves_placeholder d-flex flex-row justify-center align-center border w-100 h-50 rounded ma-2"
-          v-if="pendingLeaves.length == 0"
-        >
-          <h1>No Pending Requests</h1>
-        </div> -->
+
         <div class="pending-requests_cards d-flex flex-column">
           <template v-for="(item, index) in leaves" :key="index">
             <LeaveRequestCardVue
