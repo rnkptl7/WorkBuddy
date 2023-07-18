@@ -13,7 +13,7 @@ export const useCommonStore = defineStore("commonStore", {
     },
     actions: {
         handleView() {
-            console.log("Resize");
+            // console.log("Resize");
             this.mobileView = window.innerWidth <= 1250;
         },
         showPasswordChange() {

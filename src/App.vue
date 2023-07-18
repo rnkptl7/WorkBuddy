@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import Navbar from "./components/Navbar.vue";
-import Sidebar from "./components/Sidebar.vue";
+    import Navbar from "./components/Navbar.vue";
+    import Sidebar from "./components/Sidebar.vue";
 
-import { useAuthStore } from "@/stores/authStore";
-import { storeToRefs } from "pinia";
+    import { useAuthStore } from "@/stores/authStore";
+    import { storeToRefs } from "pinia";
 
-const authStore = useAuthStore();
+    const authStore = useAuthStore();
 
-const { isLoggedIn } = storeToRefs(authStore);
+    const { isLoggedIn } = storeToRefs(authStore);
 </script>
 
 <template>
@@ -27,45 +27,45 @@ const { isLoggedIn } = storeToRefs(authStore);
 </template>
 
 <style scoped>
-.main-layout {
-    width: 100vw;
-}
-
-.main-layout .main-content {
-    padding: 0 20rem;
-}
-
-.main-layout .main-content-margin {
-    margin-left: 15rem;
-    padding: 10px;
-}
-
-@media screen and (max-width: 1130px) {
-    .main-layout .main-content {
-        padding: 0 5rem;
+    .main-layout {
+        width: 100vw;
     }
-}
-@media screen and (max-width: 630px) {
+
     .main-layout .main-content {
-        padding: 0rem;
+        padding: 0 20rem;
     }
-}
-@media screen and (max-width: 1250px) {
+
     .main-layout .main-content-margin {
-        margin-left: 0rem;
+        margin-left: 15rem;
+        padding: 10px;
     }
-}
 
-.route-enter-from {
-    opacity: 0;
-    transform: translateX(-200px);
-}
-.route-enter-active,
-.route-leave-active {
-    transition: all 0.3s ease-out;
-}
-.route-leave-to {
-    opacity: 0;
-    transform: translateX(0px);
-}
+    @media screen and (max-width: 1130px) {
+        .main-layout .main-content {
+            padding: 0 5rem;
+        }
+    }
+    @media screen and (max-width: 630px) {
+        .main-layout .main-content {
+            padding: 0rem;
+        }
+    }
+    @media screen and (max-width: 1250px) {
+        .main-layout .main-content-margin {
+            margin-left: 0rem;
+        }
+    }
+
+    .route-enter-from {
+        opacity: 0;
+        transform: translateX(-200px);
+    }
+    .route-enter-active,
+    .route-leave-active {
+        transition: all 0.3s ease-out;
+    }
+    .route-leave-to {
+        opacity: 0;
+        transform: translateX(0px);
+    }
 </style>

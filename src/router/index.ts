@@ -35,6 +35,12 @@ const router = createRouter({
             meta: { requiresAuth: true },
             component: () => import("@/views/Profile.vue"),
         },
+        {
+            path: "/leave-request",
+            name: "leaveRequest",
+            meta: { requiresAuth: true },
+            component: () => import("@/views/LeaveRequest.vue"),
+        },
     ],
 });
 
