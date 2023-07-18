@@ -74,7 +74,7 @@
         status: "required",
     }
 
-    async function updateTicketStatus() {
+    async function updateTicketStatus(): Promise<void> {
         
         if (ticketToBeClosed.value.status === "Closed") {
             const docRef = doc(db, "tickets", ticketToBeClosed.value.id);

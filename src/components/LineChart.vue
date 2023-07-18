@@ -24,36 +24,23 @@ async function fetchData(): Promise<void> {
 }
 fetchData();
 
-const chartData = computed(() => {
-    return {
-        labels: [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-        ],
-        datasets: [
-            {
-                label: "Total Tickets",
-                backgroundColor: "#F993A2",
-                borderColor: "#F993A2",
-                data: Array.from(ticketsByMonth.value),
-                tension: 0.1,
-                fill: "#F993A2",
-                pointBackgroundColor: "#F96A65",
-                pointHoverBorderWidth: "3",
-            },
-        ],
-    };
-});
+const chartData: any = computed(() => {
+  return {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
+      {
+        label: 'Total Tickets',
+        backgroundColor: '#F993A2',
+        borderColor: "#F993A2",
+        data: Array.from(ticketsByMonth.value),
+        tension: 0.1,
+        fill: "#F993A2",
+        pointBackgroundColor: "#F96A65",
+        pointHoverBorderWidth: "3"
+      }
+    ]
+  }
+})
 
 const options = {
     responsive: true,
