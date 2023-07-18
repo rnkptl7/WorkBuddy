@@ -71,18 +71,21 @@
             >
                 <h3>Your Pending Requests:</h3>
                 <div
-                    class="pending-requests_cards d-flex flex-column"
-                    v-if="leaves.length !== 0"
+                    class="pendingLeaves_placeholder d-flex flex-row justify-center align-center border w-100 h-50 rounded ma-2"
+                    v-if="pendingLeaves.length == 0"
                 >
-                    <template v-for="(item, index) in leaves" :key="index">
+                    <h1>No Pending Requests</h1>
+                </div>
+                <div class="pending-requests_cards d-flex flex-column" v-else>
+                    <template
+                        v-for="(item, index) in pendingLeaves"
+                        :key="index"
+                    >
                         <LeaveRequestCardVue
                             :leave="item"
                             v-if="item.status == 'pending'"
                         />
                     </template>
-                </div>
-                <div class="pending-requests_cards d-flex flex-column" v-else>
-                    <h1>No Pending Requests</h1>
                 </div>
             </div>
         </div>
@@ -111,6 +114,10 @@
     const { mobileView: isMobile } = storeToRefs(useCommonStore());
 
     const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
+    let pendingLeaves = ref([]);
+    pendingLeaves.value = leaves.value.filter((leave) => {
+        return leave.status == "pending";
+    });
     const { getLeaves, getLeaveCounterDetails } = useLeavesStore();
     onMounted(async () => {
         await getLeaves();
@@ -160,6 +167,11 @@
     .pending-requests_cards > .pending_card {
         display: flex;
         flex: 1 1 auto;
+    }
+
+    .pendingLeaves_placeholder {
+        border-radius: 5%;
+        border: 2px dashed var(--secondary-color);
     }
 
     @media screen and (max-width: 840px) {
