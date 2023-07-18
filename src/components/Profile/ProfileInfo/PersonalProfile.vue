@@ -8,52 +8,60 @@
             <legend>Personal Details:</legend>
             <div class="legend-input">
                 <label for="fname">Full Name:</label>
-                <VField
-                    name="name"
-                    placeholder="Enter your fullName"
-                    type="text"
-                    class="input"
-                    v-model="personal.fullName"
-                    disabled
-                />
-                <ErrorMessage name="name" class="error_message" />
+                <div>
+                    <VField
+                        name="name"
+                        placeholder="Enter your fullName"
+                        type="text"
+                        class="input"
+                        v-model="personal.fullName"
+                        disabled
+                    />
+                    <ErrorMessage name="name" class="error_message" />
+                </div>
             </div>
             <div class="legend-input">
                 <label for="gender" class="genderLabel">Gender: </label>
-                <VField
-                    name="gender"
-                    type="text"
-                    class="input"
-                    disabled
-                    v-model="personal.gender"
-                />
-                <ErrorMessage name="gender" class="error_message" />
+                <div>
+                    <VField
+                        name="gender"
+                        type="text"
+                        class="input"
+                        disabled
+                        v-model="personal.gender"
+                    />
+                    <ErrorMessage name="gender" class="error_message" />
+                </div>
             </div>
             <div class="legend-input">
                 <label for="dob">DOB:</label>
-                <VField
-                    name="dob"
-                    placeholder=" "
-                    type="date"
-                    class="input"
-                    v-model="personal.dob"
-                    :max="maxDate"
-                    :disabled="isEdit"
-                />
-                <ErrorMessage name="dob" class="error_message" />
+                <div>
+                    <VField
+                        name="dob"
+                        placeholder=" "
+                        type="date"
+                        class="input"
+                        v-model="personal.dob"
+                        :max="maxDate"
+                        :disabled="isEdit"
+                    />
+                    <ErrorMessage name="dob" class="error_message" />
+                </div>
             </div>
             <div class="legend-input">
                 <label for="fname">Home Address:</label>
-                <VField
-                    name="address"
-                    placeholder="Enter your address"
-                    type="text"
-                    class="input"
-                    v-model="personal.address"
-                    :disabled="isEdit"
-                />
+                <div>
+                    <VField
+                        name="address"
+                        placeholder="Enter your address"
+                        type="text"
+                        class="input"
+                        v-model="personal.address"
+                        :disabled="isEdit"
+                    />
+                    <ErrorMessage name="address" class="error_message" />
+                </div>
             </div>
-            <ErrorMessage name="address" class="error_message" />
             <div class="legend-input">
                 <label for="fname">Mobile No:</label>
                 <div>
@@ -158,12 +166,11 @@ const priorData = async () => {
         const personalData = docSnap.data().personal || {};
         const registerData = docSnap.data().register || {};
 
-        personal.fullName =
-            personalData.fullName || registerData.fullName || "";
-        personal.gender = personalData.gender || registerData.gender || "";
-        personal.dob = personalData.dob || registerData.dob || "";
-        personal.address = personalData.address || registerData.address || "";
-        personal.mobile = personalData.mobile || registerData.mobile || "";
+        personal.fullName = registerData.fullName || "";
+        personal.gender = registerData.gender || "";
+        personal.dob = personalData.dob || "";
+        personal.address = personalData.address || "";
+        personal.mobile = personalData.mobile || "";
         personalCopy = { ...personal };
     } else {
         return;

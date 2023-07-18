@@ -5,11 +5,12 @@
                 Add Achievements
             </v-btn>
         </div>
-        <div v-if="noAchievement" class="text-center">
-            <img src="../../assets/images.close.png" alt="No achievements" />
-            <p>No achievements available</p>
-        </div>
-        <v-timeline v-else line-thickness="5" line-color="#6eb4d933">
+
+        <v-timeline
+            v-if="!noAchievement"
+            line-thickness="5"
+            line-color="#6eb4d933"
+        >
             <v-timeline-item
                 v-for="(achievement, index) in achievements"
                 :key="index"
@@ -32,6 +33,13 @@
                 </div>
             </v-timeline-item>
         </v-timeline>
+        <div v-else class="text-center">
+            <img
+                src="../../assets/images/no-achievement.jpg"
+                alt="No achievements"
+            />
+            <p>No achievements available</p>
+        </div>
     </main>
 </template>
 
