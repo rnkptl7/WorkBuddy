@@ -91,133 +91,93 @@ window.addEventListener("resize", commonStore.handleView);
 @import "../assets/main.css";
 
 a.router-link-exact-active {
-    border-bottom: 2px solid var(--primary-color);
-    font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+  font-weight: 600;
 }
 
 .logo.router-link-exact-active {
-    border-bottom: 0px solid;
-    background: none;
+  border-bottom: 0px solid;
+  background: none;
 }
 
 .navbar {
-    background: #f0f3fb;
-    height: 10vh;
-    max-height: 100px;
-    position: sticky;
-    top: 0;
-    display: flex;
-    padding: 20px 30px;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 10;
-    box-shadow: var(--box-shadow);
+  background: #f0f3fb;
+  height: 10vh;
+  max-height: 100px;
+  position: sticky;
+  top: 0;
+  display: flex;
+  padding: 20px 30px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  box-shadow: var(--box-shadow);
 }
 
 .navbar .logo {
-    padding: 15px 30px;
-    color: var(--primary-color);
-    text-decoration: none;
+  padding: 15px 30px;
+  color: var(--primary-color);
+  text-decoration: none;
 }
 
 .navbar .navbar-item ul {
-    display: flex;
-    list-style: none;
-    align-items: center;
+  display: flex;
+  list-style: none;
+  align-items: center;
 }
 
 .navbar .navbar-item ul li {
-    font-size: 20px;
-    color: var(--primary-color);
-    margin: 0 0.7rem;
+  font-size: 20px;
+  color: var(--primary-color);
+  margin: 0 0.7rem;
 }
 
 .navbar .navbar-item ul li a {
-    font-size: 20px;
-    text-decoration: none;
-    color: var(--primary-color);
-    padding: 0.4rem;
-    display: flex;
-    align-items: center;
+  font-size: 20px;
+  text-decoration: none;
+  color: var(--primary-color);
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
 }
 
 .navbar .logoutIcon {
-    display: none;
+  display: none;
 }
 
 .hamburgerMenu {
-    width: 30px;
-    cursor: pointer;
+  width: 30px;
+  cursor: pointer;
 }
 
 .hamburgerMenu {
-    width: 30px;
-    cursor: pointer;
+  width: 30px;
+  cursor: pointer;
 }
 
 img {
-    width: 27px;
-    display: flex;
-    margin-left: 10px;
+  width: 27px;
+  display: flex;
+  margin-left: 10px;
 }
 
 @media screen and (max-width: 675px) {
-<<<<<<< HEAD
-    .navbar .navbar-item ul li {
-        margin: 0 0.2rem;
-    }
-    .navbar .navbar-item ul li a {
-        padding: 1rem;
-    }
-}
-
-@media screen and (max-width: 650px) {
-    .username {
-        display: none;
-    }
-    .navbar .logoutIcon {
-        display: block;
-        margin-top: 10px;
-    }
-    .navbar .logoutTxt {
-        display: none;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .navbar .logo {
-        padding: 10px 5px;
-    }
-    .navbar .logo h1 {
-        font-size: 24px;
-    }
-    .navbar .navbar-item ul li a {
-        padding: 1rem 0.8rem;
-    }
-    img {
-        width: 25px;
-    }
-=======
   .navbar .navbar-item ul li {
     margin: 0 0.2rem;
   }
-
   .navbar .navbar-item ul li a {
     padding: 1rem;
   }
 }
 
-@media screen and (max-width: 625px) {
+@media screen and (max-width: 650px) {
   .username {
     display: none;
   }
-
   .navbar .logoutIcon {
     display: block;
-
     margin-top: 10px;
   }
-
   .navbar .logoutTxt {
     display: none;
   }
@@ -227,18 +187,14 @@ img {
   .navbar .logo {
     padding: 10px 5px;
   }
-
   .navbar .logo h1 {
     font-size: 24px;
   }
-
   .navbar .navbar-item ul li a {
     padding: 1rem 0.8rem;
   }
-
   img {
     width: 25px;
   }
->>>>>>> department
 }
 </style>

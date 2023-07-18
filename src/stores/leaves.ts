@@ -75,6 +75,7 @@ export const useLeavesStore = defineStore("leaves", () => {
             leavesDates.value.push(leavesForCalendar);
             leaves.value.push(leaveItem);
         });
+        console.log(leaveCountDetails.value.TOTAL_LEAVES)
     }
 
     async function getAllPendingLeaves() {
@@ -105,9 +106,9 @@ export const useLeavesStore = defineStore("leaves", () => {
         const docSnap = await getDoc(doc(db, "users", userId.value));
         if (docSnap.exists()) {
             leaveCountDetails.value = {
-                TOTAL_LEAVES: docSnap.data()?.leavesDetails?.TOTAL_LEAVES,
-                takenLeaves: docSnap.data()?.leavesDetails?.takenLeaves,
-                leftLeaves: docSnap.data()?.leavesDetails?.leftLeaves,
+                TOTAL_LEAVES: docSnap.data()?.leavesDetails?.TOTAL_LEAVES || 10,
+                takenLeaves: docSnap.data()?.leavesDetails?.takenLeaves || 0,
+                leftLeaves: docSnap.data()?.leavesDetails?.leftLeaves || 10,
             };
         }
     }

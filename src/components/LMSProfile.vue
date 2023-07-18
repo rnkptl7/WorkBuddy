@@ -1,99 +1,88 @@
 <template>
-    <ApplyLeaveModal
-        :dialog="openRequestLeaveDialog"
-        @closeLeaveRequestModal="
-            openRequestLeaveDialog = !openRequestLeaveDialog
-        "
-    />
-    <section class="LMS-wrapper d-flex flex-column pa-3">
-        <!-- Request Leave button -->
-        <div class="LMS-button_container d-flex flex-row-reverse">
-            <v-btn
-                class="my-1 mr-3"
-                rounded
-                variant="outlined"
-                color="blue-darken-3"
-                @click="openRequestLeaveDialog = !openRequestLeaveDialog"
-            >
-                Request for Leave</v-btn
-            >
+  <ApplyLeaveModal
+    :dialog="openRequestLeaveDialog"
+    @closeLeaveRequestModal="openRequestLeaveDialog = !openRequestLeaveDialog"
+  />
+  <section class="LMS-wrapper d-flex flex-column pa-3">
+    <!-- Request Leave button -->
+    <div class="LMS-button_container d-flex flex-row-reverse">
+      <v-btn
+        class="my-1 mr-3"
+        rounded
+        variant="outlined"
+        color="blue-darken-3"
+        @click="openRequestLeaveDialog = !openRequestLeaveDialog"
+      >
+        Request for Leave</v-btn
+      >
+    </div>
+    <div
+      class="LMS-information_container d-flex flex-row flex-wrap justify-center rounded"
+    >
+      <!-- Calendar and Leave count wrapper -->
+      <div class="LMS-calendar_wrapper d-flex flex-column justify-center">
+        <div class="LMS-calendar d-flex justify-center">
+          <VCalendarVue />
         </div>
         <div
-            class="LMS-information_container d-flex flex-row flex-wrap justify-center rounded"
+          class="LMS-leave_balance mx-auto d-flex flex-column align-space-between justify-center pa-3"
         >
-            <!-- Calendar and Leave count wrapper -->
-            <div class="LMS-calendar_wrapper d-flex flex-column justify-center">
-                <div class="LMS-calendar d-flex justify-center">
-                    <VCalendarVue />
-                </div>
-                <div
-                    class="LMS-leave_balance mx-auto d-flex flex-column align-space-between justify-center pa-3"
-                >
-                    <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
-                        <div class="leaves_count pa-3">
-                            <h3>
-                                Leaves Left:
-                                {{ leaveCountDetails?.leftLeaves }}
-                            </h3>
-                            <h6>Expires on: January 26th, 2024</h6>
-                        </div>
-                        <v-divider
-                            v-if="!isMobile"
-                            :thickness="2"
-                            vertical
-                        ></v-divider>
-                        <div class="leaves_count pa-3">
-                            <h3>
-                                Leaves Taken:
-                                {{ leaveCountDetails?.takenLeaves }}
-                            </h3>
-                            <h4></h4>
-                        </div>
-                    </div>
-                    <div class="leaves_count pa-3">
-                        <h3>
-                            Total Allowances:
-                            {{ leaveCountDetails?.TOTAL_LEAVES }}
-                        </h3>
-                        <h6>For Year: 2023-24</h6>
-                    </div>
-                </div>
+          <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
+            <div class="leaves_count pa-3">
+              <h3>
+                Leaves Left:
+                {{ leaveCountDetails?.leftLeaves }}
+              </h3>
+              <h6>Expires on: January 26th, 2024</h6>
             </div>
-            <v-divider
-                v-if="!isMobile"
-                :vertical="true"
-                :thickness="2"
-                class="ma-5"
-            ></v-divider>
-            <!-- Pending Leave Requests -->
-            <div
-                class="LMS-pending_requests d-flex flex-column align-center pa-3"
-            >
-                <h3>Your Pending Requests:</h3>
-                <div
-                    class="pendingLeaves_placeholder d-flex flex-row justify-center align-center border w-100 h-50 rounded ma-2"
-                    v-if="pendingLeaves.length == 0"
-                >
-                    <h1>No Pending Requests</h1>
-                </div>
-                <div class="pending-requests_cards d-flex flex-column" v-else>
-                    <template
-                        v-for="(item, index) in pendingLeaves"
-                        :key="index"
-                    >
-                        <LeaveRequestCardVue
-                            :leave="item"
-                            v-if="item.status == 'pending'"
-                        />
-                    </template>
-                </div>
+            <v-divider v-if="!isMobile" :thickness="2" vertical></v-divider>
+            <div class="leaves_count pa-3">
+              <h3>
+                Leaves Taken:
+                {{ leaveCountDetails?.takenLeaves }}
+              </h3>
+              <h4></h4>
             </div>
+          </div>
+          <div class="leaves_count pa-3">
+            <h3>
+              Total Allowances:
+              {{ leaveCountDetails?.TOTAL_LEAVES }}
+            </h3>
+            <h6>For Year: 2023-24</h6>
+          </div>
         </div>
-        <!-- Leave History Table -->
-        <div class="LMS-leave_history d-flex rounded">
-            <LeaveHistory :leaveHistory="leaves" />
+      </div>
+      <v-divider
+        v-if="!isMobile"
+        :vertical="true"
+        :thickness="2"
+        class="ma-5"
+      ></v-divider>
+      <!-- Pending Leave Requests -->
+      <div class="LMS-pending_requests d-flex flex-column align-center pa-3">
+        <h3>Your Pending Requests:</h3>
+        <!-- <div
+          class="pendingLeaves_placeholder d-flex flex-row justify-center align-center border w-100 h-50 rounded ma-2"
+          v-if="pendingLeaves.length == 0"
+        >
+          <h1>No Pending Requests</h1>
+        </div> -->
+        <div class="pending-requests_cards d-flex flex-column">
+          <template v-for="(item, index) in leaves" :key="index">
+            <LeaveRequestCardVue
+              :leave="item"
+              v-if="item.status == 'pending'"
+            />
+          </template>
         </div>
-    </section>
+      </div>
+    </div>
+    <!-- Leave History Table -->
+    <div class="LMS-leave_history d-flex rounded">
+      <LeaveHistory :leaveHistory="leaves" />
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -116,12 +105,12 @@ const { mobileView: isMobile } = storeToRefs(useCommonStore());
 const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
 let pendingLeaves = ref([]);
 pendingLeaves.value = leaves.value.filter((leave) => {
-    return leave.status == "pending";
+  return leave.status == "pending";
 });
 const { getLeaves, getLeaveCounterDetails } = useLeavesStore();
 onMounted(async () => {
-    await getLeaves();
-    await getLeaveCounterDetails();
+  await getLeaves();
+  await getLeaveCounterDetails();
 });
 const openRequestLeaveDialog = ref(false);
 </script>
@@ -130,58 +119,58 @@ const openRequestLeaveDialog = ref(false);
 .LMS-wrapper {
 }
 .LMS_container {
-    background: whitesmoke;
+  background: whitesmoke;
 }
 
 .v-card {
-    box-sizing: content-box;
-    border-radius: 5%;
-    border: 1px dashed grey;
+  box-sizing: content-box;
+  border-radius: 5%;
+  border: 1px dashed grey;
 }
 /* Custom small cards for Leaves analytics */
 .LMS-leave_balance {
-    width: fit-content;
-    border-radius: 5%;
-    border: 2px dashed var(--secondary-color);
-    margin-block: 1rem;
+  width: fit-content;
+  border-radius: 5%;
+  border: 2px dashed var(--secondary-color);
+  margin-block: 1rem;
 }
 .LMS-calendar_wrapper,
 .LMS-pending_requests {
-    margin: 2rem;
-    width: 40%;
+  margin: 2rem;
+  width: 40%;
 }
 /* .LMS-information_container, */
 .LMS-leave_history,
 .LMS-information_container {
-    margin: 1rem;
-    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important;
+  margin: 1rem;
+  box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important;
 }
 
 .LMS-pending_requests {
-    max-height: 580px;
+  max-height: 580px;
 }
 .pending-requests_cards {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 .pending-requests_cards > .pending_card {
-    display: flex;
-    flex: 1 1 auto;
+  display: flex;
+  flex: 1 1 auto;
 }
 
 .pendingLeaves_placeholder {
-    border-radius: 5%;
-    border: 2px dashed var(--secondary-color);
+  border-radius: 5%;
+  border: 2px dashed var(--secondary-color);
 }
 
 @media screen and (max-width: 840px) {
-    .LMS-calendar_wrapper,
-    .LMS-pending_requests {
-        width: 100%;
-        margin: 0 !important;
-    }
-    .LMS-leave_history,
-    .LMS-information_container {
-        margin: 0 !important;
-    }
+  .LMS-calendar_wrapper,
+  .LMS-pending_requests {
+    width: 100%;
+    margin: 0 !important;
+  }
+  .LMS-leave_history,
+  .LMS-information_container {
+    margin: 0 !important;
+  }
 }
 </style>
