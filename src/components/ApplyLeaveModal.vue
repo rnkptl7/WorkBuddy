@@ -167,7 +167,7 @@
     import moment from "moment";
     const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
-    const { fullname } = storeToRefs(authStore);
+    const { fullName } = storeToRefs(authStore);
     const { getLeaves } = leavesStore;
     const { leaveCountDetails, userId } = storeToRefs(leavesStore);
 
@@ -254,7 +254,7 @@
         endDate: new Date(),
         requestingToEmail: "",
         status: undefined,
-        createdBy: fullname.value,
+        createdBy: fullName.value,
     });
 
     function closeModal() {
@@ -301,7 +301,7 @@
             endDate: new Date(),
             requestingToEmail: "",
             status: undefined,
-            createdBy: fullname.value,
+            createdBy: fullName.value,
         };
         emits("closeLeaveRequestModal", false);
     }

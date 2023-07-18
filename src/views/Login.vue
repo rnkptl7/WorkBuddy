@@ -1,18 +1,22 @@
 <template>
-  <div class="registration">
-    <div class="form-wrapper">
-      <h1 class="form-heading">Login Here</h1>
-      <VForm class="form" :validation-schema="schema" @submit="submitData">
-        <div class="inputDiv">
-          <VField
-            name="email"
-            placeholder="Email*"
-            type="email"
-            class="input"
-            v-model="form.email"
-          />
-          <ErrorMessage name="email" class="error_message" />
-        </div>
+    <div class="registration">
+        <div class="form-wrapper">
+            <h1 class="form-heading">Login Here</h1>
+            <VForm
+                class="form"
+                :validation-schema="schema"
+                @submit="submitData"
+            >
+                <div class="inputDiv">
+                    <VField
+                        name="email"
+                        placeholder="Email*"
+                        type="email"
+                        class="input"
+                        v-model="form.email"
+                    />
+                    <ErrorMessage name="email" class="error_message" />
+                </div>
 
                 <div class="inputDiv passwordWrapper">
                     <VField
@@ -46,7 +50,9 @@
                         >
                         <v-btn type="reset">Clear</v-btn>
                     </div>
-                    <p>*indicate required fields</p>
+                    <p class="text-medium-emphasis">
+                        *indicates required field
+                    </p>
                 </div>
             </VForm>
         </div>
@@ -63,15 +69,20 @@
 
     import { useAuthStore } from "@/stores/authStore";
     import { useCommonStore } from "@/stores/commonStore";
-    import { useLeavesStore } from "@/stores/leaves";
     import { storeToRefs } from "pinia";
+    import { useTicketStore } from "@/stores/ticketStore";
+    import { useLeavesStore } from "@/stores/leaves";
 
     const authStore = useAuthStore();
     const commonStore = useCommonStore();
+    const ticketStore = useTicketStore();
+    const leavesStore = useLeavesStore();
     const db = useFirestore();
     const $toast = useToast();
 
-    const { isLoggedIn, fullname } = storeToRefs(authStore);
+    const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
+    const { fetchAllTickets, fetchTicketsByStatus } = ticketStore;
+    const { getLeaves } = leavesStore;
     const { showPassword } = storeToRefs(commonStore);
     const { showPasswordChange } = commonStore;
 
@@ -91,12 +102,12 @@
         let userData;
         querySnapshot.forEach((doc) => {
             let { register } = doc.data();
-            // console.log(register);
             if (
                 form.email === register.email &&
                 form.password === register.password
             ) {
                 localStorage.setItem("userId", doc.id);
+                userId.value = doc.id;
                 localStorage.setItem("fullName", register.fullName);
                 userData = doc.data();
             }
@@ -106,14 +117,18 @@
             $toast.success("Logged In Successfully", {
                 position: "top-right",
             });
-            // console.log(userData.register.role);
+
             if (userData.register.role === "admin") {
                 localStorage.setItem("isAdmin", true);
+                isAdmin.value = true;
             }
 
             localStorage.setItem("isLoggedIn", true);
             isLoggedIn.value = true;
-            fullname.value = userData.register.fullName;
+            fullName.value = userData.register.fullName;
+            await fetchAllTickets();
+            await fetchTicketsByStatus();
+            await getLeaves();
             router.replace({ name: "Home" });
         } else {
             alert("Invalid Credentials");

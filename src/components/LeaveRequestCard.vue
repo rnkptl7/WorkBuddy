@@ -114,7 +114,7 @@
     const dialog = ref(false);
     const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
-    const { fullname } = storeToRefs(authStore);
+    const { fullName } = storeToRefs(authStore);
     const { userId, leaveCountDetails } = storeToRefs(leavesStore);
 
     const logoDateString = computed(() => {
@@ -148,7 +148,7 @@
         const leaveReferance = doc(db, "leaves", leave.id);
         await updateDoc(leaveReferance, {
             status: action === "approve" ? "Approved" : "rejected",
-            approvedBy: fullname.value,
+            approvedBy: fullName.value,
         });
         const user = doc(db, "users", userId.value);
 

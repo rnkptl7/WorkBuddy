@@ -19,12 +19,13 @@
     let calendarColors = {
         pending: { fontColor: "black", fill: "yellow" },
         Approved: { fontColor: "white", fill: "blue" },
-        rejected: { fontColor: "white", fill: "grey" },
+        rejected: { fontColor: "white", fill: "gray" },
     };
 
     let attributes = ref([]);
     watch(useLeavesStore(), () => {
         attributes.value = useLeavesStore().leavesDates.map((item) => {
+            console.log(item.status);
             console.log(calendarColors[item.status]);
             const leave = {
                 content: {
