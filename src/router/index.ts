@@ -48,7 +48,7 @@ const router = createRouter({
         {
           path: '/department',
           name: 'Department',
-          meta: {requiredAuth: true},
+          meta: {requiresAuth: true},
           component: () => import('@/views/Department.vue')
         }, 
     ],
