@@ -4,7 +4,6 @@ export const useCommonStore = defineStore("commonStore", {
     state: () => {
         return {
             mobileView: false,
-            showNav: false,
             showPassword: true,
             showRegisterPassword: true,
             showConfirmPassword: true,

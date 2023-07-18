@@ -41,6 +41,9 @@ const router = createRouter({
             meta: { requiresAuth: true },
             component: () => import("@/views/LeaveRequest.vue"),
         },
+        {
+            path: '/:pathMatch(.*)*', component: () => import("@/views/Home.vue")
+        }
     ],
 });
 
@@ -48,30 +51,9 @@ router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
     const commonStore = useCommonStore();
 
-    commonStore.showNav = false;
+    commonStore.overlay = false;
 
     if (to.meta.requiresAuth && !authStore.isAuthenticated()) {
-        next("/login");
-    } else if (
-        to.meta.proctectedAdmin &&
-        authStore.isAuthenticated() &&
-        !authStore.isAdmin
-    ) {
-        next("/");
-    } else if (to.meta.guest && authStore.isAuthenticated()) {
-        next("/");
-    } else {
-        next();
-    }
-});
-
-router.beforeEach((to, from, next) => {
-    const authStore = useAuthStore();
-    const commonStore = useCommonStore();
-
-    commonStore.showNav = false;
-
-    if (to.meta.requiredAuth && !authStore.isAuthenticated()) {
         next("/login");
     } else if (
         to.meta.proctectedAdmin &&
