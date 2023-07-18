@@ -30,11 +30,9 @@
 </template>
 
 <script setup>
-    import { collection, getDocs, query } from "firebase/firestore";
     import { storeToRefs } from "pinia";
     import { onMounted, reactive, ref } from "vue";
-    import { useLeavesStore } from "../stores/leaves";
-    import { useAppCheck, useFirestore } from "vuefire";
+    import { useLeavesStore } from "../../stores/leaves";
     import { watch } from "vue";
 
     const { leaves } = storeToRefs(useLeavesStore());
@@ -54,6 +52,11 @@
 <style>
     .title-wrapper .btn {
         margin-right: 2rem;
+    }
+
+    h3,
+    h4 {
+        color: var(--primary-color);
     }
 
     .v-toolbar-title__placeholder {

@@ -27,11 +27,6 @@ export const useLeavesStore = defineStore("leaves", () => {
     const { isAdmin, userId } = storeToRefs(authStore);
     // Setting connection to firebase
     const database = useFirestore();
-    interface leavesDates {
-        status: string;
-        start: string;
-        end: string;
-    }
 
     const leaves = ref([]); // For Users
     let leavesDates = ref([]); // For VCalendar
@@ -75,7 +70,7 @@ export const useLeavesStore = defineStore("leaves", () => {
             leavesDates.value.push(leavesForCalendar);
             leaves.value.push(leaveItem);
         });
-        console.log(leaveCountDetails.value.TOTAL_LEAVES)
+        console.log(leaveCountDetails.value.TOTAL_LEAVES);
     }
 
     async function getAllPendingLeaves() {

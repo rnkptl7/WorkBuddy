@@ -101,96 +101,98 @@
 </template>
 
 <script setup lang="ts">
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import moment from "moment";
-import { storeToRefs } from "pinia";
-import { computed, ref } from "vue";
-import { useFirestore } from "vuefire";
-import { useLeavesStore } from "../stores/leaves";
-import { useAuthStore } from "../stores/authStore";
+    import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+    import moment from "moment";
+    import { storeToRefs } from "pinia";
+    import { computed, ref } from "vue";
+    import { useFirestore } from "vuefire";
+    import { useLeavesStore } from "../../stores/leaves";
+    import { useAuthStore } from "../../stores/authStore";
 
-const { leave, isAdmin } = defineProps(["leave", "isAdmin"]);
-const dialog = ref(false);
-const authStore = useAuthStore();
-const leavesStore = useLeavesStore();
-const { fullName } = storeToRefs(authStore);
-const { userId, leaveCountDetails } = storeToRefs(leavesStore);
+    const { leave, isAdmin } = defineProps(["leave", "isAdmin"]);
+    const dialog = ref(false);
+    const authStore = useAuthStore();
+    const leavesStore = useLeavesStore();
+    const { fullName } = storeToRefs(authStore);
+    const { userId, leaveCountDetails } = storeToRefs(leavesStore);
 
-const logoDateString = computed(() => {
-    const date = formatDate(leave.startDate);
-    return {
-        date: `${date[0]}`,
-        month: `${date[1]}`,
-        year: `${date[2]}`,
-    };
-});
-
-// Helper function to convert timestamp to specified format
-// TODO: Move to reusable function
-function formatDate(data) {
-    const seconds = data.seconds;
-    const nanoseconds = data.nanoseconds;
-    const date = moment
-        .unix(seconds)
-        .add(nanoseconds / 1000000, "milliseconds");
-
-    return date.format("Do MMM YYYY").split(" ");
-}
-const trmimedDescrition = computed(() => {
-    return leave?.description?.slice(0, 50) + "...";
-});
-
-async function adminActions({ action }) {
-    const db = useFirestore();
-    const leaveReferance = doc(db, "leaves", leave.id);
-    await updateDoc(leaveReferance, {
-        status: action === "approve" ? "Approved" : "rejected",
-        approvedBy: fullName.value,
-    });
-    const user = doc(db, "users", userId.value);
-
-    if (action == "reject") {
-        await updateDoc(user, {
-            leavesDetails: {
-                TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
-                takenLeaves:
-                    leaveCountDetails.value.takenLeaves - leave.totalDays,
-                leftLeaves:
-                    leaveCountDetails.value.leftLeaves + leave.totalDays,
-            },
-        });
-        leavesStore.leaveCountDetails = {
-            TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
-            takenLeaves:
-                leavesStore.leaveCountDetails.takenLeaves - leave.totalDays,
-            leftLeaves:
-                leavesStore.leaveCountDetails.leftLeaves + leave.totalDays,
+    const logoDateString = computed(() => {
+        const date = formatDate(leave.startDate);
+        return {
+            date: `${date[0]}`,
+            month: `${date[1]}`,
+            year: `${date[2]}`,
         };
-    }
+    });
 
-    await leavesStore.getLeaves();
-    await leavesStore.getAllPendingLeaves();
-    dialog.value = false;
-}
+    // Helper function to convert timestamp to specified format
+    function formatDate(data) {
+        const seconds = data.seconds;
+        const nanoseconds = data.nanoseconds;
+        const date = moment
+            .unix(seconds)
+            .add(nanoseconds / 1000000, "milliseconds");
+
+        return date.format("Do MMM YYYY").split(" ");
+    }
+    const trmimedDescrition = computed(() => {
+        return leave?.description?.slice(0, 50) + "...";
+    });
+
+    // Admin actions---------------
+    async function adminActions({ action }) {
+        const db = useFirestore();
+        const leaveReferance = doc(db, "leaves", leave.id);
+        await updateDoc(leaveReferance, {
+            status: action === "approve" ? "Approved" : "rejected",
+            approvedBy: fullName.value,
+        });
+        const user = doc(db, "users", userId.value);
+
+        // Updation of Leave Balance
+        if (action == "reject") {
+            await updateDoc(user, {
+                leavesDetails: {
+                    TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
+                    takenLeaves:
+                        leaveCountDetails.value.takenLeaves - leave.totalDays,
+                    leftLeaves:
+                        leaveCountDetails.value.leftLeaves + leave.totalDays,
+                },
+            });
+            leavesStore.leaveCountDetails = {
+                TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
+                takenLeaves:
+                    leavesStore.leaveCountDetails.takenLeaves - leave.totalDays,
+                leftLeaves:
+                    leavesStore.leaveCountDetails.leftLeaves + leave.totalDays,
+            };
+        }
+
+        // Fetching again to make realtime user experience
+        await leavesStore.getLeaves();
+        await leavesStore.getAllPendingLeaves();
+        dialog.value = false;
+    }
 </script>
 
 <style scoped>
-.leave-detail_card {
-    background-color: #f0f3fb;
-    height: fit-content;
-}
-.ld-category > span {
-    background-color: rgb(255, 240, 220);
-    color: orangered;
-}
-p {
-    word-break: break-all;
-}
-.ld-card_logo {
-    min-width: fit-content;
-}
-.ld-card_logo h3,
-.ld-card_logo span {
-    margin-inline-end: 10px;
-}
+    .leave-detail_card {
+        background-color: #f0f3fb;
+        height: fit-content;
+    }
+    .ld-category > span {
+        background-color: rgb(255, 240, 220);
+        color: orangered;
+    }
+    p {
+        word-break: break-all;
+    }
+    .ld-card_logo {
+        min-width: fit-content;
+    }
+    .ld-card_logo h3,
+    .ld-card_logo span {
+        margin-inline-end: 10px;
+    }
 </style>
