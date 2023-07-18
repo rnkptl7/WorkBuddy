@@ -200,6 +200,19 @@ getUserDataFromDB();
   max-width: 1500px;
 }
 
+/* Customize Scroller */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #115173;
+}
+::-webkit-scrollbar-track {
+  background-color: white;
+}
+
 /* Employees Directory's CSS */
 .department-title {
   width: auto;
@@ -225,7 +238,7 @@ getUserDataFromDB();
 .devops-dept,
 .uiux-dept {
   font-size: 20px;
-  height: 73vh;
+  height: 65vh;
   background: #f0f3fb;
   overflow-y: auto;
 }
