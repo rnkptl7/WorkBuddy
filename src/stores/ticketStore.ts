@@ -20,7 +20,7 @@ export const useTicketStore = defineStore('ticketStore', () => {
     const colRef = collection(db, 'tickets');
 
     async function fetchTicketsByStatus() {
-      let ticketList = [];
+      let ticketList;
       
       if (isAdmin.value) {
         ticketList = await getDocs(colRef);
@@ -37,10 +37,10 @@ export const useTicketStore = defineStore('ticketStore', () => {
         const data = ticket.data();
         
         if (data.status === 'Open'){
-          openTickets.value.unshift({...data, id: ticket.id});
+          openTickets.value.push({...data, id: ticket.id});
         }
         else {
-          closedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + ".."});
+          closedTickets.value.push({...data, id: ticket.id.slice(0,5) + ".."});
         }
       });
     }

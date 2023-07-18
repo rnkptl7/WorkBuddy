@@ -32,6 +32,9 @@ onMounted(async () => {
         leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves || 10;
         leaveRecord.value.push(leftLeaves.value);
     }
+    else {
+        leaveRecord.value = [0, 10];
+    }
     console.log(Array.from(leaveRecord.value));
 });
 

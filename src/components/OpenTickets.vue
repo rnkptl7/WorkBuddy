@@ -10,7 +10,8 @@
         </v-toolbar>
         <v-table
             fixed-header
-            max-height="300px"
+            height="100%"
+            class="tickets-table"
         >
             <thead>
             <tr>
@@ -60,7 +61,7 @@
     }
 </script>
 
-<style scoped>
+<style>
 .v-table {
     box-shadow: none !important;
     margin-bottom: 1.5rem !important;
@@ -76,4 +77,10 @@
 .title {
     color: var(--primary-color);
 }
+
+.tickets-table .v-table__wrapper {
+    max-height: 315px !important;
+    --webkit-scrollbar: none;
+}
+
 </style>

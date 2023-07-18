@@ -66,6 +66,7 @@
     const { fetchTicketsByStatus } = useTicketStore(); 
     import { useFirestore } from "vuefire";
     import { doc, updateDoc } from 'firebase/firestore';
+    import { useToast } from "vue-toast-notification";
 
     const db = useFirestore();
 
@@ -81,6 +82,11 @@
             await updateDoc(docRef, {
                 status: "Closed",
                 closedBy: fullName.value
+            });
+
+            const $toast = useToast();
+            $toast.success("Ticket Closed Successfully", {
+              position: "top-right",
             });
 
             fetchTicketsByStatus();

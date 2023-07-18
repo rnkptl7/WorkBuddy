@@ -18,8 +18,7 @@ const greetingMsg = ref();
 const greetingImg = ref();
 const timer = ref();
 const todayDate = ref();
-// const hours = new Date().getHours();
-const hours = 13;
+const hours = new Date().getHours();
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 const months = [

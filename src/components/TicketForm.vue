@@ -105,6 +105,7 @@
     import { useTicketStore } from '@/stores/ticketStore';
     import { useFirestore } from "vuefire";
     import { collection, addDoc, doc, arrayUnion, updateDoc } from 'firebase/firestore';
+    import { useToast } from "vue-toast-notification";
 
     const db = useFirestore();
 
@@ -143,6 +144,11 @@
 
       await updateDoc(docRef, {
         tickets: arrayUnion(ticket.id),
+      });
+
+      const $toast = useToast();
+      $toast.success("Ticket Generated Successfully", {
+        position: "top-right",
       });
 
       ticketData = {
