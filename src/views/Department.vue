@@ -28,6 +28,7 @@
             <span>Drag here to add Employees</span>
           </div>
 
+          <!-- Trigger Drag Event -->
           <div
             v-for="item in getDepartmentItems(department.id)"
             :key="item.id"
@@ -37,6 +38,7 @@
             @dragenter.prevent
             @dragover.prevent
           >
+            <!-- Employee Cards -->
             <v-card class="employee-card">
               <div class="employee-avatar">
                 <v-avatar
@@ -60,7 +62,7 @@
               <div class="employee-details">
                 <p class="title">Name: {{ item.fullName }}</p>
                 <p class="text">Email: {{ item.email }}</p>
-                <p class="text-subtitle-2">Location: Ahmedabad - Gujarat</p>
+                <p class="text-subtitle-2">Location:Ahmedabad - Gujarat</p>
               </div>
             </v-card>
           </div>
@@ -74,6 +76,11 @@
 import { ref, reactive } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { useAuthStore } from "@/stores/authStore";
+import { storeToRefs } from "pinia";
+import Swal from "sweetalert2";
+
+const { isAdmin } = storeToRefs(useAuthStore());
 
 const departmentList = [
   { id: 1, name: "Frontend", class: "frontend-dept" },
@@ -85,38 +92,50 @@ const departmentList = [
 //--------------------Sets necessary data for dragging an item--------------------//
 const draggedItem = ref({});
 const startDrag = (event, item) => {
-  event.dataTransfer.dropEffect = "move";
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("itemID", item.id);
-  draggedItem.value = item;
+  if (isAdmin.value) {
+    event.dataTransfer.dropEffect = "move";
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("itemID", item.id);
+    draggedItem.value = item;
+  }
 };
 
 //--------------------Handles dropping an item into a department, updating its departmentId--------------------//
 const onDrop = async (event, departmentId) => {
   const dragUserID = event.dataTransfer.getData("dragUserID");
 
-  const dragAndDropAlert = window.confirm(
-    `This Functionality will change user department! Are you sure want to change?`
-  );
-  if (dragAndDropAlert === true) {
-    let dragUser;
-    if (departmentId === 1) {
-      dragUser = frontendDept.find((dragUser) => dragUser.id == dragUserID);
-    } else if (departmentId === 2) {
-      dragUser = backendDept.find((dragUser) => dragUser.id == dragUserID);
-    } else if (departmentId === 3) {
-      dragUser = devopsDept.find((dragUser) => dragUser.id == dragUserID);
-    } else {
-      dragUser = uiuxDept.find((dragUser) => dragUser.id == dragUserID);
-    }
+  const dragAndDropAlert = await Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#115173",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, Drag It!",
+  });
 
-    //--------------------Update data in Firebase--------------------//
-    const employeeDataRef = doc(db, "users", draggedItem.value.userID);
-    await updateDoc(employeeDataRef, {
-      "register.department": departmentList[departmentId - 1].name,
-    });
+  if (dragAndDropAlert.isConfirmed) {
+    if (isAdmin.value) {
+      let dragUser;
+      if (departmentId === 1) {
+        dragUser = frontendDept.find((dragUser) => dragUser.id == dragUserID);
+      } else if (departmentId === 2) {
+        dragUser = backendDept.find((dragUser) => dragUser.id == dragUserID);
+      } else if (departmentId === 3) {
+        dragUser = devopsDept.find((dragUser) => dragUser.id == dragUserID);
+      } else {
+        dragUser = uiuxDept.find((dragUser) => dragUser.id == dragUserID);
+      }
+
+      //--------------------Update data in Firebase--------------------//
+      const employeeDataRef = doc(db, "users", draggedItem.value.userID);
+      await updateDoc(employeeDataRef, {
+        "register.department":
+          departmentList[departmentId - 1].name.toLowerCase(),
+      });
+      await getUserDataFromDB();
+    }
   }
-  getUserDataFromDB();
 };
 
 const getDepartmentClass = (departmentId) => {
@@ -150,13 +169,13 @@ async function getUserDataFromDB() {
       role: doc.data().register.role,
     };
 
-    if (doc.data().register.department === "Ui-Ux") {
+    if (doc.data().register.department === "ui-ux") {
       uiuxDept.push({ ...displayUserData, departmentId: 4 });
-    } else if (doc.data().register.department === "Frontend") {
+    } else if (doc.data().register.department === "frontend") {
       frontendDept.push({ ...displayUserData, departmentId: 1 });
-    } else if (doc.data().register.department === "Backend") {
+    } else if (doc.data().register.department === "backend") {
       backendDept.push({ ...displayUserData, departmentId: 2 });
-    } else if (doc.data().register.department === "DevOps") {
+    } else if (doc.data().register.department === "devops") {
       devopsDept.push({ ...displayUserData, departmentId: 3 });
     }
   });
@@ -210,8 +229,9 @@ getUserDataFromDB();
 .devops-dept,
 .uiux-dept {
   font-size: 20px;
-  height: 70vh;
+  height: 73vh;
   background: #f0f3fb;
+  overflow-y: auto;
 }
 
 /* Card's CSS */
@@ -232,7 +252,6 @@ getUserDataFromDB();
 .text,
 .text-subtitle-2 {
   padding: 5px 0px;
-  font-size: 21px;
   font-weight: 400;
 }
 
@@ -256,6 +275,9 @@ getUserDataFromDB();
   justify-content: center;
   font-size: 27px;
   font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .employee-card {

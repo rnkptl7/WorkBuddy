@@ -36,7 +36,7 @@ const router = createRouter({
     {
       path: '/department',
       name: 'Department',
-      meta: { private: true },
+      meta: {requiredAuth: true},
       component: () => import('@/views/Department.vue')
     }, 
   ],
