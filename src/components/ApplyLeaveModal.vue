@@ -220,7 +220,7 @@
                     if (leaveRequestInput.leaveCategory == "Unplanned") {
                         // console.log(leaveRequestInput.leaveCategory);
                         tomorrow.setDate(tomorrow.getDate() + 3);
-                        yesterday.setDate(yesterday.getDate() + 1);
+                        yesterday.setDate(yesterday.getDate());
                     } else if (leaveRequestInput.leaveCategory == "Planned") {
                         tomorrow.setDate(
                             tomorrow.getDate() +
@@ -255,6 +255,7 @@
         requestingToEmail: "",
         status: undefined,
         createdBy: fullName.value,
+        totalDays: 0,
     });
 
     function closeModal() {
@@ -263,13 +264,19 @@
 
     async function submitRequest() {
         console.log(new Date(leaveRequestInput.startDate));
+        const startDate = new Date(leaveRequestInput.startDate);
+        const endDate = new Date(leaveRequestInput.endDate);
+
+        const totalDays =
+            (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
         // Adding a document to leaves collection
         const leave = await addDoc(collection(db, "leaves"), {
             ...leaveRequestInput,
-            startDate: new Date(leaveRequestInput.startDate),
-            endDate: new Date(leaveRequestInput.endDate),
+            startDate: startDate,
+            endDate: endDate,
             status: "pending",
             userId: userId.value,
+            totalDays: totalDays,
         });
 
         // creating reference to users collection's document with specified id
@@ -282,15 +289,15 @@
         await updateDoc(user, {
             leavesDetails: {
                 TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
-                takenLeaves: leaveCountDetails.value.takenLeaves + 1,
-                leftLeaves: leaveCountDetails.value.leftLeaves - 1,
+                takenLeaves: leaveCountDetails.value.takenLeaves + totalDays,
+                leftLeaves: leaveCountDetails.value.leftLeaves - totalDays,
             },
         });
 
         leavesStore.leaveCountDetails = {
             TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
-            takenLeaves: leavesStore.leaveCountDetails.takenLeaves + 1,
-            leftLeaves: leavesStore.leaveCountDetails.leftLeaves - 1,
+            takenLeaves: leavesStore.leaveCountDetails.takenLeaves + totalDays,
+            leftLeaves: leavesStore.leaveCountDetails.leftLeaves - totalDays,
         };
         getLeaves();
         leaveRequestInput = {
@@ -340,7 +347,7 @@
         flex-direction: column; */
     }
     form {
-        width: 92%;
+        /* width: 92%; */
     }
 
     .form .inputDiv input,
@@ -361,7 +368,7 @@
         color: #f44b4b;
     }
 
-    @media screen and (max-width: 600px) {
+    /* @media screen and (max-width: 600px) {
         form {
             width: 88%;
         }
@@ -370,5 +377,5 @@
         form {
             width: 85%;
         }
-    }
+    } */
 </style>

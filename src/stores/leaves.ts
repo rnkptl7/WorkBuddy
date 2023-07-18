@@ -2,6 +2,8 @@ import { defineStore, storeToRefs } from "pinia";
 import { useFirestore } from "vuefire";
 import {
     collection,
+    doc,
+    getDoc,
     getDocs,
     query,
     Timestamp,
@@ -22,7 +24,7 @@ function formatDate(data: Timestamp) {
 
 export const useLeavesStore = defineStore("leaves", () => {
     const authStore = useAuthStore();
-    const { isAdmin } = storeToRefs(authStore);
+    const { isAdmin, userId } = storeToRefs(authStore);
     // Setting connection to firebase
     const database = useFirestore();
     // const userId = ref("MuAZoXa58xiARtToZRHf");
@@ -32,7 +34,6 @@ export const useLeavesStore = defineStore("leaves", () => {
         end: string;
     }
 
-    const userId = ref(authStore.isAuthenticated());
     const leaves = ref([]); // For Users
     let leavesDates = ref([]); // For VCalendar
     let allPendingLeaves = ref([]);
@@ -100,6 +101,19 @@ export const useLeavesStore = defineStore("leaves", () => {
             allPendingLeaves.value.push(leaveItem);
         });
     }
+
+    async function getLeaveCounterDetails() {
+        const db = useFirestore();
+        const docSnap = await getDoc(doc(db, "users", userId.value));
+        if (docSnap.exists()) {
+            leaveCountDetails.value = {
+                TOTAL_LEAVES: docSnap.data()?.leavesDetails?.TOTAL_LEAVES,
+                takenLeaves: docSnap.data()?.leavesDetails?.takenLeaves,
+                leftLeaves: docSnap.data()?.leavesDetails?.leftLeaves,
+            };
+        }
+    }
+
     return {
         leaves,
         leavesDates,
@@ -109,5 +123,6 @@ export const useLeavesStore = defineStore("leaves", () => {
         isAdmin,
         getLeaves,
         getAllPendingLeaves,
+        getLeaveCounterDetails,
     };
 });
