@@ -130,7 +130,6 @@ let otherCopy = {};
 const priorData = async () => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
-        console.log(docSnap.data().other);
         other.aadhaar = docSnap.data().other.aadhaar || "";
         other.pan = docSnap.data().other.pan || "";
         other.nationality = docSnap.data().other.nationality || "";
@@ -140,7 +139,6 @@ const priorData = async () => {
     }
 };
 const updateOtherInfo = async () => {
-    console.log(other, "otheerrr");
     await updateDoc(doc(db, "users", key), {
         other: { ...other },
     });

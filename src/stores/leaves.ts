@@ -27,7 +27,6 @@ export const useLeavesStore = defineStore("leaves", () => {
     const { isAdmin, userId } = storeToRefs(authStore);
     // Setting connection to firebase
     const database = useFirestore();
-    // const userId = ref("MuAZoXa58xiARtToZRHf");
     interface leavesDates {
         status: string;
         start: string;
@@ -45,7 +44,6 @@ export const useLeavesStore = defineStore("leaves", () => {
     }); // Leaves count of Users
 
     async function getLeaves() {
-        console.log("called");
         // It will fetch leaves Collection from firebase with specified Parameter
         const response = await getDocs(
             query(

@@ -97,92 +97,91 @@
 </template>
 
 <script setup lang="ts">
-    const TOTAL_ALLOWANCES = 10;
-    import LeaveRequestCardVue from "./LeaveRequestCard.vue";
-    import LeaveHistory from "./LeaveHistory.vue";
-    import VCalendarVue from "./VCalendar.vue";
-    import ApplyLeaveModal from "./ApplyLeaveModal.vue";
-    import { useLeavesStore } from "../stores/leaves";
-    import { useCommonStore } from "../stores/commonStore";
-    import { onMounted, watch } from "vue";
+const TOTAL_ALLOWANCES = 10;
+import LeaveRequestCardVue from "./LeaveRequestCard.vue";
+import LeaveHistory from "./LeaveHistory.vue";
+import VCalendarVue from "./VCalendar.vue";
+import ApplyLeaveModal from "./ApplyLeaveModal.vue";
+import { useLeavesStore } from "../stores/leaves";
+import { useCommonStore } from "../stores/commonStore";
+import { onMounted, watch } from "vue";
 
-    import { reactive, ref } from "vue";
-    import { useAppCheck, useCollection, useFirestore } from "vuefire";
-    import { collection } from "firebase/firestore";
-    import { storeToRefs } from "pinia";
+import { reactive, ref } from "vue";
+import { useAppCheck, useCollection, useFirestore } from "vuefire";
+import { collection } from "firebase/firestore";
+import { storeToRefs } from "pinia";
 
-    const { mobileView: isMobile } = storeToRefs(useCommonStore());
+const { mobileView: isMobile } = storeToRefs(useCommonStore());
 
-    const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
-    let pendingLeaves = ref([]);
-    pendingLeaves.value = leaves.value.filter((leave) => {
-        return leave.status == "pending";
-    });
-    const { getLeaves, getLeaveCounterDetails } = useLeavesStore();
-    onMounted(async () => {
-        await getLeaves();
-        await getLeaveCounterDetails();
-    });
-    const openRequestLeaveDialog = ref(false);
+const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
+let pendingLeaves = ref([]);
+pendingLeaves.value = leaves.value.filter((leave) => {
+    return leave.status == "pending";
+});
+const { getLeaves, getLeaveCounterDetails } = useLeavesStore();
+onMounted(async () => {
+    await getLeaves();
+    await getLeaveCounterDetails();
+});
+const openRequestLeaveDialog = ref(false);
 </script>
 
 <style scoped>
-    .LMS-wrapper {
-        /* width: 80%; */
-    }
-    .LMS_container {
-        background: whitesmoke;
-    }
+.LMS-wrapper {
+}
+.LMS_container {
+    background: whitesmoke;
+}
 
-    .v-card {
-        box-sizing: content-box;
-        border-radius: 5%;
-        border: 1px dashed grey;
-    }
-    /* Custom small cards for Leaves analytics */
-    .LMS-leave_balance {
-        width: fit-content;
-        border-radius: 5%;
-        border: 2px dashed var(--secondary-color);
-        margin-block: 1rem;
-    }
+.v-card {
+    box-sizing: content-box;
+    border-radius: 5%;
+    border: 1px dashed grey;
+}
+/* Custom small cards for Leaves analytics */
+.LMS-leave_balance {
+    width: fit-content;
+    border-radius: 5%;
+    border: 2px dashed var(--secondary-color);
+    margin-block: 1rem;
+}
+.LMS-calendar_wrapper,
+.LMS-pending_requests {
+    margin: 2rem;
+    width: 40%;
+}
+/* .LMS-information_container, */
+.LMS-leave_history,
+.LMS-information_container {
+    margin: 1rem;
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important;
+}
+
+.LMS-pending_requests {
+    max-height: 580px;
+}
+.pending-requests_cards {
+    overflow-y: auto;
+}
+.pending-requests_cards > .pending_card {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.pendingLeaves_placeholder {
+    border-radius: 5%;
+    border: 2px dashed var(--secondary-color);
+}
+
+@media screen and (max-width: 840px) {
     .LMS-calendar_wrapper,
     .LMS-pending_requests {
-        margin: 2rem;
-        width: 40%;
+        width: 100%;
+        margin: 0 !important;
     }
-    /* .LMS-information_container, */
     .LMS-leave_history,
     .LMS-information_container {
-        margin: 1rem;
-        box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important;
+        margin: 0 !important;
     }
-
-    .LMS-pending_requests {
-        max-height: 580px;
-    }
-    .pending-requests_cards {
-        overflow-y: auto;
-    }
-    .pending-requests_cards > .pending_card {
-        display: flex;
-        flex: 1 1 auto;
-    }
-
-    .pendingLeaves_placeholder {
-        border-radius: 5%;
-        border: 2px dashed var(--secondary-color);
-    }
-
-    @media screen and (max-width: 840px) {
-        .LMS-calendar_wrapper,
-        .LMS-pending_requests {
-            width: 100%;
-            margin: 0 !important;
-        }
-        .LMS-leave_history,
-        .LMS-information_container {
-            margin: 0 !important;
-        }
-    }
+}
 </style>

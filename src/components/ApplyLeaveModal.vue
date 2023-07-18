@@ -1,9 +1,7 @@
 <template>
-    <!-- <v-row justify="end"> -->
     <v-dialog v-model="props.dialog" persistent width="600">
         <v-card pa-5>
             <v-container class="pa-3">
-                <!-- <div class="pa-5"> -->
                 <h2>Request for Leave</h2>
                 <v-divider class="py-1"></v-divider>
                 <VForm
@@ -144,109 +142,157 @@
                     </div>
                 </VForm>
             </v-container>
-            <!-- </div> -->
         </v-card>
     </v-dialog>
-    <!-- </v-row> -->
 </template>
 
 <script setup lang="ts">
-    import {
-        addDoc,
-        arrayUnion,
-        collection,
-        doc,
-        setDoc,
-        updateDoc,
-    } from "firebase/firestore";
-    import { storeToRefs } from "pinia";
-    import { reactive, ref } from "vue";
-    import { useFirestore } from "vuefire";
-    import { useLeavesStore } from "../stores/leaves";
-    import { useAuthStore } from "../stores/authStore";
-    import moment from "moment";
-    const authStore = useAuthStore();
-    const leavesStore = useLeavesStore();
-    const { fullName } = storeToRefs(authStore);
-    const { getLeaves } = leavesStore;
-    const { leaveCountDetails, userId } = storeToRefs(leavesStore);
+import {
+    addDoc,
+    arrayUnion,
+    collection,
+    doc,
+    setDoc,
+    updateDoc,
+} from "firebase/firestore";
+import { storeToRefs } from "pinia";
+import { reactive, ref } from "vue";
+import { useFirestore } from "vuefire";
+import { useLeavesStore } from "../stores/leaves";
+import { useAuthStore } from "../stores/authStore";
+import moment from "moment";
+const authStore = useAuthStore();
+const leavesStore = useLeavesStore();
+const { fullName } = storeToRefs(authStore);
+const { getLeaves } = leavesStore;
+const { leaveCountDetails, userId } = storeToRefs(leavesStore);
 
-    // Database reference
-    const db = useFirestore();
-    const today = new Date();
+// Database reference
+const db = useFirestore();
+const today = new Date();
 
-    const dialog = ref(false);
-    const props = defineProps(["dialog"]);
-    const emits = defineEmits(["closeLeaveRequestModal"]);
-    const validationSchema = reactive({
-        leaveCategory: "required",
-        leaveMessage: "required",
-        description: "required|min:30",
-        startDate: (value) => {
-            if (value) {
-                const date = new Date(value);
-                let yesterday = new Date();
-                let tomorrow = new Date();
+const dialog = ref(false);
+const props = defineProps(["dialog"]);
+const emits = defineEmits(["closeLeaveRequestModal"]);
+const validationSchema = reactive({
+    leaveCategory: "required",
+    leaveMessage: "required",
+    description: "required|min:30",
+    startDate: (value) => {
+        if (value) {
+            const date = new Date(value);
+            let yesterday = new Date();
+            let tomorrow = new Date();
+            if (leaveRequestInput.leaveCategory == "Unplanned") {
+                tomorrow.setDate(tomorrow.getDate() + 2);
+                yesterday.setDate(yesterday.getDate() - 1);
+            } else if (leaveRequestInput.leaveCategory == "Planned") {
+                yesterday.setDate(yesterday.getDate() + 3);
+                return date > yesterday
+                    ? true
+                    : `Start Date should above ${moment(yesterday).format(
+                          "DD-MM-YYYY"
+                      )}`;
+            }
+            return date > yesterday && date <= tomorrow
+                ? true
+                : `Start Date should between ${moment(yesterday).format(
+                      "DD-MM-YYYY"
+                  )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
+        } else {
+            return "Please choose a Start Date.";
+        }
+    },
+    endDate: (value) => {
+        if (value) {
+            const date = new Date(value);
+            let yesterday = new Date(leaveRequestInput.startDate);
+            let tomorrow = new Date(leaveRequestInput.startDate);
+            // Define the minimum and maximum dates
+
+            if (leaveRequestInput.startDate > date) {
+                return "End date should be greater than Start date.";
+            } else {
                 if (leaveRequestInput.leaveCategory == "Unplanned") {
-                    tomorrow.setDate(tomorrow.getDate() + 2);
-                    yesterday.setDate(yesterday.getDate() - 1);
+                    tomorrow.setDate(tomorrow.getDate() + 3);
+                    yesterday.setDate(yesterday.getDate());
                 } else if (leaveRequestInput.leaveCategory == "Planned") {
-                    yesterday.setDate(yesterday.getDate() + 3);
-                    return date > yesterday
+                    tomorrow.setDate(
+                        tomorrow.getDate() + leaveCountDetails.value.leftLeaves
+                    );
+                    return date <= tomorrow
                         ? true
-                        : `Start Date should above ${moment(yesterday).format(
+                        : `End Date should below ${moment(tomorrow).format(
                               "DD-MM-YYYY"
                           )}`;
                 }
-                return date > yesterday && date <= tomorrow
+                return date >= yesterday && date <= tomorrow
                     ? true
-                    : `Start Date should between ${moment(yesterday).format(
+                    : `End Date should between ${moment(yesterday).format(
                           "DD-MM-YYYY"
                       )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
-            } else {
-                return "Please choose a Start Date.";
             }
-        },
-        endDate: (value) => {
-            if (value) {
-                const date = new Date(value);
-                let yesterday = new Date(leaveRequestInput.startDate);
-                let tomorrow = new Date(leaveRequestInput.startDate);
-                // Define the minimum and maximum dates
+        } else {
+            return "Please choose a End Date.";
+        }
+    },
+    requestingToEmail: "required|email",
+});
 
-                if (leaveRequestInput.startDate > date) {
-                    return "End date should be greater than Start date.";
-                } else {
-                    if (leaveRequestInput.leaveCategory == "Unplanned") {
-                        // console.log(leaveRequestInput.leaveCategory);
-                        tomorrow.setDate(tomorrow.getDate() + 3);
-                        yesterday.setDate(yesterday.getDate());
-                    } else if (leaveRequestInput.leaveCategory == "Planned") {
-                        tomorrow.setDate(
-                            tomorrow.getDate() +
-                                leaveCountDetails.value.leftLeaves
-                        );
-                        console.log(tomorrow);
-                        return date <= tomorrow
-                            ? true
-                            : `End Date should below ${moment(tomorrow).format(
-                                  "DD-MM-YYYY"
-                              )}`;
-                    }
-                    return date >= yesterday && date <= tomorrow
-                        ? true
-                        : `End Date should between ${moment(yesterday).format(
-                              "DD-MM-YYYY"
-                          )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
-                }
-            } else {
-                return "Please choose a End Date.";
-            }
-        },
-        requestingToEmail: "required|email",
+let leaveRequestInput = reactive({
+    leaveCategory: "",
+    leaveMessage: "",
+    description: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    requestingToEmail: "",
+    status: undefined,
+    createdBy: fullName.value,
+    totalDays: 0,
+});
+
+function closeModal() {
+    emits("closeLeaveRequestModal", false);
+}
+
+async function submitRequest() {
+    const startDate = new Date(leaveRequestInput.startDate);
+    const endDate = new Date(leaveRequestInput.endDate);
+
+    const totalDays =
+        (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
+    // Adding a document to leaves collection
+    const leave = await addDoc(collection(db, "leaves"), {
+        ...leaveRequestInput,
+        startDate: startDate,
+        endDate: endDate,
+        status: "pending",
+        userId: userId.value,
+        totalDays: totalDays,
     });
 
-    let leaveRequestInput = reactive({
+    // creating reference to users collection's document with specified id
+    const user = doc(db, "users", userId.value);
+
+    await updateDoc(user, {
+        leaveRequestIds: arrayUnion(leave.id),
+    });
+
+    await updateDoc(user, {
+        leavesDetails: {
+            TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
+            takenLeaves: leaveCountDetails.value.takenLeaves + totalDays,
+            leftLeaves: leaveCountDetails.value.leftLeaves - totalDays,
+        },
+    });
+
+    leavesStore.leaveCountDetails = {
+        TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
+        takenLeaves: leavesStore.leaveCountDetails.takenLeaves + totalDays,
+        leftLeaves: leavesStore.leaveCountDetails.leftLeaves - totalDays,
+    };
+    getLeaves();
+    leaveRequestInput = {
         leaveCategory: "",
         leaveMessage: "",
         description: "",
@@ -255,127 +301,57 @@
         requestingToEmail: "",
         status: undefined,
         createdBy: fullName.value,
-        totalDays: 0,
-    });
-
-    function closeModal() {
-        emits("closeLeaveRequestModal", false);
-    }
-
-    async function submitRequest() {
-        console.log(new Date(leaveRequestInput.startDate));
-        const startDate = new Date(leaveRequestInput.startDate);
-        const endDate = new Date(leaveRequestInput.endDate);
-
-        const totalDays =
-            (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
-        // Adding a document to leaves collection
-        const leave = await addDoc(collection(db, "leaves"), {
-            ...leaveRequestInput,
-            startDate: startDate,
-            endDate: endDate,
-            status: "pending",
-            userId: userId.value,
-            totalDays: totalDays,
-        });
-
-        // creating reference to users collection's document with specified id
-        const user = doc(db, "users", userId.value);
-
-        await updateDoc(user, {
-            leaveRequestIds: arrayUnion(leave.id),
-        });
-
-        await updateDoc(user, {
-            leavesDetails: {
-                TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
-                takenLeaves: leaveCountDetails.value.takenLeaves + totalDays,
-                leftLeaves: leaveCountDetails.value.leftLeaves - totalDays,
-            },
-        });
-
-        leavesStore.leaveCountDetails = {
-            TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
-            takenLeaves: leavesStore.leaveCountDetails.takenLeaves + totalDays,
-            leftLeaves: leavesStore.leaveCountDetails.leftLeaves - totalDays,
-        };
-        getLeaves();
-        leaveRequestInput = {
-            leaveCategory: "",
-            leaveMessage: "",
-            description: "",
-            startDate: new Date(),
-            endDate: new Date(),
-            requestingToEmail: "",
-            status: undefined,
-            createdBy: fullName.value,
-        };
-        emits("closeLeaveRequestModal", false);
-    }
+    };
+    emits("closeLeaveRequestModal", false);
+}
 </script>
 
 <style scoped>
-    .btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    #plus {
-        font-size: 2rem;
-        font-weight: 300;
-        margin-top: -4px;
-        padding-right: 2px;
-    }
+#plus {
+    font-size: 2rem;
+    font-weight: 300;
+    margin-top: -4px;
+    padding-right: 2px;
+}
 
-    .form-heading {
-        font-weight: 900;
-    }
+.form-heading {
+    font-weight: 900;
+}
 
-    .form-heading::after {
-        content: "";
-        width: 50%;
-        height: 2px;
-        background: #000000;
-        display: block;
-        margin: auto;
-    }
+.form-heading::after {
+    content: "";
+    width: 50%;
+    height: 2px;
+    background: #000000;
+    display: block;
+    margin: auto;
+}
 
-    .form .inputDiv {
-        margin: 15px 0;
-        /* display: flex;
-        flex-direction: column; */
-    }
-    form {
-        /* width: 92%; */
-    }
+.form .inputDiv {
+    margin: 15px 0;
+}
 
-    .form .inputDiv input,
-    textarea,
-    .inputDiv select {
-        padding: 10px;
-        display: block;
-        width: 100%;
-        outline: none;
-        border: 1px solid #0000003d;
-    }
+.form .inputDiv input,
+textarea,
+.inputDiv select {
+    padding: 10px;
+    display: block;
+    width: 100%;
+    outline: none;
+    border: 1px solid #0000003d;
+}
 
-    .form .inputDiv .date_input_wrapper {
-        width: 40%;
-    }
+.form .inputDiv .date_input_wrapper {
+    width: 40%;
+}
 
-    .error_message {
-        color: #f44b4b;
-    }
-
-    /* @media screen and (max-width: 600px) {
-        form {
-            width: 88%;
-        }
-    }
-    @media screen and (max-width: 430px) {
-        form {
-            width: 85%;
-        }
-    } */
+.error_message {
+    color: #f44b4b;
+}
 </style>
