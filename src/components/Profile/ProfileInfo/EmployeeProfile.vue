@@ -91,7 +91,7 @@
                     <ErrorMessage name="jdate" class="error_message" />
                 </div>
             </div>
-            <div class="button-box" v-if="true">
+            <div class="button-box">
                 <v-slide-group>
                     <v-btn
                         v-if="isEdit"

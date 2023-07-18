@@ -32,7 +32,6 @@ onMounted(async () => {
         leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves || 10;
         leaveRecord.value.push(leftLeaves.value);
     }
-    console.log(Array.from(leaveRecord.value));
 });
 
 const chartData = computed(() => {

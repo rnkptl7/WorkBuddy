@@ -61,7 +61,7 @@
                     </div>
                 </VField>
             </div>
-            <div class="button-box" v-if="true">
+            <div class="button-box">
                 <v-slide-group>
                     <v-btn
                         v-if="isEdit"

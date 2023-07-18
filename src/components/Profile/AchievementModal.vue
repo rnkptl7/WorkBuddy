@@ -20,6 +20,7 @@
                                     type="date"
                                     class="input w-50"
                                     v-model="achievement.titleDate"
+                                    :max="maxDate"
                                 />
                                 <ErrorMessage
                                     name="titleDate"
@@ -87,7 +88,7 @@
 
 <script setup lang="ts">
 import { useProfileStore } from "../../stores/profileStore";
-import { reactive, ref, onMounted, watch } from "vue";
+import { reactive, ref, onMounted, watch, computed } from "vue";
 import { useFirestore } from "vuefire";
 import { doc, updateDoc, getDoc, arrayUnion } from "firebase/firestore";
 import { storeToRefs } from "pinia";
@@ -112,9 +113,12 @@ let achievement = reactive({
 function closeModal() {
     dialog.value = false;
 }
+const maxDate = computed(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+});
 async function updateAchievement() {
     const userDoc = doc(db, "users", userId.value);
-
     await updateDoc(userDoc, {
         achievementList: arrayUnion(achievement),
     });

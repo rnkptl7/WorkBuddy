@@ -19,7 +19,7 @@
                 <p class="avatar-name">
                     {{ fullName }}
                 </p>
-                <p class="avatar-dept">{{ department }} {{ role }}</p>
+                <p class="avatar-dept">{{ department }} | {{ role }}</p>
             </div>
         </div>
         <div class="ma-5">
@@ -88,6 +88,9 @@ onMounted(async () => {
         } else {
             male.value = false;
         }
+        if (role.value == "Employee") {
+            role.value = "Engineer";
+        }
     }
 });
 </script>
@@ -104,6 +107,7 @@ onMounted(async () => {
 }
 .avatar-name {
     font-size: 30px;
+    color: var(--primary-color);
 }
 .avatar-dept {
     font-size: 20px;
