@@ -2,7 +2,7 @@
     <div
         class="leave-detail_card d-flex flex-column align-center rounded-lg my-2 pa-3"
     >
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row w-100">
             <div class="ld-card_logo d-flex flex-column align-start">
                 <h3>From</h3>
                 <span>
@@ -13,14 +13,19 @@
                     {{ leave.endDate }}
                 </span>
             </div>
+
             <div class="ld-card-body d-flex flex-column mx-4 mb-5">
                 <h3>{{ leave.leaveMessage }}</h3>
+                <h5 class="mt-1" v-if="isAdmin">
+                    Created By: {{ leave.createdBy }}
+                </h5>
                 <div class="ld-category d-flex flex-row my-3">
                     <span
                         class="border rounded-pill px-2 text-caption text-uppercase"
                         >{{ leave.leaveCategory }}</span
                     >
                 </div>
+
                 <div class="ld-card-body_description">
                     <p>{{ trmimedDescrition }}</p>
                 </div>
@@ -67,7 +72,9 @@
                                     {{ leave.endDate }}
                                 </span>
                             </div>
-
+                            <h5 v-if="isAdmin">
+                                Created By: {{ leave.createdBy }}
+                            </h5>
                             <div class="ld-modal-card-body_description">
                                 <p>Description:- {{ leave.description }}</p>
                             </div>
@@ -100,11 +107,14 @@
     import { storeToRefs } from "pinia";
     import { computed, ref } from "vue";
     import { useFirestore } from "vuefire";
-    const { leave, isAdmin } = defineProps(["leave", "isAdmin"]);
     import { useLeavesStore } from "../stores/leaves";
+    import { useAuthStore } from "../stores/authStore";
 
+    const { leave, isAdmin } = defineProps(["leave", "isAdmin"]);
     const dialog = ref(false);
+    const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
+    const { fullname } = storeToRefs(authStore);
     const { userId, leaveCountDetails } = storeToRefs(leavesStore);
 
     const logoDateString = computed(() => {
@@ -138,6 +148,7 @@
         const leaveReferance = doc(db, "leaves", leave.id);
         await updateDoc(leaveReferance, {
             status: action === "approve" ? "Approved" : "rejected",
+            approvedBy: fullname.value,
         });
         const user = doc(db, "users", userId.value);
 
@@ -159,6 +170,7 @@
         }
 
         await leavesStore.getLeaves();
+        await leavesStore.getAllPendingLeaves();
         dialog.value = false;
         // };
     }

@@ -16,20 +16,25 @@
     const database = useFirestore();
 
     // Fetching realtime attributes
+    let calendarColors = {
+        pending: { fontColor: "black", fill: "yellow" },
+        Approved: { fontColor: "white", fill: "blue" },
+        rejected: { fontColor: "white", fill: "grey" },
+    };
+
     let attributes = ref([]);
     watch(useLeavesStore(), () => {
-        console.log("==== store updated! ===");
         attributes.value = useLeavesStore().leavesDates.map((item) => {
+            console.log(calendarColors[item.status]);
             const leave = {
                 content: {
                     style: {
-                        color: item.status === "pending" ? "white" : "white",
+                        color: calendarColors[item.status].fontColor,
                     },
                 },
-                highlight: item.status === "pending" ? "yellow" : "blue",
+                highlight: calendarColors[item.status].fill,
                 dates: { start: item.start, end: item.end },
             };
-            console.log(leave);
             return leave;
         });
     });

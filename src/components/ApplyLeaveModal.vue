@@ -1,8 +1,8 @@
 <template>
     <!-- <v-row justify="end"> -->
     <v-dialog v-model="props.dialog" persistent width="600">
-        <v-card>
-            <v-container class="pa-0">
+        <v-card pa-5>
+            <v-container class="pa-3">
                 <!-- <div class="pa-5"> -->
                 <h2>Request for Leave</h2>
                 <v-divider class="py-1"></v-divider>
@@ -120,7 +120,7 @@
                             name="requestingToEmail"
                             placeholder="Requesting to Email*"
                             type="email"
-                            class="input w-100"
+                            class="input"
                             v-model="leaveRequestInput.requestingToEmail"
                         />
                         <ErrorMessage
@@ -163,9 +163,13 @@
     import { reactive, ref } from "vue";
     import { useFirestore } from "vuefire";
     import { useLeavesStore } from "../stores/leaves";
+    import { useAuthStore } from "../stores/authStore";
+    import moment from "moment";
+    const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
-    const { getLeaves, userId } = leavesStore;
-    const { leaveCountDetails } = storeToRefs(leavesStore);
+    const { fullname } = storeToRefs(authStore);
+    const { getLeaves } = leavesStore;
+    const { leaveCountDetails, userId } = storeToRefs(leavesStore);
 
     // Database reference
     const db = useFirestore();
@@ -183,7 +187,6 @@
                 const date = new Date(value);
                 let yesterday = new Date();
                 let tomorrow = new Date();
-                // Define the minimum and maximum dates
                 if (leaveRequestInput.leaveCategory == "Unplanned") {
                     tomorrow.setDate(tomorrow.getDate() + 2);
                     yesterday.setDate(yesterday.getDate() - 1);
@@ -191,11 +194,15 @@
                     yesterday.setDate(yesterday.getDate() + 3);
                     return date > yesterday
                         ? true
-                        : `Start Date should above ${yesterday}`;
+                        : `Start Date should above ${moment(yesterday).format(
+                              "DD-MM-YYYY"
+                          )}`;
                 }
                 return date > yesterday && date <= tomorrow
                     ? true
-                    : `Start Date should between ${yesterday} and ${tomorrow}`;
+                    : `Start Date should between ${moment(yesterday).format(
+                          "DD-MM-YYYY"
+                      )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
             } else {
                 return "Please choose a Start Date.";
             }
@@ -215,8 +222,6 @@
                         tomorrow.setDate(tomorrow.getDate() + 3);
                         yesterday.setDate(yesterday.getDate() + 1);
                     } else if (leaveRequestInput.leaveCategory == "Planned") {
-                        // console.log(leaveRequestInput.leaveCategory);
-                        // console.log(leaveRequestInput.startDate);
                         tomorrow.setDate(
                             tomorrow.getDate() +
                                 leaveCountDetails.value.leftLeaves
@@ -224,11 +229,15 @@
                         console.log(tomorrow);
                         return date <= tomorrow
                             ? true
-                            : `End Date should below ${tomorrow}`;
+                            : `End Date should below ${moment(tomorrow).format(
+                                  "DD-MM-YYYY"
+                              )}`;
                     }
                     return date >= yesterday && date <= tomorrow
                         ? true
-                        : `End Date should between ${yesterday} and ${tomorrow}`;
+                        : `End Date should between ${moment(yesterday).format(
+                              "DD-MM-YYYY"
+                          )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
                 }
             } else {
                 return "Please choose a End Date.";
@@ -236,12 +245,6 @@
         },
         requestingToEmail: "required|email",
     });
-    let tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 4);
-    let yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() + 1);
-    let minDate = ref(yesterday);
-    let maxDate = ref(tomorrow);
 
     let leaveRequestInput = reactive({
         leaveCategory: "",
@@ -251,6 +254,7 @@
         endDate: new Date(),
         requestingToEmail: "",
         status: undefined,
+        createdBy: fullname.value,
     });
 
     function closeModal() {
@@ -265,11 +269,11 @@
             startDate: new Date(leaveRequestInput.startDate),
             endDate: new Date(leaveRequestInput.endDate),
             status: "pending",
-            userId: userId,
+            userId: userId.value,
         });
 
         // creating reference to users collection's document with specified id
-        const user = doc(db, "users", userId);
+        const user = doc(db, "users", userId.value);
 
         await updateDoc(user, {
             leaveRequestIds: arrayUnion(leave.id),
@@ -289,6 +293,16 @@
             leftLeaves: leavesStore.leaveCountDetails.leftLeaves - 1,
         };
         getLeaves();
+        leaveRequestInput = {
+            leaveCategory: "",
+            leaveMessage: "",
+            description: "",
+            startDate: new Date(),
+            endDate: new Date(),
+            requestingToEmail: "",
+            status: undefined,
+            createdBy: fullname.value,
+        };
         emits("closeLeaveRequestModal", false);
     }
 </script>
@@ -325,6 +339,9 @@
         /* display: flex;
         flex-direction: column; */
     }
+    form {
+        width: 92%;
+    }
 
     .form .inputDiv input,
     textarea,
@@ -342,5 +359,16 @@
 
     .error_message {
         color: #f44b4b;
+    }
+
+    @media screen and (max-width: 600px) {
+        form {
+            width: 88%;
+        }
+    }
+    @media screen and (max-width: 430px) {
+        form {
+            width: 85%;
+        }
     }
 </style>

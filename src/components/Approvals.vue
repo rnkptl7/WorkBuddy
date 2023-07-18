@@ -7,12 +7,12 @@
             <h3>Your Pending Requests:</h3>
             <div class="pending-requests_cards">
                 <template
-                    v-for="(item, index) in leavesStore.leaves"
+                    v-for="(item, index) in leavesStore.allPendingLeaves"
                     :key="index"
                 >
                     <LeaveRequestCard
                         :leave="item"
-                        :isAdmin="true"
+                        :isAdmin="isAdmin"
                         v-if="item.status === 'pending'"
                     />
                 </template>
@@ -27,8 +27,14 @@
     import { useFirestore } from "vuefire";
     import LeaveRequestCard from "../components/LeaveRequestCard.vue";
     import { useLeavesStore } from "../stores/leaves";
+    import { useAuthStore } from "../stores/authStore";
+    import { storeToRefs } from "pinia";
 
     const leavesStore = useLeavesStore();
+    const { isAdmin, allPendingLeaves } = storeToRefs(leavesStore);
+    onMounted(async () => {
+        await leavesStore.getAllPendingLeaves();
+    });
 </script>
 
 <style scoped>

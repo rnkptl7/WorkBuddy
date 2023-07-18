@@ -41,28 +41,14 @@
 
     const expanded = ref([]);
     const tableHeaders = ref([
-        {
-            title: "Leave ID",
-            align: "start",
-            key: "id",
-        },
         { title: "Leave Message", key: "leaveMessage" },
         { title: "Start date", key: "startDate" },
         { title: "End date", key: "endDate" },
+        { title: "Status", key: "status" },
         { title: "Category", key: "leaveCategory" },
         { title: "Requesting To", key: "requestingToEmail" },
         { title: "", key: "data-table-expand" },
     ]);
-
-    // async function getLeaveHistory() {
-    //     const leaveHistoryList = await getDocs(query(collection(db, "leaves")));
-    //     leaveHistoryList.forEach((doc) => {
-    //         leaves.push(doc.data());
-    //     });
-    // }
-    // onMounted(() => {
-    //     // getLeaveHistory();
-    // });
 </script>
 
 <style>

@@ -73,8 +73,8 @@
                 <div class="pending-requests_cards d-flex flex-column">
                     <template v-for="(item, index) in leaves" :key="index">
                         <LeaveRequestCardVue
-                            v-if="item.status === 'pending'"
                             :leave="item"
+                            v-if="item.status == 'pending'"
                         />
                     </template>
                 </div>
@@ -104,12 +104,7 @@
 
     const { mobileView: isMobile } = storeToRefs(useCommonStore());
 
-    // Fetching all leaves collection
-    // const db = useFirestore();
-    // const leaves = useCollection(collection(db, "leaves"));
-
     const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
-    // console.log(leaveCountDetails.value.takenLeaves);
     const { getLeaves } = useLeavesStore();
     onMounted(async () => {
         await getLeaves();
