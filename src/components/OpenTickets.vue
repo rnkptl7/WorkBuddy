@@ -34,7 +34,11 @@
                 <td>{{ item.title }}</td>
                 <td>{{ item.createdOn }}</td>
                 <td>{{ item.category }}</td>
-                <td>{{ item.priority }}</td>
+                <td>
+                    <v-chip :color="getPriorityColor(item.priority)">
+                        {{ item.priority }}
+                    </v-chip>
+                </td>
                 <td>{{ item.description.slice(0, 15) }}...</td>
                 <td v-if="isAdmin">{{ item.userName }}</td>
                 <td v-if="isAdmin">
@@ -59,6 +63,15 @@
         showCloseTicketForm.value = true;
         ticketToBeClosed.value = {...ticket, status: ""};
     }
+
+    const getPriorityColor = (priority) => {
+        if (priority === 'High')
+            return 'red';
+        else if (priority === 'Medium')
+            return 'orange';
+        else
+            return '#115173'
+    };
 </script>
 
 <style>
