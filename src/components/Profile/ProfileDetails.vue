@@ -30,7 +30,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" v-if="TOTAL_LEAVES">
+        <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h6 mb-1">
@@ -40,7 +40,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" v-if="leftLeaves">
+        <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h6 mb-1">
@@ -50,7 +50,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" v-if="takenLeaves">
+        <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="text-h6 mb-1">
@@ -116,20 +116,24 @@ onMounted(async () => {
     const db = useFirestore();
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
-        empID.value = docSnap.data().employee.empID || "";
+        const register = docSnap.data()?.register;
+        const leavesDetails = docSnap.data()?.leavesDetails;
+        const employee = docSnap.data()?.employee;
+        const professional = docSnap.data()?.professional;
+
+        empID.value = register?.empID || "";
         department.value =
-            (docSnap.data().register.department || "").charAt(0).toUpperCase() +
-            `${docSnap.data().register.department.slice(1)}`;
+            (register?.department || "").charAt(0).toUpperCase() +
+            register?.department.slice(1);
         role.value =
-            (docSnap.data().register.role || "").charAt(0).toUpperCase() +
-            `${docSnap.data().register.role.slice(1)}`;
-        jdate.value = docSnap.data().employee.jdate || "";
-        cdate.value = docSnap.data().professional.cdate || "";
-        totalExp.value = docSnap.data().professional.totalExp || "";
-        TOTAL_LEAVES.value = docSnap.data().leavesDetails.TOTAL_LEAVES || "";
-        takenLeaves.value = docSnap.data().leavesDetails.takenLeaves || "";
-        leftLeaves.value = docSnap.data().leavesDetails.leftLeaves || "";
-        console.log(totalExp, "pppppppxxxxxxxxxxxxxxxxxxxxxpppEEX");
+            (register?.role || "").charAt(0).toUpperCase() +
+            register?.role.slice(1);
+        TOTAL_LEAVES.value = leavesDetails?.TOTAL_LEAVES || 10;
+        takenLeaves.value = leavesDetails?.takenLeaves || 0;
+        leftLeaves.value = leavesDetails?.leftLeaves || 10;
+        jdate.value = employee?.jdate || "";
+        cdate.value = professional?.cdate || "";
+        totalExp.value = professional?.totalExp || "";
     }
 });
 </script>

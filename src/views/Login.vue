@@ -43,12 +43,18 @@
                     <ErrorMessage name="password" class="error_message" />
                 </div>
 
-        <div class="d-flex justify-space-between">
-          <div>
-            <v-btn class="me-4 btn-submit" type="submit">Login</v-btn>
-            <v-btn type="reset">Clear</v-btn>
-          </div>
-          <p class="text-medium-emphasis">*indicates required field</p>
+                <div class="d-flex justify-space-between">
+                    <div>
+                        <v-btn class="me-4 btn-submit" type="submit"
+                            >Login</v-btn
+                        >
+                        <v-btn type="reset">Clear</v-btn>
+                    </div>
+                    <p class="text-medium-emphasis">
+                        *indicates required field
+                    </p>
+                </div>
+            </VForm>
         </div>
     </div>
 </template>
@@ -90,37 +96,40 @@ const schema = {
 const submitData = async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
 
-  let userData;
-  querySnapshot.forEach((doc) => {
-    let { register } = doc.data();
-    if (form.email === register.email && form.password === register.password) {
-      localStorage.setItem("userId", doc.id);
-      userId.value = doc.id;
-      localStorage.setItem("fullName", register.fullName);
-      userData = doc.data();
-    }
-  });
-
-  if (userData) {
-    $toast.success("Logged In Successfully", {
-      position: "top-right",
+    let userData;
+    querySnapshot.forEach((doc) => {
+        let { register } = doc.data();
+        if (
+            form.email === register.email &&
+            form.password === register.password
+        ) {
+            localStorage.setItem("userId", doc.id);
+            userId.value = doc.id;
+            localStorage.setItem("fullName", register.fullName);
+            userData = doc.data();
+        }
     });
 
-    if (userData.register.role === "admin") {
-      localStorage.setItem("isAdmin", true);
-      isAdmin.value = true;
+    if (userData) {
+        $toast.success("Logged In Successfully", {
+            position: "top-right",
+        });
+
+        if (userData.register.role === "admin") {
+            localStorage.setItem("isAdmin", true);
+            isAdmin.value = true;
+        }
+
+        localStorage.setItem("isLoggedIn", true);
+        isLoggedIn.value = true;
+        fullName.value = userData.register.fullName;
+        router.replace({ name: "Home" });
+
+        fetchAllTickets();
+        fetchTicketsByStatus();
+    } else {
+        alert("Invalid Credentials");
     }
-
-    localStorage.setItem("isLoggedIn", true);
-    isLoggedIn.value = true;
-    fullName.value = userData.register.fullName;
-    router.replace({ name: "Home" });
-
-    fetchAllTickets();
-    fetchTicketsByStatus();
-  } else {
-    alert("Invalid Credentials");
-  }
 };
 </script>
 

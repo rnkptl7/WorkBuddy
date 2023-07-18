@@ -5,23 +5,27 @@
                 Add Achievements
             </v-btn>
         </div>
-        <v-timeline line-thickness="5" line-color="#6eb4d933">
+        <div v-if="noAchievement" class="text-center">
+            <img src="../../assets/images.close.png" alt="No achievements" />
+            <p>No achievements available</p>
+        </div>
+        <v-timeline v-else line-thickness="5" line-color="#6eb4d933">
             <v-timeline-item
                 v-for="(achievement, index) in achievements"
                 :key="index"
                 small
-                dot-color="#115173 "
+                dot-color="#115173"
                 size="20"
             >
                 <div>
                     <div>
-                        <p :class="`font-weight-regular text-h6 `">
+                        <p :class="`font-weight-regular text-h6`">
                             {{ achievement.title }}
                         </p>
-                        <p :class="`font-weight-regular text-h7 `">
+                        <p :class="`font-weight-regular text-h7`">
                             {{ achievement.titleDate }}
                         </p>
-                        <p :class="`font-italic title-descprition`">
+                        <p :class="`font-italic title-description`">
                             {{ achievement.titleDescription }}
                         </p>
                     </div>
@@ -32,20 +36,21 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "../../stores/profileStore";
 
 const store = useProfileStore();
 const { achievements, openModal: dialog } = storeToRefs(store);
-const { getAchievement, getLeavesRecord } = store;
+const { getAchievement } = store;
+const noAchievement = ref(false);
 
 function toggleModal() {
     dialog.value = true;
 }
 onMounted(async () => {
     await getAchievement();
-    await getLeavesRecord();
+    noAchievement.value = achievements.value.length === 0;
 });
 </script>
 <style scoped>

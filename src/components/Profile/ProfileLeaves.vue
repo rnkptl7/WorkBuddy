@@ -27,9 +27,9 @@ onMounted(async () => {
     const db = useFirestore();
     const docSnap = await getDoc(doc(db, "users", userId));
     if (docSnap.exists()) {
-        takenLeaves.value = docSnap.data()?.leavesDetails?.takenLeaves || "";
+        takenLeaves.value = docSnap.data()?.leavesDetails?.takenLeaves || 0;
         leaveRecord.value.push(takenLeaves.value);
-        leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves || "";
+        leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves || 10;
         leaveRecord.value.push(leftLeaves.value);
     }
     console.log(Array.from(leaveRecord.value));

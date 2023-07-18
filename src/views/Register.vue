@@ -171,12 +171,18 @@
                     </VField>
                 </div>
 
-        <div class="d-flex justify-space-between">
-          <div>
-            <v-btn class="me-4 btn-submit" type="submit"> Submit </v-btn>
-            <v-btn type="reset">Clear</v-btn>
-          </div>
-          <p class="text-medium-emphasis">*indicates required field</p>
+                <div class="d-flex justify-space-between">
+                    <div>
+                        <v-btn class="me-4 btn-submit" type="submit">
+                            Submit
+                        </v-btn>
+                        <v-btn type="reset">Clear</v-btn>
+                    </div>
+                    <p class="text-medium-emphasis">
+                        *indicates required field
+                    </p>
+                </div>
+            </VForm>
         </div>
     </div>
 </template>
@@ -253,66 +259,6 @@ select,
 
 .lastnameInput {
     border-left: none !important;
-}
-
-/* form */
-.form-heading {
-    font-weight: 900;
-}
-
-.registration {
-    display: grid;
-    place-items: center;
-    height: 80vh;
-}
-
-.registration h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--primary-color);
-}
-
-.registration form {
-    width: 30rem;
-}
-
-.form .inputDiv {
-    margin: 15px 0;
-}
-
-.form .inputDiv input,
-.inputDiv select {
-    padding: 10px;
-    display: block;
-    width: 100%;
-    outline: none;
-    border: 1px solid var(--primary-color);
-}
-
-.btn-submit {
-    width: 6rem;
-    font-size: 16px;
-    text-align: center;
-    color: var(--white-text);
-    background: var(--primary-color);
-}
-
-.error_message {
-    color: #f44b4b;
-}
-
-@media screen and (max-width: 630px) {
-    .registration {
-        max-width: 38rem;
-    }
-
-    .registration form {
-        width: 100%;
-    }
-
-    .registration .form-wrapper {
-        width: 80%;
-    }
 }
 
 /* form */
