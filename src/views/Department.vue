@@ -21,11 +21,14 @@
           </div>
 
           <!-- Show empty text when there is no item -->
-          <div
-            v-if="getDepartmentItems(department.id).length === 0"
-            class="empty-placeholder"
-          >
-            <span>Drag here to add Employees</span>
+          <div class="temp">
+            <div
+              v-if="getDepartmentItems(department.id).length === 0"
+              class="empty-placeholder"
+            >
+              <span v-if="!isAdmin">No Employees</span>
+              <span v-else>Drag here to add Employees</span>
+            </div>
           </div>
 
           <!-- Trigger Drag Event -->
@@ -41,28 +44,26 @@
             <!-- Employee Cards -->
             <v-card class="employee-card">
               <div class="employee-avatar">
-                <v-avatar
-                  class="department-user-icon"
-                  v-if="item.gender === 'Male'"
-                >
+                <div class="department-user-icon" v-if="item.gender === 'Male'">
                   <img
                     src="@/assets/images/profile-male.png"
                     alt="male-user-Icon"
+                    width="100%"
                   />
-                </v-avatar>
+                </div>
 
-                <v-avatar class="department-user-icon" v-else>
+                <div class="department-user-icon" v-else>
                   <img
                     src="@/assets/images/profile-female.png"
                     alt="female-user-Icon"
                   />
-                </v-avatar>
+                </div>
               </div>
 
               <div class="employee-details">
                 <p class="title">Name: {{ item.fullName }}</p>
                 <p class="text">Email: {{ item.email }}</p>
-                <p class="text-subtitle-2">Location:Ahmedabad - Gujarat</p>
+                <p class="text-subtitle-2">Location: Gujarat</p>
               </div>
             </v-card>
           </div>
@@ -103,19 +104,18 @@ const startDrag = (event, item) => {
 //--------------------Handles dropping an item into a department, updating its departmentId--------------------//
 const onDrop = async (event, departmentId) => {
   const dragUserID = event.dataTransfer.getData("dragUserID");
+  if (isAdmin.value) {
+    const dragAndDropAlert = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#115173",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Drag It!",
+    });
 
-  const dragAndDropAlert = await Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#115173",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Drag It!",
-  });
-
-  if (dragAndDropAlert.isConfirmed) {
-    if (isAdmin.value) {
+    if (dragAndDropAlert.isConfirmed) {
       let dragUser;
       if (departmentId === 1) {
         dragUser = frontendDept.find((dragUser) => dragUser.id == dragUserID);
@@ -135,6 +135,8 @@ const onDrop = async (event, departmentId) => {
       });
       await getUserDataFromDB();
     }
+  } else {
+    Swal.fire("Please ask to Admin");
   }
 };
 
@@ -278,6 +280,7 @@ getUserDataFromDB();
   position: sticky;
   top: 0;
   z-index: 1;
+  flex-direction: column;
 }
 
 .employee-card {
@@ -288,6 +291,7 @@ getUserDataFromDB();
   margin-left: 5%;
   margin-right: 5%;
   display: flex;
+  padding: 3px 0;
 }
 .employee-avtar {
   width: 10vw;
@@ -305,6 +309,10 @@ getUserDataFromDB();
 .department-user-icon {
   margin-top: 10%;
   margin-left: 10%;
+}
+
+.department-user-icon img {
+  width: 55%;
 }
 
 @media only screen and (max-width: 1786px) and (min-width: 1500px) {
@@ -352,6 +360,10 @@ getUserDataFromDB();
   .v-row {
     display: grid;
     grid-template-columns: auto auto;
+  }
+  .empty-placeholder {
+    display: grid;
+    place-items: center;
   }
 }
 
