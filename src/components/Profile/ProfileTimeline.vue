@@ -5,8 +5,12 @@
                 Add Achievements
             </v-btn>
         </div>
-        <div v-if="noAchievement" class="text-center">
-            <img src="../../assets/images.close.png" alt="No achievements" />
+
+        <div v-if="achievements.length === 0" class="text-center">
+            <img
+                src="../../assets/images/no-achievement.jpg"
+                alt="No achievements"
+            />
             <p>No achievements available</p>
         </div>
         <v-timeline v-else line-thickness="5" line-color="#6eb4d933">
@@ -43,17 +47,18 @@ import { useProfileStore } from "../../stores/profileStore";
 const store = useProfileStore();
 const { achievements, openModal: dialog } = storeToRefs(store);
 const { getAchievement } = store;
-const noAchievement = ref(false);
 
 function toggleModal() {
     dialog.value = true;
 }
 onMounted(async () => {
     await getAchievement();
-    noAchievement.value = achievements.value.length === 0;
 });
 </script>
 <style scoped>
+.title-description {
+    width: 150px;
+}
 .headline {
     color: var(--primary-color);
     font-size: 20px;
@@ -66,7 +71,9 @@ onMounted(async () => {
     height: 10px !important;
     width: 10px !important;
 }
-.title-descprition {
-    width: 150px;
+@media screen and (max-width: 400px) {
+    .title-description {
+        width: 100px;
+    }
 }
 </style>

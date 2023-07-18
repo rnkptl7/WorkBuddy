@@ -1,17 +1,25 @@
 <template>
     <main>
         <div class="avatar-icon ma-5">
-            <v-avatar class="v-avatar-image mx-10">
-                <v-img
+            <v-avatar class="v-avatar-image">
+                <img
+                    v-if="male"
+                    class="avatar-img"
                     alt="Avatar"
-                    src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
-                ></v-img>
+                    src="../../assets/images/male-user.png"
+                />
+                <img
+                    v-else
+                    class="avatar-img"
+                    alt="Avatar"
+                    src="../../assets/images/female-user.png"
+                />
             </v-avatar>
             <div class="user-name m-5">
                 <p class="avatar-name">
                     {{ fullName }}
                 </p>
-                <p class="avatar-dept">{{ department }} {{ role }}</p>
+                <p class="avatar-dept">{{ department }} | {{ role }}</p>
             </div>
         </div>
         <div class="ma-5">
@@ -60,19 +68,29 @@ const toggleProfile = () => {
 const fullName = ref("");
 const department = ref("");
 const role = ref("");
-
+const male = ref(true);
 onMounted(async () => {
     const key = localStorage.getItem("userId");
     const db = useFirestore();
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
-        fullName.value = docSnap.data().register.fullName || "";
+        fullName.value =
+            (docSnap.data().register.fullName || "").charAt(0).toUpperCase() +
+            `${docSnap.data().register.fullName.slice(1)}`;
         department.value =
             (docSnap.data().register.department || "").charAt(0).toUpperCase() +
             `${docSnap.data().register.department.slice(1)}`;
         role.value =
             (docSnap.data().register.role || "").charAt(0).toUpperCase() +
             `${docSnap.data().register.role.slice(1)}`;
+        if (docSnap.data().register.gender == "Male") {
+            male.value = true;
+        } else {
+            male.value = false;
+        }
+        if (role.value == "Employee") {
+            role.value = "Engineer";
+        }
     }
 });
 </script>
@@ -80,9 +98,16 @@ onMounted(async () => {
 .v-avatar-image {
     width: 120px;
     height: 120px;
+    margin-right: 20px;
+}
+
+.avatar-img {
+    width: 120px;
+    height: 120px;
 }
 .avatar-name {
     font-size: 30px;
+    color: var(--primary-color);
 }
 .avatar-dept {
     font-size: 20px;
@@ -100,16 +125,17 @@ onMounted(async () => {
     .v-avatar-image {
         width: 100px;
         height: 100px;
+        margin-right: 0px;
+    }
+    .avatar-img {
+        width: 100px;
+        height: 100px;
     }
     .avatar-name {
         font-size: 25px;
     }
 }
 @media screen and (max-width: 540px) {
-    .v-avatar-image {
-        width: 80px;
-        height: 80px;
-    }
     .button-box {
         display: flex;
         justify-content: center;

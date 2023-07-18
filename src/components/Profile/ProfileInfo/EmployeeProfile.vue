@@ -8,62 +8,74 @@
             <legend>Employee Details:</legend>
             <div class="legend-input">
                 <label for="empID">Employee ID:</label>
-                <VField
-                    name="empID"
-                    type="number"
-                    disabled
-                    v-model="employee.empID"
-                    class="input"
-                />
-                <ErrorMessage name="empID" class="error_message" />
+                <div>
+                    <VField
+                        name="empID"
+                        type="number"
+                        disabled
+                        v-model="employee.empID"
+                        class="input"
+                    />
+                    <ErrorMessage name="empID" class="error_message" />
+                </div>
             </div>
             <div class="legend-input">
                 <label for="email">Email ID:</label>
-                <VField
-                    name="email"
-                    type="email"
-                    v-model="employee.email"
-                    disabled
-                    class="input"
-                />
-                <ErrorMessage name="email" class="error_message" />
+                <div>
+                    <VField
+                        name="email"
+                        type="email"
+                        v-model="employee.email"
+                        disabled
+                        class="input"
+                    />
+                    <ErrorMessage name="email" class="error_message" />
+                </div>
             </div>
             <div class="legend-input">
                 <label for="department">Department:</label>
-                <VField
-                    name="department"
-                    type="text"
-                    v-model="employee.department"
-                    disabled
-                    class="input"
-                />
-                <ErrorMessage name="department" class="error_message" />
+                <div>
+                    <VField
+                        name="department"
+                        type="text"
+                        v-model="employee.department"
+                        disabled
+                        class="input"
+                    />
+                    <ErrorMessage name="department" class="error_message" />
+                </div>
             </div>
             <div class="legend-input">
                 <label for="reporting">Reporting To:</label>
-                <VField name="reporting" :bails="false" v-slot="{ errors }">
-                    <input
-                        list="reportingOptions"
-                        id="reporting"
-                        name="reporting"
-                        v-model="employee.reporting"
-                        :disabled="isEdit"
-                        class="input"
-                    />
-                    <datalist id="reportingOptions">
-                        <option
-                            v-for="option in adminOption"
-                            :value="option.value"
-                            :key="option.id"
+                <div>
+                    <VField name="reporting" :bails="false" v-slot="{ errors }">
+                        <input
+                            list="reportingOptions"
+                            id="reporting"
+                            name="reporting"
+                            v-model="employee.reporting"
+                            :disabled="isEdit"
+                            class="input"
+                        />
+                        <datalist id="reportingOptions">
+                            <option
+                                v-for="option in adminOption"
+                                :value="option.value"
+                                :key="option.id"
+                            >
+                                {{ option.label }}
+                            </option>
+                        </datalist>
+                        <div
+                            class="error_message"
+                            v-for="err in errors"
+                            :key="err"
                         >
-                            {{ option.label }}
-                        </option>
-                    </datalist>
-                    <div class="error_message" v-for="err in errors" :key="err">
-                        {{ err }}
-                    </div>
-                </VField>
-                <ErrorMessage name="reporting" class="error_message" />
+                            {{ err }}
+                        </div>
+                    </VField>
+                    <ErrorMessage name="reporting" class="error_message" />
+                </div>
             </div>
 
             <div class="legend-input">
@@ -79,7 +91,7 @@
                     <ErrorMessage name="jdate" class="error_message" />
                 </div>
             </div>
-            <div class="button-box" v-if="true">
+            <div class="button-box">
                 <v-slide-group>
                     <v-btn
                         v-if="isEdit"
@@ -129,7 +141,6 @@ const db = useFirestore();
 const employeeSchema = {
     empid: "integer",
     email: "email",
-    department: "alphaChar",
     reporting: "alphaSpaces",
     jdate: (value) => {
         const inputDate = new Date(value);

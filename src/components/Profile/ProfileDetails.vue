@@ -3,7 +3,7 @@
         <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ empID }}
                     </v-list-item-title>
                     <v-list-item-subtitle>Employee ID</v-list-item-subtitle>
@@ -13,7 +13,7 @@
         <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ department }}
                     </v-list-item-title>
                     <v-list-item-subtitle>Department</v-list-item-subtitle>
@@ -23,7 +23,7 @@
         <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ role }}
                     </v-list-item-title>
                     <v-list-item-subtitle>Role</v-list-item-subtitle>
@@ -33,7 +33,7 @@
         <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ TOTAL_LEAVES }}
                     </v-list-item-title>
                     <v-list-item-subtitle>Total Allowance</v-list-item-subtitle>
@@ -43,7 +43,7 @@
         <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ leftLeaves }}
                     </v-list-item-title>
                     <v-list-item-subtitle>Leaves Left</v-list-item-subtitle>
@@ -53,7 +53,7 @@
         <v-card class="ma-5 card">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ takenLeaves }}
                     </v-list-item-title>
                     <v-list-item-subtitle>Leaves Taken</v-list-item-subtitle>
@@ -63,7 +63,7 @@
         <v-card class="ma-5 card" v-if="jdate">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ jdate }}
                     </v-list-item-title>
                     <v-list-item-subtitle>Joining Date</v-list-item-subtitle>
@@ -73,7 +73,7 @@
         <v-card class="ma-5 card" v-if="cdate">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ cdate }}
                     </v-list-item-title>
                     <v-list-item-subtitle
@@ -82,10 +82,10 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-card class="ma-5 card" v-if="totalExp">
+        <v-card class="ma-5 card" v-if="cdate">
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
-                    <v-list-item-title class="text-h6 mb-1">
+                    <v-list-item-title class="mb-1">
                         {{ totalExp }}
                     </v-list-item-title>
                     <v-list-item-subtitle
@@ -144,6 +144,7 @@ onMounted(async () => {
 }
 .v-list-item-title {
     color: #115173;
+    font-size: 1.25rem;
 }
 .v-card {
     background: #f0f3fb;

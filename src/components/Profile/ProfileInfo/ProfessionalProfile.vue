@@ -23,10 +23,10 @@
                         <option value="Diploma"></option>
                         <option value="HSC/SSC"></option>
                     </datalist>
-                    <div class="error_message" v-for="err in errors" :key="err">
-                        {{ err }}
-                    </div>
                 </VField>
+                <div class="error_message" v-for="err in errors" :key="err">
+                    {{ err }}
+                </div>
             </div>
             <div class="legend-input">
                 <label for="cdate">Career Start Date:</label>
@@ -44,17 +44,19 @@
 
             <div class="legend-input">
                 <label for="totalExp">Total Experience:</label>
-                <VField
-                    name="totalExp"
-                    type="integer"
-                    class="input"
-                    disabled
-                    v-model="professional.totalExp"
-                />
+                <div>
+                    <VField
+                        name="totalExp"
+                        type="integer"
+                        class="input"
+                        disabled
+                        v-model="professional.totalExp"
+                    />
+                    <ErrorMessage name="totalExp" class="error_message" />
+                </div>
             </div>
-            <ErrorMessage name="totalExp" class="error_message" />
 
-            <div class="button-box" v-if="true">
+            <div class="button-box">
                 <v-slide-group>
                     <v-btn
                         v-if="isEdit"
@@ -111,20 +113,15 @@ const professionalSchema = {
         const inputDate = new Date(value);
         const joiningDate = new Date(jdate);
         const dateInFutureError = "Date cannot be ahead of Joining Date";
-        if (inputDate > joiningDate) {
+        if (joiningDate == "Invalid Date") {
+            return "Please enter Joining date first";
+        } else if (inputDate > joiningDate) {
             return dateInFutureError;
         }
         return true;
     },
 };
 
-function calculateExperience() {
-    const experience = new Date(professional.experience);
-    const expInMilliSecond = Date.now() - experience.getTime();
-    const expDate = new Date(expInMilliSecond);
-    const calculatedExperience = Math.abs(expDate.getUTCFullYear() - 1970);
-    professional.experience = calculatedExperience;
-}
 let jdate;
 let professional = reactive({
     qualification: "",
@@ -137,7 +134,6 @@ const priorData = async () => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
         jdate = docSnap.data().employee.jdate;
-        console.log(jdate, "///////////");
         professional.cdate = docSnap.data().professional.cdate || "";
         professional.totalExp = docSnap.data().professional.totalExp || "";
         professional.qualification =
@@ -161,13 +157,10 @@ watch(
 );
 
 const updateProfessionalInfo = async () => {
-    console.log("::::::::::::::::");
-    console.log("Updating");
     await updateDoc(doc(db, "users", key), {
         professional,
     });
     toggleEdit();
-    console.log(professional, "::::::::::::::::");
 };
 </script>
 <style scoped>

@@ -32,10 +32,6 @@ onMounted(async () => {
         leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves || 10;
         leaveRecord.value.push(leftLeaves.value);
     }
-    else {
-        leaveRecord.value = [0, 10];
-    }
-    console.log(Array.from(leaveRecord.value));
 });
 
 const chartData = computed(() => {
@@ -86,8 +82,8 @@ const options = {
 .doughnut-container {
     display: flex;
     flex-direction: column;
-    height: 400px;
-    width: 350px;
+    margin-left: 20px;
+    width: 400px;
     box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15);
 }
 .chart-title {
@@ -97,6 +93,16 @@ const options = {
     .doughnut-container {
         display: flex;
         margin: auto;
+    }
+}
+@media screen and (max-width: 450px) {
+    .doughnut-wrapper {
+        display: flex;
+        height: 320px;
+        width: 320px;
+    }
+    .doughnut-container {
+        width: 350px;
     }
 }
 </style>
