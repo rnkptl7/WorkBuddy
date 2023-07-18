@@ -82,7 +82,7 @@
 
     const { isLoggedIn, fullName, isAdmin, userId } = storeToRefs(authStore);
     const { fetchAllTickets, fetchTicketsByStatus } = ticketStore;
-    const { getLeaves } = leavesStore;
+    const { getLeaves, getLeaveCounterDetails } = leavesStore;
     const { showPassword } = storeToRefs(commonStore);
     const { showPasswordChange } = commonStore;
 
@@ -126,10 +126,11 @@
             localStorage.setItem("isLoggedIn", true);
             isLoggedIn.value = true;
             fullName.value = userData.register.fullName;
+            router.replace({ name: "Home" });
             await fetchAllTickets();
             await fetchTicketsByStatus();
             await getLeaves();
-            router.replace({ name: "Home" });
+            await getLeaveCounterDetails();
         } else {
             alert("Invalid Credentials");
         }

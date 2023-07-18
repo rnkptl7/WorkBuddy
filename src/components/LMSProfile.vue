@@ -111,9 +111,10 @@
     const { mobileView: isMobile } = storeToRefs(useCommonStore());
 
     const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
-    const { getLeaves } = useLeavesStore();
+    const { getLeaves, getLeaveCounterDetails } = useLeavesStore();
     onMounted(async () => {
         await getLeaves();
+        await getLeaveCounterDetails();
     });
     const openRequestLeaveDialog = ref(false);
 </script>

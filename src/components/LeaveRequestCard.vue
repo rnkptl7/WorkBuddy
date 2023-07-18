@@ -157,14 +157,18 @@
             await updateDoc(user, {
                 leavesDetails: {
                     TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES,
-                    takenLeaves: leaveCountDetails.value.takenLeaves - 1,
-                    leftLeaves: leaveCountDetails.value.leftLeaves + 1,
+                    takenLeaves:
+                        leaveCountDetails.value.takenLeaves - leave.totalDays,
+                    leftLeaves:
+                        leaveCountDetails.value.leftLeaves + leave.totalDays,
                 },
             });
             leavesStore.leaveCountDetails = {
                 TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
-                takenLeaves: leavesStore.leaveCountDetails.takenLeaves - 1,
-                leftLeaves: leavesStore.leaveCountDetails.leftLeaves + 1,
+                takenLeaves:
+                    leavesStore.leaveCountDetails.takenLeaves - leave.totalDays,
+                leftLeaves:
+                    leavesStore.leaveCountDetails.leftLeaves + leave.totalDays,
             };
             console.log(leavesStore.leaveCountDetails);
         }
