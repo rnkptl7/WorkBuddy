@@ -116,7 +116,7 @@ onMounted(async () => {
     const db = useFirestore();
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
-        empID.value = docSnap.data().employee.empID || "";
+        empID.value = docSnap.data().register.empID || "";
         department.value =
             (docSnap.data().register.department || "").charAt(0).toUpperCase() +
             `${docSnap.data().register.department.slice(1)}`;
@@ -127,9 +127,9 @@ onMounted(async () => {
         cdate.value = docSnap.data().professional.cdate || "";
         totalExp.value = docSnap.data().professional.totalExp || "";
         TOTAL_LEAVES.value = docSnap.data().leavesDetails.TOTAL_LEAVES || "";
-        takenLeaves.value = docSnap.data().leavesDetails.takenLeaves || "";
-        leftLeaves.value = docSnap.data().leavesDetails.leftLeaves || "";
-        console.log(totalExp, "pppppppxxxxxxxxxxxxxxxxxxxxxpppEEX");
+        takenLeaves.value = docSnap.data().leavesDetails.takenLeaves || '0';
+        leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves || '10';;
+        console.log(leftLeaves.value, "pppppppxxxxxxxxxxxxxxxxxxxxxpppEEX");
     }
 });
 </script>

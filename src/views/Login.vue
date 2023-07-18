@@ -50,6 +50,8 @@
           </div>
           <p class="text-medium-emphasis">*indicates required field</p>
         </div>
+        </VForm>
+    </div>
     </div>
 </template>
 

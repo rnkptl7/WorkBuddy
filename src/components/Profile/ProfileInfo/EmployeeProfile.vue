@@ -142,7 +142,7 @@ const employeeSchema = {
         }
     },
 };
-const employee = reactive({
+let employee = reactive({
     email: "",
     empID: "",
     department: "",
