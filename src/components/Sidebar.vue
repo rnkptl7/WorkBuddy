@@ -4,6 +4,7 @@
     <router-link :to="{ name: 'Help' }">Help Me </router-link>
     <router-link :to="{ name: 'Profile' }">Profile </router-link>
     <router-link :to="{ name: 'leaveRequest' }">Leaves</router-link>
+    <router-link :to="{ name: 'Department' }" exact> Department </router-link>
   </aside>
   <v-overlay v-model="overlay">
     <div class="sidebar-overlay">
@@ -21,6 +22,9 @@
         <router-link :to="{ name: 'Help' }">Help Me </router-link>
         <router-link :to="{ name: 'Profile' }">Profile </router-link>
         <router-link :to="{ name: 'leaveRequest' }">Leaves</router-link>
+        <router-link :to="{ name: 'Department' }" exact>
+          Department
+        </router-link>
       </div>
     </div>
   </v-overlay>
