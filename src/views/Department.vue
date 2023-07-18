@@ -3,7 +3,6 @@
     <div class="department-title"><strong>Department</strong></div>
 
     <!-- Employees Directory -->
-
     <v-row>
       <v-col
         v-for="department in departmentList"
@@ -17,21 +16,18 @@
         <v-sheet :class="[getDepartmentClass(department.id)]">
           <div class="department-name">
             {{ department.name }}
-            Department
           </div>
 
-          <!-- Show empty text when there is no item -->
-          <div class="temp">
-            <div
-              v-if="getDepartmentItems(department.id).length === 0"
-              class="empty-placeholder"
-            >
-              <span v-if="!isAdmin">No Employees</span>
-              <span v-else>Drag here to add Employees</span>
-            </div>
+          <!-- Show empty text when there is no Employee -->
+          <div
+            v-if="getDepartmentItems(department.id).length === 0"
+            class="empty-placeholder"
+          >
+            <span v-if="!isAdmin">No Employees</span>
+            <span v-else>Drag here to add Employees</span>
           </div>
 
-          <!-- Trigger Drag Event -->
+          <!-- Trigger Drag and Drop Event -->
           <div
             v-for="item in getDepartmentItems(department.id)"
             :key="item.id"
@@ -41,7 +37,6 @@
             @dragenter.prevent
             @dragover.prevent
           >
-            <!-- Employee Cards -->
             <v-card class="employee-card">
               <div class="employee-avatar">
                 <div class="department-user-icon" v-if="item.gender === 'Male'">
@@ -51,7 +46,6 @@
                     width="100%"
                   />
                 </div>
-
                 <div class="department-user-icon" v-else>
                   <img
                     src="@/assets/images/profile-female.png"
@@ -237,7 +231,6 @@ getUserDataFromDB();
 }
 
 /* Card's CSS */
-
 .employee-avatar {
   text-align: left;
   width: 35%;
@@ -262,12 +255,6 @@ getUserDataFromDB();
   justify-content: center;
   margin-top: 10px;
 }
-
-.card-title {
-  background-color: transparent;
-  border: none;
-}
-
 .department-name {
   background-color: #115173;
   color: white;
@@ -293,10 +280,6 @@ getUserDataFromDB();
   display: flex;
   padding: 3px 0;
 }
-.employee-avtar {
-  width: 10vw;
-}
-
 .empty-placeholder {
   margin-top: 70%;
   background-color: #eaeaea;
