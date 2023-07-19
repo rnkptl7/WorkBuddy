@@ -1,10 +1,10 @@
 <template>
   <aside class="sidebar-menu menu">
     <router-link :to="{ name: 'Home' }" exact> Home </router-link>
-    <router-link :to="{ name: 'Help' }">Help Me </router-link>
     <router-link :to="{ name: 'Profile' }">Profile </router-link>
     <router-link :to="{ name: 'leaveRequest' }">Leaves</router-link>
-    <router-link :to="{ name: 'Department' }" exact> Department </router-link>
+    <router-link :to="{ name: 'Department' }" exact> Department</router-link>
+    <router-link :to="{ name: 'Help' }">Help Me </router-link>
   </aside>
   <v-overlay v-model="overlay">
     <div class="sidebar-overlay">
@@ -19,12 +19,12 @@
       </div>
       <div class="menu">
         <router-link :to="{ name: 'Home' }" exact> Home </router-link>
-        <router-link :to="{ name: 'Help' }">Help Me </router-link>
         <router-link :to="{ name: 'Profile' }">Profile </router-link>
         <router-link :to="{ name: 'leaveRequest' }">Leaves</router-link>
         <router-link :to="{ name: 'Department' }" exact>
           Department
         </router-link>
+        <router-link :to="{ name: 'Help' }">Help Me </router-link>
       </div>
     </div>
   </v-overlay>

@@ -43,7 +43,7 @@ const router = createRouter({
             component: () => import("@/views/LeaveRequest.vue"),
         },
         {
-            path: '/:pathMatch(.*)*', component: () => import("@/views/Home.vue")
+            path: '/:pathMatch(.*)*',meta: { requiresAuth: true }, component: () => import("@/views/Home.vue")
         },
         {
           path: '/department',
