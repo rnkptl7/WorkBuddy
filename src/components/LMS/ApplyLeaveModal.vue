@@ -147,116 +147,181 @@
 </template>
 
 <script setup lang="ts">
-        import moment from "moment";
-        import {
-            addDoc,
-            arrayUnion,
-            collection,
-            doc,
-            setDoc,
-            updateDoc,
-        } from "firebase/firestore";
-        import { storeToRefs } from "pinia";
-        import { reactive, ref } from "vue";
-        import { useFirestore } from "vuefire";
-        import { useLeavesStore } from "../../stores/leaves";
-        import { useAuthStore } from "../../stores/authStore";
-        const authStore = useAuthStore();
-        const leavesStore = useLeavesStore();
-        const { fullName } = storeToRefs(authStore);
-        const { getLeaves } = leavesStore;
-        const { leaveCountDetails, userId } = storeToRefs(leavesStore);
+    import moment from "moment";
+    import {
+        addDoc,
+        arrayUnion,
+        collection,
+        doc,
+        setDoc,
+        updateDoc,
+    } from "firebase/firestore";
+    import { storeToRefs } from "pinia";
+    import { reactive, ref } from "vue";
+    import { useFirestore } from "vuefire";
+    import { useLeavesStore } from "../../stores/leaves";
+    import { useAuthStore } from "../../stores/authStore";
+    const authStore = useAuthStore();
+    const leavesStore = useLeavesStore();
+    const { fullName } = storeToRefs(authStore);
+    const { getLeaves } = leavesStore;
+    const { leaveCountDetails, userId } = storeToRefs(leavesStore);
 
-        // Database reference
-        const db = useFirestore();
-        const today = new Date();
+    // Database reference
+    const db = useFirestore();
+    const today = new Date();
 
-        const dialog = ref(false);
-        const props = defineProps(["dialog"]);
-        const emits = defineEmits(["closeLeaveRequestModal"]);
-        const validationSchema = reactive({
-            leaveCategory: "required",
-            leaveMessage: "required",
-            description: "required|min:30",
-            startDate: (value) => {
-                if (value) {
-                    const date = new Date(value);
-                    let yesterday = new Date();
-                    let tomorrow = new Date();
-                    if (leaveRequestInput.leaveCategory == "Unplanned") {
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        yesterday.setDate(yesterday.getDate() - 1);
-                    } else if (leaveRequestInput.leaveCategory == "Planned") {
-                        yesterday.setDate(yesterday.getDate() + 1);
-                        return date > yesterday
-                            ? true
-                            : `Start Date should above ${moment(yesterday).format(
-                                  "DD-MM-YYYY"
-                              )}`;
-                    }
-                    // console.log(yesterday, "====start logic");
-                    return date > yesterday && date <= tomorrow
+    const dialog = ref(false);
+    const props = defineProps(["dialog"]);
+    const emits = defineEmits(["closeLeaveRequestModal"]);
+    const validationSchema = reactive({
+        leaveCategory: "required",
+        leaveMessage: "required",
+        description: "required|min:30",
+        startDate: (value) => {
+            if (value) {
+                const date = new Date(value);
+                let yesterday = new Date();
+                let tomorrow = new Date();
+                if (leaveRequestInput.leaveCategory == "Unplanned") {
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                } else if (leaveRequestInput.leaveCategory == "Planned") {
+                    yesterday.setDate(yesterday.getDate() + 1);
+                    return date > yesterday
                         ? true
-                        : `Start Date should between ${moment(yesterday).format(
+                        : `Start Date should above ${moment(yesterday).format(
                               "DD-MM-YYYY"
-                          )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
-                } else {
-                    return "Please choose a Start Date.";
+                          )}`;
                 }
-            },
-            endDate: (value) => {
-                if (value) {
-                    const date = new Date(value);
-                    let yesterday = new Date(leaveRequestInput.startDate);
-                    let tomorrow = new Date(leaveRequestInput.startDate);
-                    // Define the minimum and maximum dates
-                    let totalDays = 0;
+                // console.log(yesterday, "====start logic");
+                return date > yesterday && date <= tomorrow
+                    ? true
+                    : `Start Date should between ${moment(yesterday).format(
+                          "DD-MM-YYYY"
+                      )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
+            } else {
+                return "Please choose a Start Date.";
+            }
+        },
+        endDate: (value) => {
+            if (value) {
+                const date = new Date(value);
+                let yesterday = new Date(leaveRequestInput.startDate);
+                let tomorrow = new Date(leaveRequestInput.startDate);
+                // Define the minimum and maximum dates
+                let totalDays = 0;
 
-                    if (leaveRequestInput.startDate > date) {
-                        return "End date should be greater than Start date.";
-                    } else {
-                        if (leaveRequestInput.leaveCategory == "Unplanned") {
-    <<<<<<< HEAD:src/components/LMS/ApplyLeaveModal.vue
-    =======
-
-    >>>>>>> 48f73a1 (Added: User can take one day leave):src/components/ApplyLeaveModal.vue
-                            tomorrow.setDate(tomorrow.getDate() + 3);
-                            yesterday.setDate(yesterday.getDate());
-                            totalDays =
-                                (tomorrow.getTime() - yesterday.getTime()) /
-                                (1000 * 3600 * 24);
-                        } else if (leaveRequestInput.leaveCategory == "Planned") {
-                            tomorrow.setDate(
-                                tomorrow.getDate() +
-                                    leaveCountDetails.value.leftLeaves -
-                                    1
-                            );
+                if (leaveRequestInput.startDate > date) {
+                    return "End date should be greater than Start date.";
+                } else {
+                    if (leaveRequestInput.leaveCategory == "Unplanned") {
+                        tomorrow.setDate(tomorrow.getDate() + 3);
+                        yesterday.setDate(yesterday.getDate());
+                        totalDays =
+                            (tomorrow.getTime() - yesterday.getTime()) /
+                            (1000 * 3600 * 24);
+                    } else if (leaveRequestInput.leaveCategory == "Planned") {
+                        tomorrow.setDate(
+                            tomorrow.getDate() +
+                                leaveCountDetails.value.leftLeaves -
+                                1
+                        );
+                        totalDays =
+                            (tomorrow.getTime() - yesterday.getTime()) /
+                            (1000 * 3600 * 24);
+                        if (
+                            totalDays <= leaveCountDetails.value.leftLeaves &&
+                            leaveCountDetails.value.leftLeaves > 0
+                        ) {
                             return date <= tomorrow
                                 ? true
-                                : `End Date should below ${moment(tomorrow).format(
-                                      "DD-MM-YYYY"
-                                  )}`;
-                        }
-                        if (totalDays <= leaveCountDetails.value.leftLeaves) {
-                            return date >= yesterday && date <= tomorrow
-                                ? true
-                                : `End Date should between ${moment(
-                                      yesterday
-                                  ).format("DD-MM-YYYY")} and ${moment(
+                                : `End Date should below ${moment(
                                       tomorrow
                                   ).format("DD-MM-YYYY")}`;
                         } else {
                             return "You don't have that much leaves left.";
                         }
                     }
-                } else {
-                    return "Please choose a End Date.";
+                    console.log(leaveCountDetails.value.leftLeaves);
+                    if (
+                        totalDays <= leaveCountDetails.value.leftLeaves &&
+                        leaveCountDetails.value.leftLeaves > 0
+                    ) {
+                        return date >= yesterday && date <= tomorrow
+                            ? true
+                            : `End Date should between ${moment(
+                                  yesterday
+                              ).format("DD-MM-YYYY")} and ${moment(
+                                  tomorrow
+                              ).format("DD-MM-YYYY")}`;
+                    } else {
+                        return "You don't have that much leaves left.";
+                    }
                 }
-            },
-            requestingToEmail: "required|email",
+            } else {
+                return "Please choose a End Date.";
+            }
+        },
+        requestingToEmail: "required|email",
+    });
+
+    let leaveRequestInput = reactive({
+        leaveCategory: "",
+        leaveMessage: "",
+        description: "",
+        startDate: new Date(),
+        endDate: new Date(),
+        requestingToEmail: "",
+        status: undefined,
+        createdBy: fullName.value,
+        totalDays: 0,
+    });
+
+    function closeModal() {
+        emits("closeLeaveRequestModal", false);
+    }
+
+    async function submitRequest() {
+        const startDate = new Date(leaveRequestInput.startDate);
+        const endDate = new Date(leaveRequestInput.endDate);
+
+        const totalDays =
+            (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
+        // Adding a document to leaves collection
+        const leave = await addDoc(collection(db, "leaves"), {
+            ...leaveRequestInput,
+            startDate: startDate,
+            endDate: endDate,
+            status: "pending",
+            userId: userId.value,
+            totalDays: totalDays,
         });
 
-        let leaveRequestInput = reactive({
+        // creating reference to users collection's document with specified id
+        const user = doc(db, "users", userId.value);
+
+        await updateDoc(user, {
+            leaveRequestIds: arrayUnion(leave.id),
+        });
+        await updateDoc(user, {
+            leavesDetails: {
+                TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES || 10,
+                takenLeaves: leaveCountDetails.value.takenLeaves + totalDays,
+                leftLeaves: leaveCountDetails.value.leftLeaves - totalDays,
+            },
+        });
+
+        leavesStore.leaveCountDetails = {
+            TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
+            takenLeaves: leavesStore.leaveCountDetails.takenLeaves + totalDays,
+            leftLeaves: leavesStore.leaveCountDetails.leftLeaves - totalDays,
+        };
+        console.log(leaveCountDetails.value);
+
+        await getLeaves();
+
+        leaveRequestInput = {
             leaveCategory: "",
             leaveMessage: "",
             description: "",
@@ -265,64 +330,9 @@
             requestingToEmail: "",
             status: undefined,
             createdBy: fullName.value,
-            totalDays: 0,
-        });
-
-        function closeModal() {
-            emits("closeLeaveRequestModal", false);
-        }
-
-        async function submitRequest() {
-            const startDate = new Date(leaveRequestInput.startDate);
-            const endDate = new Date(leaveRequestInput.endDate);
-
-            const totalDays =
-                (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
-            // Adding a document to leaves collection
-            const leave = await addDoc(collection(db, "leaves"), {
-                ...leaveRequestInput,
-                startDate: startDate,
-                endDate: endDate,
-                status: "pending",
-                userId: userId.value,
-                totalDays: totalDays,
-            });
-
-            // creating reference to users collection's document with specified id
-            const user = doc(db, "users", userId.value);
-
-            await updateDoc(user, {
-                leaveRequestIds: arrayUnion(leave.id),
-            });
-            await updateDoc(user, {
-                leavesDetails: {
-                    TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES || 10,
-                    takenLeaves: leaveCountDetails.value.takenLeaves + totalDays,
-                    leftLeaves: leaveCountDetails.value.leftLeaves - totalDays,
-                },
-            });
-
-            leavesStore.leaveCountDetails = {
-                TOTAL_LEAVES: leavesStore.leaveCountDetails.TOTAL_LEAVES,
-                takenLeaves: leavesStore.leaveCountDetails.takenLeaves + totalDays,
-                leftLeaves: leavesStore.leaveCountDetails.leftLeaves - totalDays,
-            };
-            console.log(leaveCountDetails.value);
-
-            await getLeaves();
-
-            leaveRequestInput = {
-                leaveCategory: "",
-                leaveMessage: "",
-                description: "",
-                startDate: new Date(),
-                endDate: new Date(),
-                requestingToEmail: "",
-                status: undefined,
-                createdBy: fullName.value,
-            };
-            emits("closeLeaveRequestModal", false);
-        }
+        };
+        emits("closeLeaveRequestModal", false);
+    }
 </script>
 
 <style scoped>
