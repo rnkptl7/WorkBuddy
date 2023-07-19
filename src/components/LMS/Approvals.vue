@@ -18,7 +18,7 @@
                 >
                     <LeaveRequestCard
                         :leave="item"
-                        :isAdmin="isAdmin"
+                        :isAdmin="leavesStore.isAdmin"
                         v-if="item.status === 'pending'"
                     />
                 </template>
