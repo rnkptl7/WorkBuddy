@@ -6,7 +6,7 @@
         <OtherProfile />
     </main>
 </template>
-<script setup>
+<script setup lang="ts">
 import PersonalProfile from "../Profile/ProfileInfo/PersonalProfile.vue";
 import EmployeeProfile from "../Profile/ProfileInfo/EmployeeProfile.vue";
 import ProfessionalProfile from "../Profile/ProfileInfo/ProfessionalProfile.vue";

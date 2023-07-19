@@ -5,6 +5,7 @@
     :items="closedTickets"
     item-value="id"
     show-expand
+    :header-class="'header-class'"
     class="pb-1 rounded"
   >
     <template v-slot:top>
@@ -17,6 +18,10 @@
       </v-toolbar>
     </template>
 
+      <template v-slot:item.priority="{ item }">
+        <v-chip :color="getPriorityColor(item.selectable.priority)">{{ item.selectable.priority }}</v-chip>
+      </template>
+
     <template v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
@@ -28,7 +33,7 @@
   </v-data-table>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useTicketStore } from '@/stores/ticketStore';
@@ -46,6 +51,16 @@
     { title: 'Closed By', key: 'closedBy' },
     { title: '', key: 'data-table-expand' },
   ]);
+
+  function getPriorityColor(priority: string) {
+    if (priority === 'High') 
+      return 'red';
+    else if (priority === 'Medium')
+      return 'orange';
+    else 
+      return '#115173';
+  }
+
 </script>
 
 <style>

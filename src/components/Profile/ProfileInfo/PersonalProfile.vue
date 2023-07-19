@@ -101,18 +101,14 @@
         </fieldset>
     </VForm>
 </template>
-<script setup>
+<script setup lang="ts">
 import { reactive, ref, onMounted, computed } from "vue";
 import { useFirestore } from "vuefire";
+import { Personal } from '@/types/profileTypes';
 import {
     doc,
-    setDoc,
     updateDoc,
     getDoc,
-    collection,
-    where,
-    query,
-    getDocs,
 } from "firebase/firestore";
 
 onMounted(() => {
@@ -122,19 +118,28 @@ onMounted(() => {
 const key = localStorage.getItem("userId");
 const isAdmin = localStorage.getItem("isAdmin");
 
-let personalCopy = {};
+let personal: Personal = reactive({
+    fullName: "",
+    gender: "",
+    address: "",
+    mobile: 0,
+    dob: "",
+});
+
+let personalCopy: Partial<Personal> = {};
 const db = useFirestore();
 const closeForm = () => {
-    personal = { ...personalCopy };
+    personal = { ...personalCopy } as Personal;
     toggleEdit();
 };
+
 const isEdit = ref(true);
 const toggleEdit = () => (isEdit.value = !isEdit.value);
 const personalSchema = {
     fullName: "alphaSpaces",
     gender: "gender",
     mobile: "integer|min:10|max:10",
-    dob: (value) => {
+    dob: (value: string): string | boolean => {
         const inputDate = new Date(value);
         const today = new Date();
         const lastDate = new Date("1923-12-31");
@@ -149,18 +154,12 @@ const personalSchema = {
         }
     },
 };
-let personal = reactive({
-    fullName: "",
-    gender: "",
-    address: "",
-    mobile: "",
-    dob: "",
-});
+
 const maxDate = computed(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
 });
-const priorData = async () => {
+const priorData = async (): Promise<void> => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
         const personalData = docSnap.data().personal || {};
@@ -176,7 +175,7 @@ const priorData = async () => {
         return;
     }
 };
-const updatePersonalInfo = async () => {
+const updatePersonalInfo = async (): Promise<void> => {
     await updateDoc(doc(db, "users", key), {
         personal: { ...personal },
     });

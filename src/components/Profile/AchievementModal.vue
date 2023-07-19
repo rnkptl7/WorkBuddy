@@ -52,7 +52,7 @@
                                         v-bind="field"
                                         class="textarea"
                                         placeholder="Detailed Description*"
-                                    />
+                                    ></textarea>
                                     <div
                                         class="error_message"
                                         v-for="err in errors"
@@ -88,10 +88,11 @@
 
 <script setup lang="ts">
 import { useProfileStore } from "../../stores/profileStore";
-import { reactive, ref, onMounted, watch, computed } from "vue";
+import { reactive, computed } from "vue";
 import { useFirestore } from "vuefire";
 import { doc, updateDoc, getDoc, arrayUnion } from "firebase/firestore";
 import { storeToRefs } from "pinia";
+import { Achievement } from "@/types/profileTypes";
 
 const store = useProfileStore();
 const { getAchievement } = store;
@@ -104,20 +105,20 @@ const achievementSchema = {
     title: "required|alphaSpaces",
     titleDescription: "required|alphaSpaces",
 };
-let achievement = reactive({
+let achievement: Achievement = reactive({
     titleDate: "",
     title: "",
     titleDescription: "",
 });
 
-function closeModal() {
+function closeModal(): void {
     dialog.value = false;
 }
 const maxDate = computed(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
 });
-async function updateAchievement() {
+async function updateAchievement(): Promise<void> {
     const userDoc = doc(db, "users", userId.value);
     await updateDoc(userDoc, {
         achievementList: arrayUnion(achievement),
