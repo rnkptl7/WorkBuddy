@@ -26,15 +26,18 @@
                 </td>
             </tr>
         </template>
+
+        <template v-slot:item.status="{ item }">
+        <v-chip :color="calendarColors[item.selectable.status].fill">{{ item.selectable.status }}</v-chip>
+      </template>
+
     </v-data-table>
 </template>
 
 <script setup lang="ts">
     import { storeToRefs } from "pinia";
-    import { onMounted, reactive, ref } from "vue";
+    import { ref } from "vue";
     import { useLeavesStore } from "../../stores/leaves";
-    import { watch } from "vue";
-
     const { leaves } = storeToRefs(useLeavesStore());
 
     const expanded = ref([]);
@@ -47,6 +50,12 @@
         { title: "Requesting To", key: "requestingToEmail" },
         { title: "", key: "data-table-expand" },
     ]);
+
+    let calendarColors = {
+        pending: { fill: "orange" },
+        Approved: { fill: "blue" },
+        rejected: { fill: "gray" },
+    }
 </script>
 
 <style>

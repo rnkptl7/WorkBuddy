@@ -31,12 +31,12 @@
 </template>
 
 <script setup lang="ts">
-  import TicketsHistory from '../components/TicketsHistory.vue';
-  import LineChart from '../components/LineChart.vue';
-  import DoughnutChart from '../components/DoughnutChart.vue';
+  import TicketsHistory from '../components/HelpDesk/TicketsHistory.vue';
+  import LineChart from '../components//HelpDesk/LineChart.vue';
+  import DoughnutChart from '../components//HelpDesk/DoughnutChart.vue';
   import { useTicketStore } from '@/stores/ticketStore';
-import OpenTickets from '@/components/OpenTickets.vue';
-import CloseTicketForm from '@/components/CloseTicketForm.vue';
+  import OpenTickets from '@/components//HelpDesk/OpenTickets.vue';
+  import CloseTicketForm from '@/components/HelpDesk/CloseTicketForm.vue';
 
   const { fetchAllTickets } = useTicketStore()
   fetchAllTickets()

@@ -161,7 +161,6 @@
     import { useFirestore } from "vuefire";
     import { useLeavesStore } from "../../stores/leaves";
     import { useAuthStore } from "../../stores/authStore";
-    import { leaveStatus, leaves } from "../../types/leaves";
     const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
     const { fullName } = storeToRefs(authStore);
@@ -179,7 +178,7 @@
         leaveCategory: "required",
         leaveMessage: "required",
         description: "required|min:30",
-        startDate: (value) => {
+        startDate: (value: string) => {
             if (value) {
                 const date = new Date(value);
                 let yesterday = new Date();
@@ -195,6 +194,7 @@
                               "DD-MM-YYYY"
                           )}`;
                 }
+                // console.log(yesterday, "====start logic");
                 return date > yesterday && date <= tomorrow
                     ? true
                     : `Start Date should between ${moment(yesterday).format(
@@ -204,7 +204,7 @@
                 return "Please choose a Start Date.";
             }
         },
-        endDate: (value) => {
+        endDate: (value: string) => {
             if (value) {
                 const date = new Date(value);
                 let yesterday = new Date(leaveRequestInput.startDate);
@@ -212,7 +212,7 @@
                 // Define the minimum and maximum dates
                 let totalDays = 0;
 
-                if (leaveRequestInput.startDate > (date as any)) {
+                if (leaveRequestInput.startDate > date) {
                     return "End date should be greater than Start date.";
                 } else {
                     if (leaveRequestInput.leaveCategory == "Unplanned") {
@@ -243,6 +243,7 @@
                             return "You don't have that much leaves left.";
                         }
                     }
+                    console.log(leaveCountDetails.value.leftLeaves);
                     if (
                         totalDays <= leaveCountDetails.value.leftLeaves &&
                         leaveCountDetails.value.leftLeaves > 0
@@ -328,7 +329,7 @@
             requestingToEmail: "",
             status: undefined,
             createdBy: fullName.value,
-            totalDays: 0,
+            totalDays: 0
         };
         emits("closeLeaveRequestModal", false);
     }

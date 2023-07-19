@@ -15,7 +15,6 @@
         >
             <thead>
             <tr>
-                <th class="text-left"> Ticket ID </th>
                 <th class="text-left"> Title </th>
                 <th class="text-left"> Created On </th>
                 <th class="text-left"> Category </th>
@@ -30,7 +29,6 @@
                 v-for="item in openTickets"
                 :key="item.id"
             >
-                <td>{{ item.id.slice(0, 5) }}..</td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.createdOn }}</td>
                 <td>{{ item.category }}</td>
@@ -42,7 +40,7 @@
                 <td>{{ item.description.slice(0, 15) }}...</td>
                 <td v-if="isAdmin">{{ item.userName }}</td>
                 <td v-if="isAdmin">
-                    <img class="close-ticket" src="../assets/images/CloseTicket.png" @click="closeTicket(item)"/>
+                    <img class="close-ticket" src="@/assets/images/CloseTicket.png" @click="closeTicket(item)"/>
                 </td>
             </tr>
             </tbody>

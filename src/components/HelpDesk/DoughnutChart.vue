@@ -14,7 +14,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const { fetchByCategory } = useTicketStore();
 const { ticketsByCategory } = storeToRefs(useTicketStore());
 
-async function fetchData() {
+async function fetchData(): Promise<void> {
     await fetchByCategory();
 }
 fetchData();

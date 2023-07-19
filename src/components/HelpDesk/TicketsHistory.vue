@@ -43,11 +43,11 @@
   const expanded = ref([]);
 
   const ticketsHeaders = ref([
-    { title: 'Ticket ID', key: 'id' },
     { title: 'Title', key: 'title' },
     { title: 'Created On', key: 'createdOn' },
     { title: 'Category', key: 'category' },
     { title: 'Priority', key: 'priority' },
+    { title: 'Raised By', key: 'userName' },
     { title: 'Closed By', key: 'closedBy' },
     { title: '', key: 'data-table-expand' },
   ]);
