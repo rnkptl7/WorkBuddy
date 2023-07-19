@@ -19,7 +19,7 @@
                 <p class="avatar-name">
                     {{ fullName }}
                 </p>
-                <p class="avatar-dept">{{ department }} | {{ role }}</p>
+                <p class="avatar-dept">{{ department }} {{ role }}</p>
             </div>
         </div>
         <div class="ma-5">
@@ -91,6 +91,9 @@ onMounted(async (): Promise<void> => {
         if (role.value == "Employee") {
             role.value = "Engineer";
         }
+        if (role.value == "Admin") {
+            department.value = "";
+        }
     }
 });
 </script>
@@ -120,6 +123,9 @@ onMounted(async (): Promise<void> => {
 .selected-button {
     color: var(--primary-color);
     background: var(--secondary-color);
+}
+button:hover {
+    background-color: var(--secondary-color);
 }
 @media screen and (max-width: 820px) {
     .v-avatar-image {

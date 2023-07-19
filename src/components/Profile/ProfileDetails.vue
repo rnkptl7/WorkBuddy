@@ -111,29 +111,30 @@ const TOTAL_LEAVES = ref("");
 const takenLeaves = ref("");
 const leftLeaves = ref("");
 
-onMounted(async () : Promise<void> => {
+onMounted(async () => {
     const key = localStorage.getItem("userId");
     const db = useFirestore();
     const docSnap = await getDoc(doc(db, "users", key));
-    if (docSnap.exists()) {
-        const register = docSnap.data()?.register;
-        const leavesDetails = docSnap.data()?.leavesDetails;
-        const employee = docSnap.data()?.employee;
-        const professional = docSnap.data()?.professional;
 
-        empID.value = register?.empID || "";
+    if (docSnap.exists()) {
+        const register = docSnap.data()?.register || {};
+        const leavesDetails = docSnap.data()?.leavesDetails || {};
+        const employee = docSnap.data()?.employee || {};
+        const professional = docSnap.data()?.professional || {};
+
+        empID.value = register.empID || "";
         department.value =
-            (register?.department || "").charAt(0).toUpperCase() +
-            register?.department.slice(1);
+            (register.department || "").charAt(0).toUpperCase() +
+            register.department?.slice(1);
         role.value =
-            (register?.role || "").charAt(0).toUpperCase() +
-            register?.role.slice(1);
-        TOTAL_LEAVES.value = leavesDetails?.TOTAL_LEAVES || 10;
-        takenLeaves.value = leavesDetails?.takenLeaves || 0;
-        leftLeaves.value = leavesDetails?.leftLeaves || 10;
-        jdate.value = employee?.jdate || "";
-        cdate.value = professional?.cdate || "";
-        totalExp.value = professional?.totalExp || "";
+            (register.role || "").charAt(0).toUpperCase() +
+            register.role?.slice(1);
+        TOTAL_LEAVES.value = leavesDetails.TOTAL_LEAVES ?? 10;
+        takenLeaves.value = leavesDetails.takenLeaves ?? 0;
+        leftLeaves.value = leavesDetails.leftLeaves ?? 10;
+        jdate.value = employee.jdate || "";
+        cdate.value = professional.cdate || "";
+        totalExp.value = professional.totalExp || "";
     }
 });
 </script>

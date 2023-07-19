@@ -28,42 +28,42 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted, ref } from "vue";
-    import { useFirestore } from "vuefire";
-    import LeaveRequestCard from "./LeaveRequestCard.vue";
-    import { useLeavesStore } from "../../stores/leaves";
-    import { useAuthStore } from "../../stores/authStore";
-    import { storeToRefs } from "pinia";
+import { onMounted, ref } from "vue";
+import { useFirestore } from "vuefire";
+import LeaveRequestCard from "./LeaveRequestCard.vue";
+import { useLeavesStore } from "../../stores/leaves";
+import { useAuthStore } from "../../stores/authStore";
+import { storeToRefs } from "pinia";
 
-    const leavesStore = useLeavesStore();
-    onMounted(async () => {
-        await leavesStore.getAllPendingLeaves();
-    });
+const leavesStore = useLeavesStore();
+onMounted(async () => {
+    await leavesStore.getAllPendingLeaves();
+});
 </script>
 
 <style scoped>
-    .pending-requests_cards,
-    h2,
-    h3,
-    h4,
-    h5 {
-        color: var(--primary-color);
-        display: grid;
-        grid-template-columns: auto auto;
-        grid-column-gap: 4rem;
-    }
+.pending-requests_cards,
+h2,
+h3,
+h4,
+h5 {
+    color: var(--primary-color);
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 4rem;
+}
 
-    .pendingLeaves_placeholder {
-        margin-block: 1rem;
-        border-radius: 5%;
-        height: 200px;
-        border: 2px dashed var(--secondary-color);
-        width: max(250px, 40%);
-    }
+.pendingLeaves_placeholder {
+    margin-block: 1rem;
+    border-radius: 5%;
+    height: 200px;
+    border: 2px dashed var(--secondary-color);
+    width: max(250px, 40%);
+}
 
-    @media screen and (max-width: 950px) {
-        .pending-requests_cards {
-            grid-template-columns: auto;
-        }
+@media screen and (max-width: 950px) {
+    .pending-requests_cards {
+        grid-template-columns: auto;
     }
+}
 </style>

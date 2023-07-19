@@ -88,19 +88,14 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from "vue";
 import { useFirestore } from "vuefire";
-import { Other } from '@/types/profileTypes'
-import {
-    doc,
-    updateDoc,
-    getDoc,
-} from "firebase/firestore";
+import { Other } from "@/types/profileTypes";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 onMounted(() => {
     priorData();
 });
 
 const key = localStorage.getItem("userId");
-
 const db = useFirestore();
 const closeForm = () => {
     other = { ...otherCopy } as Other;
@@ -121,19 +116,19 @@ let other: Other = reactive({
     nationality: "",
 });
 
-
 let otherCopy = {};
+
 const priorData = async (): Promise<void> => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
-        other.aadhaar = docSnap.data().other.aadhaar || "";
-        other.pan = docSnap.data().other.pan || "";
-        other.nationality = docSnap.data().other.nationality || "";
+        const otherData = docSnap.data()?.other;
+        other.aadhaar = otherData?.aadhaar || "";
+        other.pan = otherData?.pan || "";
+        other.nationality = otherData?.nationality || "";
         otherCopy = { ...other };
-    } else {
-        return;
     }
 };
+
 const updateOtherInfo = async (): Promise<void> => {
     await updateDoc(doc(db, "users", key), {
         other: { ...other },

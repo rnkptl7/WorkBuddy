@@ -83,26 +83,22 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, watch } from "vue";
 import { useFirestore } from "vuefire";
-import { Professional } from '@/types/profileTypes';
-import {
-    doc,
-    updateDoc,
-    getDoc,
-} from "firebase/firestore";
+import { Professional } from "@/types/profileTypes";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 onMounted(() => {
     priorData();
 });
 
 const key = localStorage.getItem("userId");
-
 const db = useFirestore();
+const isEdit = ref(true);
+const toggleEdit = () => (isEdit.value = !isEdit.value);
+
 const closeForm = () => {
     professional = { ...professionalCopy } as Professional;
     toggleEdit();
 };
-const isEdit = ref(true);
-const toggleEdit = () => (isEdit.value = !isEdit.value);
 const professionalSchema = {
     cdate: (value: string) => {
         const inputDate = new Date(value);
@@ -124,17 +120,16 @@ let professional: Professional = reactive({
     totalExp: "",
 });
 
-
-
 let professionalCopy: Partial<Professional> = {};
 const priorData = async () => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
-        jdate = docSnap.data().employee.jdate;
-        professional.cdate = docSnap.data().professional.cdate || "";
-        professional.totalExp = docSnap.data().professional.totalExp || "";
-        professional.qualification =
-            docSnap.data().professional.qualification || "";
+        const employeeData = docSnap.data()?.employee;
+        const professionalData = docSnap.data()?.professional;
+        jdate = employeeData?.jdate;
+        professional.cdate = professionalData?.cdate || "";
+        professional.totalExp = professionalData?.totalExp || "";
+        professional.qualification = professionalData?.qualification || "";
         professionalCopy = { ...professional };
     } else {
         return;
@@ -144,10 +139,9 @@ const priorData = async () => {
 watch(
     () => professional.cdate,
     (newValue) => {
-        const diff = new Date().getTime() - new Date(newValue).getTime();
-        const seconds = diff / 1000;
-        const years = Math.floor(seconds / 31536000);
-        const months = Math.floor((seconds % 31536000) / 86400 / 30);
+        const diff = Date.now() - new Date(newValue).getTime();
+        const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+        const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30)) % 12;
         professional.totalExp = `${years}Y ${months}M`;
     },
     { deep: true }

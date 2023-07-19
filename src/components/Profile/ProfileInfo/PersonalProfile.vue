@@ -104,37 +104,15 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from "vue";
 import { useFirestore } from "vuefire";
-import { Personal } from '@/types/profileTypes';
-import {
-    doc,
-    updateDoc,
-    getDoc,
-} from "firebase/firestore";
+import { Personal } from "@/types/profileTypes";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 onMounted(() => {
     priorData();
 });
 
 const key = localStorage.getItem("userId");
-const isAdmin = localStorage.getItem("isAdmin");
-
-let personal: Personal = reactive({
-    fullName: "",
-    gender: "",
-    address: "",
-    mobile: 0,
-    dob: "",
-});
-
-let personalCopy: Partial<Personal> = {};
 const db = useFirestore();
-const closeForm = () => {
-    personal = { ...personalCopy } as Personal;
-    toggleEdit();
-};
-
-const isEdit = ref(true);
-const toggleEdit = () => (isEdit.value = !isEdit.value);
 const personalSchema = {
     fullName: "alphaSpaces",
     gender: "gender",
@@ -154,6 +132,23 @@ const personalSchema = {
         }
     },
 };
+
+let personal: Personal = reactive({
+    fullName: "",
+    gender: "",
+    address: "",
+    mobile: 0,
+    dob: "",
+});
+
+let personalCopy: Partial<Personal> = {};
+
+const closeForm = () => {
+    personal = { ...personalCopy } as Personal;
+    toggleEdit();
+};
+const isEdit = ref(true);
+const toggleEdit = () => (isEdit.value = !isEdit.value);
 
 const maxDate = computed(() => {
     const today = new Date();

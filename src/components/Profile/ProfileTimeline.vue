@@ -5,13 +5,10 @@
                 Add Achievements
             </v-btn>
         </div>
-
-        <div v-if="achievements.length === 0" class="text-center">
-            <img
-                src="../../assets/images/no-achievement.jpg"
-                alt="No achievements"
-            />
-            <p>No achievements available</p>
+        <div v-if="achievements.length === 0" class="no_achivement_container">
+            <div class="no_achievement_placeholder">
+                <h4 class="mt-15">No Achievements!</h4>
+            </div>
         </div>
         <v-timeline v-else line-thickness="5" line-color="#6eb4d933">
             <v-timeline-item
@@ -43,6 +40,9 @@
 import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "../../stores/profileStore";
+onMounted(async (): Promise<void> => {
+    await getAchievement();
+});
 
 const store = useProfileStore();
 const { achievements, openModal: dialog } = storeToRefs(store);
@@ -51,11 +51,25 @@ const { getAchievement } = store;
 function toggleModal(): void {
     dialog.value = true;
 }
-onMounted(async (): Promise<void> => {
-    await getAchievement();
-});
 </script>
 <style scoped>
+.no_achivement_container {
+    display: flex;
+    justify-content: center;
+}
+
+.no_achievement_placeholder {
+    margin-block: 1rem;
+    border-radius: 5%;
+    height: 200px;
+    width: 50%;
+    text-align: center;
+    color: var(--primary-color);
+    border: 5px dashed var(--secondary-color);
+}
+button:hover {
+    background-color: var(--secondary-color);
+}
 .title-description {
     width: 150px;
 }

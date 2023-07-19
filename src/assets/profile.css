@@ -3,6 +3,9 @@
     justify-content: center;
     flex-flow: row wrap;
 }
+button:hover {
+    background-color: var(--secondary-color);
+}
 form {
     width: 50%;
 }
