@@ -1,89 +1,75 @@
 <template>
-    <v-row justify="end">
-        <v-dialog v-model="dialog" persistent width="500">
-            <v-card>
-                <div class="pa-5">
-                    <h2 class="achievement-header">Add Achievements</h2>
-                    <v-divider class="py-1"></v-divider>
-                    <VForm
-                        class="form"
-                        @submit="updateAchievement"
-                        :validation-schema="achievementSchema"
-                    >
-                        <div class="inputDiv">
-                            <div class="date_input_wrapper w-100">
-                                <label for="titleDate "
-                                    >Achievement Date:</label
-                                >
-                                <VField
-                                    name="titleDate"
-                                    type="date"
-                                    class="input w-50"
-                                    v-model="achievement.titleDate"
-                                    :max="maxDate"
-                                />
-                                <ErrorMessage
-                                    name="titleDate"
-                                    class="error_message"
-                                />
-                            </div>
-                            <div class="inputDiv">
-                                <VField
-                                    name="title"
-                                    placeholder="Achievement Title*"
-                                    type="text"
-                                    class="input"
-                                    v-model="achievement.title"
-                                    required
-                                />
-                                <ErrorMessage
-                                    name="title"
-                                    class="error_message"
-                                />
-                            </div>
-                            <div class="inputDiv">
-                                <VField
-                                    name="titleDescription"
-                                    v-slot="{ field, errors }"
-                                    :bails="false"
-                                    v-model="achievement.titleDescription"
-                                >
-                                    <textarea
-                                        v-bind="field"
-                                        class="textarea"
-                                        placeholder="Detailed Description*"
-                                    ></textarea>
-                                    <div
-                                        class="error_message"
-                                        v-for="err in errors"
-                                        :key="err"
-                                    >
-                                        {{ err }}
-                                    </div>
-                                </VField>
-                            </div>
-                        </div>
+  <v-row justify="end">
+    <v-dialog v-model="dialog" persistent width="500">
+      <v-card>
+        <div class="pa-5">
+          <h2 class="achievement-header">Add Achievements</h2>
+          <v-divider class="py-1"></v-divider>
+          <VForm
+            class="form"
+            @submit="updateAchievement"
+            :validation-schema="achievementSchema"
+          >
+            <div class="inputDiv">
+              <div class="date_input_wrapper w-100">
+                <label for="titleDate ">Achievement Date:</label>
+                <VField
+                  name="titleDate"
+                  type="date"
+                  class="input w-50"
+                  v-model="achievement.titleDate"
+                  :max="maxDate"
+                />
+                <ErrorMessage name="titleDate" class="error_message" />
+              </div>
+              <div class="inputDiv">
+                <VField
+                  name="title"
+                  placeholder="Achievement Title*"
+                  type="text"
+                  class="input"
+                  v-model="achievement.title"
+                  required
+                />
+                <ErrorMessage name="title" class="error_message" />
+              </div>
+              <div class="inputDiv">
+                <VField
+                  name="titleDescription"
+                  v-slot="{ field, errors }"
+                  :bails="false"
+                  v-model="achievement.titleDescription"
+                >
+                  <textarea
+                    v-bind="field"
+                    class="textarea"
+                    placeholder="Detailed Description*"
+                  ></textarea>
+                  <div class="error_message" v-for="err in errors" :key="err">
+                    {{ err }}
+                  </div>
+                </VField>
+              </div>
+            </div>
 
-                        <small>*indicates required field</small>
+            <small>*indicates required field</small>
 
-                        <v-spacer></v-spacer>
-                        <div class="d-flex justify-end">
-                            <v-btn type="reset" @click="closeModal"
-                                >Cancel</v-btn
-                            >
-                            <v-btn
-                                class="me-4 text-white ml-2 btn-submit"
-                                type="submit"
-                                color="#115173"
-                            >
-                                Submit
-                            </v-btn>
-                        </div>
-                    </VForm>
-                </div>
-            </v-card>
-        </v-dialog>
-    </v-row>
+            <v-spacer></v-spacer>
+            <div class="d-flex justify-end">
+              <v-btn type="reset" @click="closeModal">Cancel</v-btn>
+              <v-btn
+                class="me-4 text-white ml-2 btn-submit"
+                type="submit"
+                color="#115173"
+              >
+                Submit
+              </v-btn>
+            </div>
+          </VForm>
+        </div>
+      </v-card>
+    </v-dialog>
+  </v-row>
 </template>
 
 <script setup lang="ts">
@@ -101,86 +87,86 @@ const { openModal: dialog, userId: userId } = storeToRefs(store);
 const db = useFirestore();
 
 const achievementSchema = {
-    titleDate: "required",
-    title: "required|alphaSpaces",
-    titleDescription: "required|alphaSpaces",
+  titleDate: "required",
+  title: "required|alphaSpaces",
+  titleDescription: "required|alphaSpaces",
 };
 let achievement: Achievement = reactive({
-    titleDate: "",
-    title: "",
-    titleDescription: "",
+  titleDate: "",
+  title: "",
+  titleDescription: "",
 });
 
 function closeModal(): void {
-    dialog.value = false;
+  dialog.value = false;
 }
 const maxDate = computed(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
+  const today = new Date();
+  return today.toISOString().split("T")[0];
 });
 async function updateAchievement(): Promise<void> {
-    const userDoc = doc(db, "users", userId.value);
-    await updateDoc(userDoc, {
-        achievementList: arrayUnion(achievement),
-    });
-    await getAchievement();
-    achievement = {
-        titleDate: "",
-        title: "",
-        titleDescription: "",
-    };
-    closeModal();
+  const userDoc = doc(db, "users", userId.value);
+  await updateDoc(userDoc, {
+    achievementList: arrayUnion(achievement),
+  });
+  await getAchievement();
+  achievement = {
+    titleDate: "",
+    title: "",
+    titleDescription: "",
+  };
+  closeModal();
 }
 </script>
 <style scoped>
 .achievement-header {
-    color: #115173;
+  color: #115173;
 }
 .btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #plus {
-    font-size: 2rem;
-    font-weight: 300;
-    margin-top: -4px;
-    padding-right: 2px;
+  font-size: 2rem;
+  font-weight: 300;
+  margin-top: -4px;
+  padding-right: 2px;
 }
 
 .form-heading {
-    font-weight: 900;
+  font-weight: 900;
 }
 
 .form-heading::after {
-    content: "";
-    width: 50%;
-    height: 2px;
-    background: #000000;
-    display: block;
-    margin: auto;
+  content: "";
+  width: 50%;
+  height: 2px;
+  background: #000000;
+  display: block;
+  margin: auto;
 }
 
 .form .inputDiv {
-    margin: 15px 0;
+  margin: 15px 0;
 }
 
 .form .inputDiv input,
 textarea,
 .inputDiv select {
-    padding: 10px;
-    display: block;
-    width: 100%;
-    outline: none;
-    border: 1px solid #0000003d;
+  padding: 10px;
+  display: block;
+  width: 100%;
+  outline: none;
+  border: 1px solid #0000003d;
 }
 
 .form .inputDiv .date_input_wrapper {
-    width: 40%;
+  width: 40%;
 }
 
 .error_message {
-    color: #f44b4b;
+  color: #f44b4b;
 }
 </style>

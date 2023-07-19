@@ -67,13 +67,21 @@
   </section>
 </template>
 
-<script setup>
-import { ref, reactive } from "vue";
+<script setup lang="ts">
+import { ref, reactive, Ref } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { useAuthStore } from "@/stores/authStore";
 import { storeToRefs } from "pinia";
 import Swal from "sweetalert2";
+import {
+  draggedItem,
+  displayUserData,
+  frontendDept,
+  backendDept,
+  devopsDept,
+  uiuxDept,
+} from "@/types/department";
 
 const { isAdmin } = storeToRefs(useAuthStore());
 
@@ -85,18 +93,18 @@ const departmentList = [
 ];
 
 //--------------------Sets necessary data for dragging an item--------------------//
-const draggedItem = ref({});
-const startDrag = (event, item) => {
+const draggedItem: Ref<Partial<draggedItem>> = ref({});
+
+const startDrag = (event: DragEvent, item: object) => {
   if (isAdmin.value) {
     event.dataTransfer.dropEffect = "move";
     event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("itemID", item.id);
     draggedItem.value = item;
   }
 };
 
 //--------------------Handles dropping an item into a department, updating its departmentId--------------------//
-const onDrop = async (event, departmentId) => {
+const onDrop = async (event: DragEvent, departmentId: number) => {
   const dragUserID = event.dataTransfer.getData("dragUserID");
   if (isAdmin.value) {
     const dragAndDropAlert = await Swal.fire({
@@ -110,19 +118,12 @@ const onDrop = async (event, departmentId) => {
     });
 
     if (dragAndDropAlert.isConfirmed) {
-      let dragUser;
-      if (departmentId === 1) {
-        dragUser = frontendDept.find((dragUser) => dragUser.id == dragUserID);
-      } else if (departmentId === 2) {
-        dragUser = backendDept.find((dragUser) => dragUser.id == dragUserID);
-      } else if (departmentId === 3) {
-        dragUser = devopsDept.find((dragUser) => dragUser.id == dragUserID);
-      } else {
-        dragUser = uiuxDept.find((dragUser) => dragUser.id == dragUserID);
-      }
-
       //--------------------Update data in Firebase--------------------//
-      const employeeDataRef = doc(db, "users", draggedItem.value.userID);
+      const employeeDataRef = doc(
+        db,
+        "users",
+        draggedItem.value.userID as string
+      );
       await updateDoc(employeeDataRef, {
         "register.department":
           departmentList[departmentId - 1].name.toLowerCase(),
@@ -130,11 +131,11 @@ const onDrop = async (event, departmentId) => {
       await getUserDataFromDB();
     }
   } else {
-    Swal.fire("Please ask to Admin");
+    Swal.fire("You don't have access to it Please ask to Admin");
   }
 };
 
-const getDepartmentClass = (departmentId) => {
+const getDepartmentClass = (departmentId: number) => {
   return (
     departmentList.find((department) => department.id === departmentId)
       ?.class || ""
@@ -143,10 +144,10 @@ const getDepartmentClass = (departmentId) => {
 
 //--------------------Get User Data From Firebase and Display it on DOM--------------------//
 const db = useFirestore();
-let frontendDept = reactive([]);
-let backendDept = reactive([]);
-let devopsDept = reactive([]);
-let uiuxDept = reactive([]);
+let frontendDept: frontendDept[] = reactive([]);
+let backendDept: backendDept[] = reactive([]);
+let devopsDept: devopsDept[] = reactive([]);
+let uiuxDept: uiuxDept[] = reactive([]);
 
 async function getUserDataFromDB() {
   frontendDept.length = 0;
@@ -156,7 +157,7 @@ async function getUserDataFromDB() {
 
   const getUserDataFromDB = await getDocs(collection(db, "users"));
   getUserDataFromDB.forEach((doc) => {
-    let displayUserData = {
+    let displayUserData: Partial<displayUserData> = {
       fullName: doc.data().register.fullName,
       department: doc.data().register.department,
       email: doc.data().register.email,
@@ -166,18 +167,18 @@ async function getUserDataFromDB() {
     };
 
     if (doc.data().register.department === "ui-ux") {
-      uiuxDept.push({ ...displayUserData, departmentId: 4 });
+      uiuxDept.push({ ...(displayUserData as displayUserData) });
     } else if (doc.data().register.department === "frontend") {
-      frontendDept.push({ ...displayUserData, departmentId: 1 });
+      frontendDept.push({ ...(displayUserData as displayUserData) });
     } else if (doc.data().register.department === "backend") {
-      backendDept.push({ ...displayUserData, departmentId: 2 });
+      backendDept.push({ ...(displayUserData as displayUserData) });
     } else if (doc.data().register.department === "devops") {
-      devopsDept.push({ ...displayUserData, departmentId: 3 });
+      devopsDept.push({ ...(displayUserData as displayUserData) });
     }
   });
 }
 
-const getDepartmentItems = (departmentId) => {
+const getDepartmentItems = (departmentId: number) => {
   if (departmentId == 1) {
     return frontendDept;
   } else if (departmentId == 2) {
