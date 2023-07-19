@@ -1,25 +1,26 @@
 import { defineStore, storeToRefs } from "pinia";
 import { useAuthStore } from "./authStore";
 import moment from 'moment';
-import { ref, reactive } from 'vue';
+import { Ref, ref, reactive } from 'vue';
 import { useFirestore } from "vuefire";
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import ticket from "@/types/ticket";
 
 export const useTicketStore = defineStore('ticketStore', () => {
-    const openTickets = ref([]);
-    const closedTickets = ref([]);
-    const raisedTickets = ref([]);
-    const ticketsByCategory = ref([]);
-    const ticketsByMonth = ref([]);
-    const showCloseTicketForm = ref(false);
-    const ticketToBeClosed = ref({});
+    const openTickets: Ref<ticket[]> = ref([]);
+    const closedTickets: Ref<ticket[]> = ref([]);
+    const raisedTickets: Ref<ticket[]> = ref([]);
+    const ticketsByCategory: Ref<number[]> = ref([]);
+    const ticketsByMonth: Ref<number[]> = ref([]);
+    const showCloseTicketForm: Ref<boolean> = ref(false);
+    const ticketToBeClosed: Ref<any> = ref({});
     const { userId, fullName, isAdmin } = storeToRefs(useAuthStore());
 
  
     const db = useFirestore();
     const colRef = collection(db, 'tickets');
 
-    async function fetchTicketsByStatus() {
+    async function fetchTicketsByStatus(): Promise<void> {
       let ticketList;
       
       if (isAdmin.value) {
@@ -34,7 +35,7 @@ export const useTicketStore = defineStore('ticketStore', () => {
       openTickets.value = [];
 
       ticketList.forEach((ticket) => {
-        const data = ticket.data();
+        const data: ticket = ticket.data() as ticket;
         
         if (data.status === 'Open'){
           openTickets.value.push({...data, id: ticket.id});
@@ -60,7 +61,7 @@ export const useTicketStore = defineStore('ticketStore', () => {
         raisedTickets.value = [];
 
         ticketList.forEach((ticket) => {
-          const data = ticket.data();
+          const data: any = ticket.data();
           raisedTickets.value.unshift({...data, id: ticket.id.slice(0,5) + ".."});
         });
 
@@ -70,7 +71,7 @@ export const useTicketStore = defineStore('ticketStore', () => {
     async function fetchByCategory() {
         const tickets = await fetchAllTickets();
         
-        let category = reactive({});
+        let category: any = reactive({});
 
         for (let ticket of tickets.value) {
             category[ticket.category] = category[ticket.category] ? category[ticket.category] + 1 : 1

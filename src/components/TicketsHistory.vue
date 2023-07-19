@@ -33,7 +33,7 @@
   </v-data-table>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useTicketStore } from '@/stores/ticketStore';

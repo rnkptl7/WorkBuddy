@@ -55,16 +55,18 @@
     import { ref } from 'vue';
     import { storeToRefs } from 'pinia';
     import { useTicketStore } from '@/stores/ticketStore';
+    import ticket from '@/types/ticket';
+
     const { openTickets, showCloseTicketForm, ticketToBeClosed } = storeToRefs(useTicketStore());    
 
     const isAdmin = ref(localStorage.getItem('isAdmin'));
 
-    function closeTicket(ticket) {
+    function closeTicket(ticket: ticket) {
         showCloseTicketForm.value = true;
         ticketToBeClosed.value = {...ticket, status: ""};
     }
 
-    const getPriorityColor = (priority) => {
+    const getPriorityColor = (priority: string) => {
         if (priority === 'High')
             return 'red';
         else if (priority === 'Medium')
