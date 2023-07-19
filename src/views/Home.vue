@@ -12,13 +12,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, Ref } from "vue";
 
-const greetingMsg = ref();
-const greetingImg = ref();
-const timer = ref();
-const todayDate = ref();
-const hours = new Date().getHours();
+const greetingMsg: Ref<string> = ref("");
+const greetingImg: Ref<string> = ref("");
+const timer: Ref<string> = ref("");
+const todayDate: Ref<string> = ref("");
+const hours: number = new Date().getHours();
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 const months = [
@@ -48,15 +48,15 @@ if (hours < 12) {
   greetingImg.value = "sunset.png";
 }
 
-function showTime() {
-  let date = new Date();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  const day = date.getDate();
-  const month = date.getMonth();
-  const dayOfWeek = date.getDay();
-  let session = "AM";
+function showTime(): void {
+  let date: Date = new Date();
+  let hours: number | string = date.getHours();
+  let minutes: number | string = date.getMinutes();
+  let seconds: number | string = date.getSeconds();
+  const day: number = date.getDate();
+  const month: number = date.getMonth();
+  const dayOfWeek: number = date.getDay();
+  let session: string = "AM";
 
   if (hours == 0) {
     hours = 12;

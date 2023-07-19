@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
+import { commonStoreState } from "@/types/authTypes"
 
 export const useCommonStore = defineStore("commonStore", {
-    state: () => {
+    state: ():commonStoreState  => {
         return {
             mobileView: false,
             showPassword: true,

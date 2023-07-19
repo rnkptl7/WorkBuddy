@@ -64,6 +64,7 @@ import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
 import { useTicketStore } from "@/stores/ticketStore";
 import { useLeavesStore } from "@/stores/leaves";
+import { Ilogin } from "@/types/authTypes";
 
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
@@ -78,7 +79,7 @@ const { getLeaves, getLeaveCounterDetails } = leavesStore;
 const { showPassword } = storeToRefs(commonStore);
 const { showPasswordChange } = commonStore;
 
-const form = reactive({
+const form: Ilogin = reactive({
   email: "",
   password: "",
 });
@@ -88,10 +89,10 @@ const schema = {
   password: "required",
 };
 
-const submitData = async () => {
+const submitData = async (): Promise<void> => {
   const querySnapshot = await getDocs(collection(db, "users"));
 
-  let userData;
+  let userData: any;
   querySnapshot.forEach((doc) => {
     let { register } = doc.data();
     if (form.email === register.email && form.password === register.password) {

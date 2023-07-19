@@ -165,7 +165,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { reactive, ref, Ref } from "vue";
 import { useFirestore } from "vuefire";
 import { collection, addDoc } from "firebase/firestore";
 import { useRouter } from "vue-router";
@@ -173,6 +173,7 @@ import { useCommonStore } from "@/stores/commonStore";
 import { storeToRefs } from "pinia";
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
+import { IRegister } from "@/types/authTypes";
 
 const commonStore = useCommonStore();
 const db = useFirestore();
@@ -193,10 +194,10 @@ const schema = {
   gender: "gender",
 };
 
-const firstName = ref("");
-const lastName = ref("");
+const firstName: Ref<string> = ref("");
+const lastName: Ref<string> = ref("");
 
-const form = reactive({
+const form: IRegister = reactive({
   email: "",
   password: "",
   department: "",
@@ -204,11 +205,11 @@ const form = reactive({
   role: "",
 });
 
-const uniqueID = () => {
+const uniqueID = (): string => {
   return Date.now().toString().slice(6);
 };
 
-const registerData = async () => {
+const registerData = async (): Promise<void> => {
   const fullName = `${firstName.value} ${lastName.value}`;
 
   const data = await addDoc(collection(db, "users"), {

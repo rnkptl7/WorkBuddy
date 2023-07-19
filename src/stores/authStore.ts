@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
+import { authState } from "@/types/authTypes"
 
 export const useAuthStore = defineStore("authStore", {
-    state: () => {
+    state: (): authState => {
         return {
             isLoggedIn: Boolean(localStorage.getItem("isLoggedIn")),
             isAdmin: Boolean(localStorage.getItem("isAdmin")),
@@ -10,7 +11,7 @@ export const useAuthStore = defineStore("authStore", {
         };
     },
     actions: {
-        isAuthenticated() {
+        isAuthenticated(): Boolean {
             const loggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
             const userId = localStorage.getItem("userId");
 
