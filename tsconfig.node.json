@@ -1,20 +1,3 @@
-// {
-//   "extends": "@tsconfig/node18/tsconfig.json",
-//   "include": [
-//     "vite.config.*",
-//     "vitest.config.*",
-//     "cypress.config.*",
-//     "nightwatch.conf.*",
-//     "playwright.config.*"
-//   ],
-//   "compilerOptions": {
-//     "moduleResolution": "Node",
-//     "composite": true,
-//     "module": "ESNext",
-
-//     "types": ["node"],
-//   }
-// }
 {
 "extends": "@tsconfig/node18/tsconfig.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],

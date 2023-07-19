@@ -8,9 +8,9 @@
         <ul>
           <li>
             <router-link :to="{ name: 'Profile' }">
-              <span class="d-flex mr-2">
-                <img src="../assets/images/profile.png" alt="User Profile" />
-              </span>
+              <span class="d-flex mr-2"
+                ><img src="../assets/images/profile.png" alt="User Profile"
+              /></span>
               <span class="username">
                 {{ fullName }}
               </span>
