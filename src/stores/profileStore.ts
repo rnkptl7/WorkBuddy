@@ -1,18 +1,7 @@
 import { defineStore } from "pinia";
 import { doc, getDoc } from "firebase/firestore";
 import { useFirestore } from "vuefire";
-
-interface Achievement {
-    titleDate: string;
-    title: string;
-    titleDescription: string;
-}
-
-interface ProfileStoreState {
-    openModal: boolean;
-    userId: string | null;
-    achievements: Achievement[];
-}
+import {  ProfileStoreState } from '@/types/profileTypes'
 
 export const useProfileStore = defineStore("profileStore", {
     state: (): ProfileStoreState => ({
@@ -23,12 +12,12 @@ export const useProfileStore = defineStore("profileStore", {
     actions: {
         async getAchievement(): Promise<void> {
             const db = useFirestore();
-            const docSnap = await getDoc(doc(db, "users", this.userId));
+            const docSnap: any = await getDoc(doc(db, "users", this.userId));
             if (docSnap.exists()) {
                 this.achievements = docSnap.data().achievementList || [];
                 this.achievements.sort(
                     (asc, desc) =>
-                        new Date(asc.titleDate) - new Date(desc.titleDate)
+                        (new Date(asc.titleDate).getTime() - new Date(desc.titleDate).getTime())
                 );
             }
         },

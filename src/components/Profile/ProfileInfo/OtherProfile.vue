@@ -85,18 +85,14 @@
         </fieldset>
     </VForm>
 </template>
-<script setup>
-import { reactive, ref, onMounted, computed } from "vue";
+<script setup lang="ts">
+import { reactive, ref, onMounted } from "vue";
 import { useFirestore } from "vuefire";
+import { Other } from '@/types/profileTypes'
 import {
     doc,
-    setDoc,
     updateDoc,
     getDoc,
-    collection,
-    where,
-    query,
-    getDocs,
 } from "firebase/firestore";
 
 onMounted(() => {
@@ -104,12 +100,10 @@ onMounted(() => {
 });
 
 const key = localStorage.getItem("userId");
-const isAdmin = localStorage.getItem("isAdmin");
 
-let personalCopy = {};
 const db = useFirestore();
 const closeForm = () => {
-    other = { ...otherCopy };
+    other = { ...otherCopy } as Other;
     toggleEdit();
 };
 const isEdit = ref(true);
@@ -121,13 +115,15 @@ const otherSchema = {
     nationality: "alphaSpaces",
 };
 
-let other = reactive({
+let other: Other = reactive({
     aadhaar: "",
     pan: "",
     nationality: "",
 });
+
+
 let otherCopy = {};
-const priorData = async () => {
+const priorData = async (): Promise<void> => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
         other.aadhaar = docSnap.data().other.aadhaar || "";
@@ -138,7 +134,7 @@ const priorData = async () => {
         return;
     }
 };
-const updateOtherInfo = async () => {
+const updateOtherInfo = async (): Promise<void> => {
     await updateDoc(doc(db, "users", key), {
         other: { ...other },
     });

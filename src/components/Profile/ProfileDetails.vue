@@ -96,7 +96,7 @@
         </v-card>
     </main>
 </template>
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useFirestore } from "vuefire";
 import { doc, getDoc } from "firebase/firestore";
@@ -111,7 +111,7 @@ const TOTAL_LEAVES = ref("");
 const takenLeaves = ref("");
 const leftLeaves = ref("");
 
-onMounted(async () => {
+onMounted(async () : Promise<void> => {
     const key = localStorage.getItem("userId");
     const db = useFirestore();
     const docSnap = await getDoc(doc(db, "users", key));

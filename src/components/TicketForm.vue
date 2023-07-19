@@ -173,7 +173,7 @@ const {
     userId,
 } = useTicketStore();
 
-async function createTicket() {
+async function createTicket(): Promise<void> {
     dialog.value = false;
 
     ticketData = {

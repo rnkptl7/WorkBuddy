@@ -80,18 +80,14 @@
         </fieldset>
     </VForm>
 </template>
-<script setup>
-import { reactive, ref, onMounted, computed, watch } from "vue";
+<script setup lang="ts">
+import { reactive, ref, onMounted, watch } from "vue";
 import { useFirestore } from "vuefire";
+import { Professional } from '@/types/profileTypes';
 import {
     doc,
-    setDoc,
     updateDoc,
     getDoc,
-    collection,
-    where,
-    query,
-    getDocs,
 } from "firebase/firestore";
 
 onMounted(() => {
@@ -99,19 +95,18 @@ onMounted(() => {
 });
 
 const key = localStorage.getItem("userId");
-const isAdmin = localStorage.getItem("isAdmin");
 
 const db = useFirestore();
 const closeForm = () => {
-    professional = { ...professionalCopy };
+    professional = { ...professionalCopy } as Professional;
     toggleEdit();
 };
 const isEdit = ref(true);
 const toggleEdit = () => (isEdit.value = !isEdit.value);
 const professionalSchema = {
-    cdate: (value) => {
+    cdate: (value: string) => {
         const inputDate = new Date(value);
-        const joiningDate = new Date(jdate);
+        const joiningDate: any = new Date(jdate);
         const dateInFutureError = "Date cannot be ahead of Joining Date";
         if (joiningDate == "Invalid Date") {
             return "Please enter Joining date first";
@@ -122,14 +117,16 @@ const professionalSchema = {
     },
 };
 
-let jdate;
-let professional = reactive({
+let jdate: string;
+let professional: Professional = reactive({
     qualification: "",
     cdate: "",
     totalExp: "",
 });
 
-let professionalCopy = {};
+
+
+let professionalCopy: Partial<Professional> = {};
 const priorData = async () => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
@@ -147,7 +144,7 @@ const priorData = async () => {
 watch(
     () => professional.cdate,
     (newValue) => {
-        const diff = new Date() - new Date(newValue);
+        const diff = new Date().getTime() - new Date(newValue).getTime();
         const seconds = diff / 1000;
         const years = Math.floor(seconds / 31536000);
         const months = Math.floor((seconds % 31536000) / 86400 / 30);
@@ -156,7 +153,7 @@ watch(
     { deep: true }
 );
 
-const updateProfessionalInfo = async () => {
+const updateProfessionalInfo = async (): Promise<void> => {
     await updateDoc(doc(db, "users", key), {
         professional,
     });

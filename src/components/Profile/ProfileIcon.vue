@@ -45,7 +45,7 @@
         </div>
     </main>
 </template>
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useFirestore } from "vuefire";
 import { doc, getDoc } from "firebase/firestore";
@@ -53,13 +53,13 @@ import { doc, getDoc } from "firebase/firestore";
 const isProfileSelected = ref(true);
 const isInfoSelected = ref(false);
 const emits = defineEmits(["toggle"]);
-const toggleInfo = () => {
+const toggleInfo = (): void => {
     isInfoSelected.value = true;
     isProfileSelected.value = false;
     emits("toggle", isProfileSelected.value);
 };
 
-const toggleProfile = () => {
+const toggleProfile = (): void => {
     isInfoSelected.value = false;
     isProfileSelected.value = true;
     emits("toggle", isProfileSelected.value);
@@ -69,7 +69,7 @@ const fullName = ref("");
 const department = ref("");
 const role = ref("");
 const male = ref(true);
-onMounted(async () => {
+onMounted(async (): Promise<void> => {
     const key = localStorage.getItem("userId");
     const db = useFirestore();
     const docSnap = await getDoc(doc(db, "users", key));

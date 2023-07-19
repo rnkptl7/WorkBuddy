@@ -52,7 +52,7 @@
     { title: '', key: 'data-table-expand' },
   ]);
 
-  function getPriorityColor(priority) {
+  function getPriorityColor(priority: string) {
     if (priority === 'High') 
       return 'red';
     else if (priority === 'Medium')

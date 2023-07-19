@@ -39,7 +39,7 @@
     </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "../../stores/profileStore";
@@ -48,10 +48,10 @@ const store = useProfileStore();
 const { achievements, openModal: dialog } = storeToRefs(store);
 const { getAchievement } = store;
 
-function toggleModal() {
+function toggleModal(): void {
     dialog.value = true;
 }
-onMounted(async () => {
+onMounted(async (): Promise<void> => {
     await getAchievement();
 });
 </script>

@@ -115,9 +115,10 @@
         </fieldset>
     </VForm>
 </template>
-<script setup>
-import { reactive, ref, onMounted } from "vue";
+<script setup lang="ts">
+import { reactive, ref, Ref, onMounted } from "vue";
 import { useFirestore } from "vuefire";
+import { Employee } from '@/types/profileTypes'
 import {
     doc,
     updateDoc,
@@ -134,7 +135,6 @@ onMounted(() => {
 });
 
 const key = localStorage.getItem("userId");
-const isAdmin = localStorage.getItem("isAdmin");
 const isEdit = ref(true);
 const db = useFirestore();
 
@@ -142,7 +142,7 @@ const employeeSchema = {
     empid: "integer",
     email: "email",
     reporting: "alphaSpaces",
-    jdate: (value) => {
+    jdate: (value: string): string | boolean => {
         const inputDate = new Date(value);
         const today = new Date();
         const dateInFutureError = "Date cannot be in the future";
@@ -153,16 +153,17 @@ const employeeSchema = {
         }
     },
 };
-let employee = reactive({
+let employee: Employee = reactive({
     email: "",
     empID: "",
     department: "",
     reporting: "",
     jdate: "",
 });
-let employeeCopy = {};
 
-const priorData = async () => {
+let employeeCopy: Partial<Employee> = {};
+
+const priorData = async (): Promise<void> => {
     const docSnap = await getDoc(doc(db, "users", key));
     if (docSnap.exists()) {
         const { register, employee: employeeData } = docSnap.data();
@@ -175,7 +176,7 @@ const priorData = async () => {
     }
 };
 
-const adminOption = ref([]);
+const adminOption: Ref<Object[]> = ref([]);
 
 const getAdmins = async () => {
     const q = query(
@@ -203,7 +204,7 @@ const toggleEdit = () => {
 };
 
 const closeForm = () => {
-    employee = { ...employeeCopy };
+    employee = { ...employeeCopy } as Employee
     toggleEdit();
 };
 </script>
