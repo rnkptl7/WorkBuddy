@@ -101,9 +101,9 @@ export const useLeavesStore = defineStore("leaves", () => {
         const docSnap = await getDoc(doc(db, "users", userId.value));
         if (docSnap.exists()) {
             leaveCountDetails.value = {
-                TOTAL_LEAVES: docSnap.data()?.leavesDetails?.TOTAL_LEAVES || 10,
-                takenLeaves: docSnap.data()?.leavesDetails?.takenLeaves || 0,
-                leftLeaves: docSnap.data()?.leavesDetails?.leftLeaves || 10,
+                TOTAL_LEAVES: docSnap.data()?.leavesDetails?.TOTAL_LEAVES ?? 10,
+                takenLeaves: docSnap.data()?.leavesDetails?.takenLeaves ?? 0,
+                leftLeaves: docSnap.data()?.leavesDetails?.leftLeaves ?? 10,
             };
         }
     }

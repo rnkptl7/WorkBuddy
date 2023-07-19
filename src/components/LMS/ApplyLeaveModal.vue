@@ -184,16 +184,17 @@
                 let yesterday = new Date();
                 let tomorrow = new Date();
                 if (leaveRequestInput.leaveCategory == "Unplanned") {
-                    tomorrow.setDate(tomorrow.getDate() + 2);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
                     yesterday.setDate(yesterday.getDate() - 1);
                 } else if (leaveRequestInput.leaveCategory == "Planned") {
-                    yesterday.setDate(yesterday.getDate() + 3);
+                    yesterday.setDate(yesterday.getDate() + 1);
                     return date > yesterday
                         ? true
                         : `Start Date should above ${moment(yesterday).format(
                               "DD-MM-YYYY"
                           )}`;
                 }
+                // console.log(yesterday, "====start logic");
                 return date > yesterday && date <= tomorrow
                     ? true
                     : `Start Date should between ${moment(yesterday).format(
@@ -209,7 +210,7 @@
                 let yesterday = new Date(leaveRequestInput.startDate);
                 let tomorrow = new Date(leaveRequestInput.startDate);
                 // Define the minimum and maximum dates
-                let totalDays = 1;
+                let totalDays = 0;
 
                 if (leaveRequestInput.startDate > date) {
                     return "End date should be greater than Start date.";
@@ -219,31 +220,31 @@
                         yesterday.setDate(yesterday.getDate());
                         totalDays =
                             (tomorrow.getTime() - yesterday.getTime()) /
-                                (1000 * 3600 * 24) +
-                            1;
+                            (1000 * 3600 * 24);
                     } else if (leaveRequestInput.leaveCategory == "Planned") {
                         tomorrow.setDate(
                             tomorrow.getDate() +
-                                leaveCountDetails.value.leftLeaves
+                                leaveCountDetails.value.leftLeaves -
+                                1
                         );
-                        totalDays =
-                            (tomorrow.getTime() - yesterday.getTime()) /
-                            (1000 * 3600 * 24);
-                        console.log(totalDays);
-                        return date <= tomorrow &&
-                            totalDays <= leaveCountDetails.value.leftLeaves
+
+                        return date <= tomorrow
                             ? true
                             : `End Date should below ${moment(tomorrow).format(
                                   "DD-MM-YYYY"
                               )}`;
                     }
-                    return date >= yesterday &&
-                        date <= tomorrow &&
-                        totalDays <= leaveCountDetails.value.leftLeaves
-                        ? true
-                        : `End Date should between ${moment(yesterday).format(
-                              "DD-MM-YYYY"
-                          )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
+                    if (totalDays <= leaveCountDetails.value.leftLeaves) {
+                        return date >= yesterday && date <= tomorrow
+                            ? true
+                            : `End Date should between ${moment(
+                                  yesterday
+                              ).format("DD-MM-YYYY")} and ${moment(
+                                  tomorrow
+                              ).format("DD-MM-YYYY")}`;
+                    } else {
+                        return "You don't have that much leaves left.";
+                    }
                 }
             } else {
                 return "Please choose a End Date.";
@@ -303,7 +304,10 @@
             takenLeaves: leavesStore.leaveCountDetails.takenLeaves + totalDays,
             leftLeaves: leavesStore.leaveCountDetails.leftLeaves - totalDays,
         };
-        getLeaves();
+        console.log(leaveCountDetails.value);
+
+        await getLeaves();
+
         leaveRequestInput = {
             leaveCategory: "",
             leaveMessage: "",

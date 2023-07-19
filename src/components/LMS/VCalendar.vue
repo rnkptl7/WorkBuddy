@@ -1,5 +1,5 @@
 <template>
-    <div class="DatePicker-wrapper">
+    <div class="DatePicker-wrapper my-2">
         <VCalendar :attributes="attributes" borderless />
     </div>
 </template>

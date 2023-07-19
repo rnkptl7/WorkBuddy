@@ -23,11 +23,25 @@
         >
             <!-- Calendar and Leave count wrapper -->
             <div class="LMS-calendar_wrapper d-flex flex-column justify-center">
-                <div class="LMS-calendar d-flex justify-center">
+                <div
+                    class="LMS-calendar d-flex justify-center flex-column align-center"
+                >
+                    <h3>Your Leave Calendar</h3>
                     <VCalendarVue />
+                    <div class="d-flex flex-row flex-wrap">
+                        <span class="approved rounded-pill"
+                            ><span></span>Approved</span
+                        >
+                        <span class="rejected rounded-pill"
+                            ><span></span>Rejected</span
+                        >
+                        <span class="pending rounded-pill"
+                            ><span></span>Pending</span
+                        >
+                    </div>
                 </div>
                 <div
-                    class="LMS-leave_balance mx-auto d-flex flex-column align-space-between justify-center pa-3"
+                    class="LMS-leave_balance mx-auto d-flex flex-column align-space-between justify-center pa-3 align-center"
                 >
                     <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
                         <div class="leaves_count pa-3">
@@ -178,6 +192,52 @@
         border-radius: 5%;
         height: 200px;
         border: 2px dashed var(--secondary-color);
+    }
+
+    .approved,
+    .rejected,
+    .pending {
+        /* border-radius: 10%; */
+        border: 1px solid white;
+        margin: 0.3rem;
+        padding-inline: 5px;
+        padding-block: 1px;
+        color: white;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .approved span,
+    .rejected span,
+    .pending span {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-inline: 2px;
+    }
+
+    .approved span {
+        background-color: #2563eb;
+    }
+
+    .rejected span {
+        background-color: #475569;
+    }
+    .pending span {
+        background-color: #ca8a04;
+    }
+    .approved {
+        color: #2563eb;
+        border-color: #2563eb;
+    }
+    .rejected {
+        color: #475569;
+        border-color: #475569;
+    }
+    .pending {
+        color: #ca8a04;
+        border-color: #ca8a04;
     }
 
     @media screen and (max-width: 840px) {

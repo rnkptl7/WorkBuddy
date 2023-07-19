@@ -167,6 +167,7 @@
                 leftLeaves:
                     leavesStore.leaveCountDetails.leftLeaves + leave.totalDays,
             };
+            console.log(leaveCountDetails.value, "=== Approved ===");
         }
 
         // Fetching again to make realtime user experience
