@@ -161,6 +161,7 @@
     import { useFirestore } from "vuefire";
     import { useLeavesStore } from "../../stores/leaves";
     import { useAuthStore } from "../../stores/authStore";
+    import { leaveStatus, leaves } from "../../types/leaves";
     const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
     const { fullName } = storeToRefs(authStore);
@@ -194,7 +195,6 @@
                               "DD-MM-YYYY"
                           )}`;
                 }
-                // console.log(yesterday, "====start logic");
                 return date > yesterday && date <= tomorrow
                     ? true
                     : `Start Date should between ${moment(yesterday).format(
@@ -212,7 +212,7 @@
                 // Define the minimum and maximum dates
                 let totalDays = 0;
 
-                if (leaveRequestInput.startDate > date) {
+                if (leaveRequestInput.startDate > (date as any)) {
                     return "End date should be greater than Start date.";
                 } else {
                     if (leaveRequestInput.leaveCategory == "Unplanned") {
@@ -243,7 +243,6 @@
                             return "You don't have that much leaves left.";
                         }
                     }
-                    console.log(leaveCountDetails.value.leftLeaves);
                     if (
                         totalDays <= leaveCountDetails.value.leftLeaves &&
                         leaveCountDetails.value.leftLeaves > 0
@@ -317,7 +316,6 @@
             takenLeaves: leavesStore.leaveCountDetails.takenLeaves + totalDays,
             leftLeaves: leavesStore.leaveCountDetails.leftLeaves - totalDays,
         };
-        console.log(leaveCountDetails.value);
 
         await getLeaves();
 
@@ -330,6 +328,7 @@
             requestingToEmail: "",
             status: undefined,
             createdBy: fullName.value,
+            totalDays: 0,
         };
         emits("closeLeaveRequestModal", false);
     }

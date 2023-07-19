@@ -9,9 +9,10 @@ import {
     Timestamp,
     where,
 } from "firebase/firestore";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 import moment from "moment";
 import { useAuthStore } from "./authStore";
+import { leaves, leavesDates } from "@/types/leaves";
 
 function formatDate(data: Timestamp) {
     const seconds = data.seconds;
@@ -28,17 +29,17 @@ export const useLeavesStore = defineStore("leaves", () => {
     // Setting connection to firebase
     const database = useFirestore();
 
-    const leaves = ref([]); // For Users
-    let leavesDates = ref([]); // For VCalendar
-    let allPendingLeaves = ref([]);
-    // TODO: Make this dynamic from userProfileStore
+    const leaves: Ref<leaves[]> = ref([]); // For Users
+    let leavesDates: Ref<leavesDates[]> = ref([]); // For VCalendar
+    let allPendingLeaves: Ref<leaves[]> = ref([]);
+
     const leaveCountDetails = ref({
         TOTAL_LEAVES: 10,
-        takenLeaves: 4,
-        leftLeaves: 6,
+        takenLeaves: 0,
+        leftLeaves: 10,
     }); // Leaves count of Users
 
-    async function getLeaves() {
+    async function getLeaves(): Promise<void> {
         // It will fetch leaves Collection from firebase with specified Parameter
         const response = await getDocs(
             query(
@@ -70,10 +71,9 @@ export const useLeavesStore = defineStore("leaves", () => {
             leavesDates.value.push(leavesForCalendar);
             leaves.value.push(leaveItem);
         });
-        console.log(leaveCountDetails.value.TOTAL_LEAVES);
     }
 
-    async function getAllPendingLeaves() {
+    async function getAllPendingLeaves(): Promise<void> {
         const response = await getDocs(
             query(
                 collection(database, "leaves"),
@@ -96,7 +96,7 @@ export const useLeavesStore = defineStore("leaves", () => {
         });
     }
 
-    async function getLeaveCounterDetails() {
+    async function getLeaveCounterDetails(): Promise<void> {
         const db = useFirestore();
         const docSnap = await getDoc(doc(db, "users", userId.value));
         if (docSnap.exists()) {

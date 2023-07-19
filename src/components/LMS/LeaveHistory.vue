@@ -29,7 +29,7 @@
     </v-data-table>
 </template>
 
-<script setup>
+<script setup lang="ts">
     import { storeToRefs } from "pinia";
     import { onMounted, reactive, ref } from "vue";
     import { useLeavesStore } from "../../stores/leaves";

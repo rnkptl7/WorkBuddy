@@ -4,8 +4,7 @@
     </div>
 </template>
 
-<script setup>
-    import { collection, getDocs, query, where } from "firebase/firestore";
+<script setup lang="ts">
     import { storeToRefs } from "pinia";
     import { computed, onMounted, reactive, ref, watch } from "vue";
     import { useFirestore } from "vuefire";

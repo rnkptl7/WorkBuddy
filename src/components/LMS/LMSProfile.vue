@@ -109,7 +109,7 @@
     </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
     // File imports
     import LeaveRequestCardVue from "./LeaveRequestCard.vue";
     import LeaveHistory from "./LeaveHistory.vue";
