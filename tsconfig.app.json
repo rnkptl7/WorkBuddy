@@ -1,0 +1,15 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.dom.json",
+    "include": [
+        "vite.config.*",
+        "vitest.config.*",
+        "cypress.config.*",
+        "playwright.config.*",
+        "src/globals.d.ts"
+    ],
+    "compilerOptions": {
+        "composite": true,
+        "types": ["node"],
+        "allowJs": true
+    }
+}

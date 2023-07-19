@@ -1,0 +1,17 @@
+{
+    "files": [],
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "target": "es6",
+        "lib": ["dom", "es6"],
+    },
+
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        },
+        {
+            "path": "./tsconfig.app.json"
+        }
+    ],
+}
