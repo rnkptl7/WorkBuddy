@@ -87,16 +87,14 @@
 </template>
 <script setup lang="ts">
 import { reactive, ref, onMounted } from "vue";
-import { useFirestore } from "vuefire";
-import { Other } from "@/types/profileTypes";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { Other } from "../../../types/profileTypes";
+import { updateUserDetail, getUserDetail } from "../../../api/api";
 
 onMounted(() => {
     priorData();
 });
 
-const key = localStorage.getItem("userId");
-const db = useFirestore();
+const userId = localStorage.getItem("userId");
 const closeForm = () => {
     other = { ...otherCopy } as Other;
     toggleEdit();
@@ -119,19 +117,17 @@ let other: Other = reactive({
 let otherCopy = {};
 
 const priorData = async (): Promise<void> => {
-    const docSnap = await getDoc(doc(db, "users", key));
-    if (docSnap.exists()) {
-        const otherData = docSnap.data()?.other;
-        other.aadhaar = otherData?.aadhaar || "";
-        other.pan = otherData?.pan || "";
-        other.nationality = otherData?.nationality || "";
-        otherCopy = { ...other };
-    }
+    const docSnap = await getUserDetail(userId);
+    const otherData = docSnap.data()?.other;
+    other.aadhaar = otherData?.aadhaar || "";
+    other.pan = otherData?.pan || "";
+    other.nationality = otherData?.nationality || "";
+    otherCopy = { ...other };
 };
 
 const updateOtherInfo = async (): Promise<void> => {
-    await updateDoc(doc(db, "users", key), {
-        other: { ...other },
+    await updateUserDetail(userId, {
+        other,
     });
     toggleEdit();
 };

@@ -87,6 +87,7 @@
                         class="input"
                         v-model="employee.jdate"
                         :disabled="isEdit"
+                        :max="useMaxDate"
                     />
                     <ErrorMessage name="jdate" class="error_message" />
                 </div>
@@ -116,27 +117,26 @@
     </VForm>
 </template>
 <script setup lang="ts">
-import { reactive, ref, Ref, onMounted } from "vue";
-import { useFirestore } from "vuefire";
-import { Employee } from '@/types/profileTypes'
-import {
-    doc,
-    updateDoc,
-    getDoc,
-    collection,
-    where,
-    query,
-    getDocs,
-} from "firebase/firestore";
+import { reactive, ref, Ref, onMounted, computed } from "vue";
+import { Employee } from "../../../types/profileTypes";
+import { updateUserDetail, getUserDetail, getAdmins } from "../../../api/api";
+import { useMaxDate } from "../../../composables/maxdate";
+
+const userId = localStorage.getItem("userId");
+const isEdit = ref(true);
+const toggleEdit = () => {
+    isEdit.value = !isEdit.value;
+};
+const closeForm = () => {
+    employee = { ...employeeCopy } as Employee;
+    toggleEdit();
+};
+const adminOption: Ref<Object[]> = ref([]);
 
 onMounted(() => {
     priorData();
-    getAdmins();
+    getAdmin();
 });
-
-const key = localStorage.getItem("userId");
-const isEdit = ref(true);
-const db = useFirestore();
 
 const employeeSchema = {
     empid: "integer",
@@ -153,6 +153,7 @@ const employeeSchema = {
         }
     },
 };
+
 let employee: Employee = reactive({
     email: "",
     empID: "",
@@ -163,28 +164,8 @@ let employee: Employee = reactive({
 
 let employeeCopy: Partial<Employee> = {};
 
-const priorData = async (): Promise<void> => {
-    const docSnap = await getDoc(doc(db, "users", key));
-    if (docSnap.exists()) {
-        const { register, employee: employeeData } = docSnap.data();
-        employee.email = register.email || "";
-        employee.empID = register.empID || "";
-        employee.department = register.department || "";
-        employee.jdate = employeeData?.jdate || "";
-        employee.reporting = employeeData?.reporting || "";
-        employeeCopy = { ...employee };
-    }
-};
-
-const adminOption: Ref<Object[]> = ref([]);
-
-const getAdmins = async () => {
-    const q = query(
-        collection(db, "users"),
-        where("register.role", "==", "admin")
-    );
-    const querySnap = await getDocs(q);
-
+const getAdmin = async () => {
+    const querySnap = await getAdmins(userId);
     adminOption.value = querySnap.docs.map((doc) => ({
         id: doc.data().register.empID,
         label: doc.data().register.fullName,
@@ -192,19 +173,21 @@ const getAdmins = async () => {
     }));
 };
 
+const priorData = async (): Promise<void> => {
+    const docSnap = await getUserDetail(userId);
+    const { register, employee: employeeData } = docSnap.data();
+    employee.email = register.email || "";
+    employee.empID = register.empID || "";
+    employee.department = register.department || "";
+    employee.jdate = employeeData?.jdate || "";
+    employee.reporting = employeeData?.reporting || "";
+    employeeCopy = { ...employee };
+};
+
 const updateEmployeeInfo = async () => {
-    await updateDoc(doc(db, "users", key), {
-        employee: { ...employee },
+    await updateUserDetail(userId, {
+        employee,
     });
-    toggleEdit();
-};
-
-const toggleEdit = () => {
-    isEdit.value = !isEdit.value;
-};
-
-const closeForm = () => {
-    employee = { ...employeeCopy } as Employee
     toggleEdit();
 };
 </script>

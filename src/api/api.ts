@@ -77,3 +77,33 @@ export const updateUserDetail = async (userId: string, userDetail: object) => {
         alert("Error in updating user detail");
     }
 };
+
+export const getUserDetail = async (userId: string) => {
+    try {
+        const docSnap = await getDoc(doc(database, "users", userId));
+        if (docSnap.exists()) return docSnap;
+    } catch (e) {
+        alert("Error in fetching leaves balance!");
+    }
+};
+export const getAdmins = async (userId: string) => {
+    try {
+        const queryLoc = query(
+            collection(database, "users"),
+            where("register.role", "==", "admin")
+        );
+        const querySnap = await getDocs(queryLoc);
+        if (querySnap) return querySnap;
+    } catch (e) {
+        alert("Error in fetching leaves balance!");
+    }
+};
+export async function getAchievement() {
+    const userId = localStorage.getItem("userId");
+    try {
+        const docSnap = await getDoc(doc(database, "users", userId));
+        if (docSnap.exists()) return docSnap;
+    } catch (e) {
+        alert("Error in fetching Achievement Detail!");
+    }
+}

@@ -42,7 +42,7 @@
                         type="date"
                         class="input"
                         v-model="personal.dob"
-                        :max="maxDate"
+                        :max="useMaxDate"
                         :disabled="isEdit"
                     />
                     <ErrorMessage name="dob" class="error_message" />
@@ -103,16 +103,21 @@
 </template>
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from "vue";
-import { useFirestore } from "vuefire";
-import { Personal } from "@/types/profileTypes";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { Personal } from "../../../types/profileTypes";
+import { updateUserDetail, getUserDetail } from "../../../api/api";
+import { useMaxDate } from "../../../composables/maxdate";
+const userId = localStorage.getItem("userId");
+const isEdit = ref(true);
+const closeForm = () => {
+    personal = { ...personalCopy } as Personal;
+    toggleEdit();
+};
+const toggleEdit = () => (isEdit.value = !isEdit.value);
 
 onMounted(() => {
     priorData();
 });
 
-const key = localStorage.getItem("userId");
-const db = useFirestore();
 const personalSchema = {
     fullName: "alphaSpaces",
     gender: "gender",
@@ -143,36 +148,22 @@ let personal: Personal = reactive({
 
 let personalCopy: Partial<Personal> = {};
 
-const closeForm = () => {
-    personal = { ...personalCopy } as Personal;
-    toggleEdit();
-};
-const isEdit = ref(true);
-const toggleEdit = () => (isEdit.value = !isEdit.value);
-
-const maxDate = computed(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-});
 const priorData = async (): Promise<void> => {
-    const docSnap = await getDoc(doc(db, "users", key));
-    if (docSnap.exists()) {
-        const personalData = docSnap.data().personal || {};
-        const registerData = docSnap.data().register || {};
+    const docSnap = await getUserDetail(userId);
+    const personalData = docSnap.data().personal || {};
+    const registerData = docSnap.data().register || {};
 
-        personal.fullName = registerData.fullName || "";
-        personal.gender = registerData.gender || "";
-        personal.dob = personalData.dob || "";
-        personal.address = personalData.address || "";
-        personal.mobile = personalData.mobile || "";
-        personalCopy = { ...personal };
-    } else {
-        return;
-    }
+    personal.fullName = registerData.fullName || "";
+    personal.gender = registerData.gender || "";
+    personal.dob = personalData.dob || "";
+    personal.address = personalData.address || "";
+    personal.mobile = personalData.mobile || "";
+    personalCopy = { ...personal };
 };
+
 const updatePersonalInfo = async (): Promise<void> => {
-    await updateDoc(doc(db, "users", key), {
-        personal: { ...personal },
+    await updateUserDetail(userId, {
+        personal,
     });
     toggleEdit();
 };
