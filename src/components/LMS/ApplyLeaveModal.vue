@@ -64,12 +64,14 @@
                                 type="date"
                                 class="input w-100"
                                 v-model="leaveRequestInput.startDate"
+                                :min="min_date"
                             />
                             <ErrorMessage
                                 name="startDate"
                                 class="error_message"
                             />
                         </div>
+
                         <div class="date_input_wrapper w-50">
                             <label>End Date</label>
 
@@ -79,6 +81,7 @@
                                 type="date"
                                 class="input w-100"
                                 v-model="leaveRequestInput.endDate"
+                                :min="min_date"
                             />
                             <ErrorMessage
                                 name="endDate"
@@ -157,7 +160,7 @@
         updateDoc,
     } from "firebase/firestore";
     import { storeToRefs } from "pinia";
-    import { reactive, ref } from "vue";
+    import { computed, reactive, ref } from "vue";
     import { useFirestore } from "vuefire";
     import { useLeavesStore } from "../../stores/leaves";
     import { useAuthStore } from "../../stores/authStore";
@@ -181,30 +184,79 @@
         description: "required|min:30",
         startDate: (value: string) => {
             if (value) {
-                const date = new Date(value);
-                let yesterday = new Date();
-                let tomorrow = new Date();
+                // Unplanned category
+                const selectedDate = new Date(value).getTime();
                 if (leaveRequestInput.leaveCategory == "Unplanned") {
-                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
-                } else if (leaveRequestInput.leaveCategory == "Planned") {
-                    yesterday.setDate(yesterday.getDate() + 1);
-                    return date > yesterday
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 2);
+                    console.log(
+                        selectedDate >= yesterday.getTime(),
+                        "=== v-calendar test"
+                    );
+
+                    return selectedDate >= yesterday.getTime() &&
+                        selectedDate <= tomorrow.getTime()
+                        ? true
+                        : `Start Date should less than ${moment(
+                              tomorrow
+                          ).format("DD-MM-YYYY")}`;
+                }
+                // Planned Category
+                else if (leaveRequestInput.leaveCategory == "Planned") {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() + 2);
+
+                    return selectedDate >= yesterday.getTime()
                         ? true
                         : `Start Date should above ${moment(yesterday).format(
                               "DD-MM-YYYY"
                           )}`;
+                } else {
+                    return "Select category for accurate date's details!";
                 }
-                return date > yesterday && date <= tomorrow
-                    ? true
-                    : `Start Date should between ${moment(yesterday).format(
-                          "DD-MM-YYYY"
-                      )} and ${moment(tomorrow).format("DD-MM-YYYY")}`;
             } else {
-                return "Please choose a Start Date.";
+                return "Please select appropriate starting date!";
             }
         },
         endDate: (value: string) => {
+            if (value) {
+                if (leaveRequestInput.startDate) {
+                    const selectedDate = new Date(value).getTime();
+                    // Unplanned category
+                    if (leaveRequestInput.leaveCategory == "Unplanned") {
+                        const yesterday = new Date(leaveRequestInput.startDate);
+                        const tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 2);
+
+                        const requestingDays =
+                            (selectedDate - yesterday.getTime()) /
+                                (1000 * 3600 * 24) +
+                            1;
+
+                        return `${requestingDays}`;
+                    }
+                    // Planned Category
+                    else if (leaveRequestInput.leaveCategory == "Planned") {
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() + 2);
+
+                        return selectedDate >= yesterday.getTime()
+                            ? true
+                            : `Start Date should above ${moment(
+                                  yesterday
+                              ).format("DD-MM-YYYY")}`;
+                    } else {
+                        return "Select category for accurate date's details!";
+                    }
+                } else {
+                    return "Please select start date first!";
+                }
+            } else {
+                return "Please select appropriate starting date!";
+            }
+
             if (value) {
                 const date = new Date(value);
                 let yesterday = new Date(leaveRequestInput.startDate);
@@ -271,6 +323,11 @@
             }
         },
         requestingToEmail: "required|email",
+    });
+
+    const min_date = computed(() => {
+        const today = new Date();
+        return today.toISOString().split("T")[0];
     });
 
     let leaveRequestInput = reactive({

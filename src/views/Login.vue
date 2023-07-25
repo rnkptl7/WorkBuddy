@@ -131,8 +131,8 @@
             // To fetch data after user login from other account on same webpage
             await fetchAllTickets();
             await fetchTicketsByStatus();
-            await getLeaves();
-            await getLeaveCounterDetails();
+            // await getLeaves();
+            // await getLeaveCounterDetails();
         } else {
             alert("Invalid Credentials");
         }

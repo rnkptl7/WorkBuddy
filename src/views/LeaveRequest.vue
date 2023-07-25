@@ -1,22 +1,24 @@
 <template>
     <section class="leave-request-section-wrapper my-3">
-        <div class="lr-section-navigation d-flex ma-3" v-if="isAdmin">
-            <v-btn
-                class="mx-2 selected-button"
-                rounded
-                @click="activeComponent = LMSProfile"
-            >
-                Your Leaves
-            </v-btn>
-            <v-btn
-                class="mx-2 selected-button"
-                rounded
-                @click="activeComponent = ApprovalsVue"
-            >
-                Approvals
-            </v-btn>
-        </div>
-        <v-divider class="mx-3"></v-divider>
+        <template v-if="isAdmin">
+            <div class="lr-section-navigation d-flex ma-3">
+                <v-btn
+                    class="mx-2 selected-button"
+                    rounded
+                    @click="activeComponent = LMSProfile"
+                >
+                    Your Leaves
+                </v-btn>
+                <v-btn
+                    class="mx-2 selected-button"
+                    rounded
+                    @click="activeComponent = ApprovalsVue"
+                >
+                    Approvals
+                </v-btn>
+            </div>
+            <v-divider class="mx-3"></v-divider>
+        </template>
         <component class="my-2" :is="activeComponent" />
     </section>
 </template>
