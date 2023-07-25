@@ -13,7 +13,7 @@ export const useTicketStore = defineStore('ticketStore', () => {
     const ticketsByCategory: Ref<number[]> = ref([]);
     const ticketsByMonth: Ref<number[]> = ref([]);
     const showCloseTicketForm: Ref<boolean> = ref(false);
-    const ticketToBeClosed: Ref<any> = ref({});
+    const ticketToBeClosed: Ref<Partial<ticket>> = ref({});
     const { userId, fullName, isAdmin } = storeToRefs(useAuthStore());
 
  

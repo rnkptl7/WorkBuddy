@@ -1,7 +1,8 @@
 <template>
   <div class="navbar">
     <router-link class="logo" to="/">
-      <h1>WorkBuddy</h1>
+      <img class="logo-img" src="../assets/images/work-buddy.png" alt="">
+      <h2>WorkBuddy</h2>
     </router-link>
     <div class="navbar-item">
       <div v-if="isLoggedIn">
@@ -90,6 +91,12 @@ window.addEventListener("resize", commonStore.handleView);
 <style scoped>
 @import "../assets/main.css";
 
+img {
+  width: 27px;
+  display: flex;
+  margin-left: 10px;
+}
+
 a.router-link-exact-active {
   border-bottom: 2px solid var(--primary-color);
   font-weight: 600;
@@ -118,6 +125,14 @@ a.router-link-exact-active {
   padding: 15px 30px;
   color: var(--primary-color);
   text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-img {
+  width: 32px;
 }
 
 .navbar .navbar-item ul {
@@ -153,12 +168,6 @@ a.router-link-exact-active {
 .hamburgerMenu {
   width: 30px;
   cursor: pointer;
-}
-
-img {
-  width: 27px;
-  display: flex;
-  margin-left: 10px;
 }
 
 @media screen and (max-width: 675px) {

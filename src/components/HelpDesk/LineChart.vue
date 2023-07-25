@@ -24,7 +24,7 @@ async function fetchData(): Promise<void> {
 }
 fetchData();
 
-const chartData: any = computed(() => {
+const chartData = computed(() => {
   return {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     datasets: [
