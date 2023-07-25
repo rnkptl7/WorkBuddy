@@ -161,6 +161,7 @@
     import { useFirestore } from "vuefire";
     import { useLeavesStore } from "../../stores/leaves";
     import { useAuthStore } from "../../stores/authStore";
+    import { addLeaveDetail, updateUserDetail } from "../../api/api";
     const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
     const { fullName } = storeToRefs(authStore);
@@ -295,7 +296,7 @@
         const totalDays =
             (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
         // Adding a document to leaves collection
-        const leave = await addDoc(collection(db, "leaves"), {
+        const leaveId = await addLeaveDetail({
             ...leaveRequestInput,
             startDate: startDate,
             endDate: endDate,
@@ -305,12 +306,8 @@
         });
 
         // creating reference to users collection's document with specified id
-        const user = doc(db, "users", userId.value);
-
-        await updateDoc(user, {
-            leaveRequestIds: arrayUnion(leave.id),
-        });
-        await updateDoc(user, {
+        await updateUserDetail(userId.value, {
+            leaveRequestIds: arrayUnion(leaveId),
             leavesDetails: {
                 TOTAL_LEAVES: leaveCountDetails.value.TOTAL_LEAVES || 10,
                 takenLeaves: leaveCountDetails.value.takenLeaves + totalDays,
