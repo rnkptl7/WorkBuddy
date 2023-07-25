@@ -8,7 +8,7 @@ import { leaves, leavesDates } from "@/types/leaves";
 import {
     fetchAllPendingLeaves,
     fetchLeavesBalance,
-    getLeavesByUsersId,
+    fetchLeavesByUsersId,
 } from "../api/api";
 
 function formatDate(data: Timestamp) {
@@ -37,7 +37,7 @@ export const useLeavesStore = defineStore("leaves", () => {
     }); // Leaves count of Users
 
     async function getLeaves(): Promise<void> {
-        const response = await getLeavesByUsersId(userId.value);
+        const response = await fetchLeavesByUsersId(userId.value);
         // Emptying Containers to fetch updated changes
         leaves.value = [];
         leavesDates.value = [];
