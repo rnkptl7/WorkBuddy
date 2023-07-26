@@ -124,12 +124,6 @@ const submitData = async (): Promise<void> => {
         isLoggedIn.value = true;
         fullName.value = userData.register.fullName;
         router.replace({ name: "Home" });
-
-        // To fetch data after user login from other account on same webpage
-        await fetchAllTickets();
-        await fetchTicketsByStatus();
-        // await getLeaves();
-        // await getLeaveCounterDetails();
     } else {
         alert("Invalid Credentials");
     }

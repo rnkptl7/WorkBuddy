@@ -31,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+  import { onMounted } from 'vue';
   import TicketsHistory from '../components/HelpDesk/TicketsHistory.vue';
   import LineChart from '../components//HelpDesk/LineChart.vue';
   import DoughnutChart from '../components//HelpDesk/DoughnutChart.vue';
@@ -38,8 +39,11 @@
   import OpenTickets from '@/components//HelpDesk/OpenTickets.vue';
   import CloseTicketForm from '@/components/HelpDesk/CloseTicketForm.vue';
 
-  const { fetchAllTickets } = useTicketStore()
-  fetchAllTickets()
+  const { fetchAllTickets, fetchTicketsByStatus } = useTicketStore();
+  onMounted(() => {
+    fetchAllTickets();
+    fetchTicketsByStatus();
+  });
 
 </script>
 
