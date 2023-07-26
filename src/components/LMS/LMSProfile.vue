@@ -29,19 +29,22 @@
                     <h3>Your Leave Calendar</h3>
                     <VCalendarVue />
                     <div class="d-flex flex-row flex-wrap">
-                        <span class="approved rounded-pill"
-                            ><span></span>Approved</span
-                        >
-                        <span class="rejected rounded-pill"
-                            ><span></span>Rejected</span
-                        >
-                        <span class="pending rounded-pill"
-                            ><span></span>Pending</span
-                        >
+                        <v-chip class="ma-2" color="blue">
+                            <!-- <v-avatar left class="blue darken-4"> </v-avatar> -->
+                            Approved
+                        </v-chip>
+                        <v-chip class="ma-2" color="grey">
+                            <!-- <v-avatar left class="blue darken-4"> </v-avatar> -->
+                            Rejected
+                        </v-chip>
+                        <v-chip class="ma-2" color="orange">
+                            <!-- <v-avatar left class="blue darken-4"> </v-avatar> -->
+                            Pending
+                        </v-chip>
                     </div>
                 </div>
                 <div
-                    class="LMS-leave_balance mx-auto d-flex flex-column align-space-between justify-center pa-3 align-center"
+                    class="LMS-leave_balance mx-auto d-flex flex-column justify-center pa-3 align-lg-center"
                 >
                     <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
                         <div class="leaves_count pa-3">
