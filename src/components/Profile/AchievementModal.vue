@@ -89,16 +89,16 @@
 <script setup lang="ts">
 import { useProfileStore } from "../../stores/profileStore";
 import { reactive, computed, ref, Ref } from "vue";
-import { useFirestore } from "vuefire";
-import { doc, updateDoc, getDoc, arrayUnion } from "firebase/firestore";
 import { storeToRefs } from "pinia";
 import { Achievement } from "../../types/profileTypes";
 import { useMaxDate } from "../../composables/maxdate";
 import { updateUserDetail, getAchievement } from "../../api/api";
-// const userId = localStorage.getItem("userId");
+import { arrayUnion } from "firebase/firestore";
+
+const userId = localStorage.getItem("userId");
 const store = useProfileStore();
-const { openModal: dialog, userId: userId } = storeToRefs(store);
-let achievements = ref([]);
+let { achievements: achievements, openModal: dialog } = storeToRefs(store);
+
 function closeModal(): void {
     dialog.value = false;
 }
@@ -123,24 +123,24 @@ const achievementSchema = {
 };
 
 let achievement: Achievement = reactive({
-    titleDate: "",
+    titleDate: null,
     title: "",
     titleDescription: "",
 });
 
 async function updateAchievement(): Promise<void> {
-    await updateUserDetail(userId.value, {
+    await updateUserDetail(userId, {
         achievementList: arrayUnion(achievement),
     });
     const docSnap = await getAchievement();
     achievements.value = docSnap.data().achievementList || [];
     achievements.value.sort(
-        (asc, desc) =>
+        (asc: { titleDate: Date }, desc: { titleDate: Date }) =>
             new Date(asc.titleDate).getTime() -
             new Date(desc.titleDate).getTime()
     );
     achievement = {
-        titleDate: "",
+        titleDate: null,
         title: "",
         titleDescription: "",
     };

@@ -159,7 +159,7 @@ let employee: Employee = reactive({
     empID: "",
     department: "",
     reporting: "",
-    jdate: "",
+    jdate: null,
 });
 
 let employeeCopy: Partial<Employee> = {};

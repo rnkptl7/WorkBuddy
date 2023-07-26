@@ -1,148 +1,72 @@
 <template>
     <main class="profile-details">
-        <v-card class="ma-5 card">
+        <v-card
+            class="ma-5 card"
+            v-for="(detail, title) in profileDetails"
+            :key="detail"
+        >
             <v-list-item three-line>
                 <v-list-item-content class="ma-5">
                     <v-list-item-title class="mb-1">
-                        {{ empID }}
+                        {{ detail }}
                     </v-list-item-title>
-                    <v-list-item-subtitle>Employee ID</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ department }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>Department</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ role }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>Role</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ TOTAL_LEAVES }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>Total Allowance</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ leftLeaves }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>Leaves Left</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ takenLeaves }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>Leaves Taken</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card" v-if="jdate">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ jdate }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>Joining Date</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card" v-if="cdate">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ cdate }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle
-                        >Carrer Start Date</v-list-item-subtitle
-                    >
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-card class="ma-5 card" v-if="cdate">
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ totalExp }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle
-                        >Total Experience
-                    </v-list-item-subtitle>
+                    <v-list-item-subtitle>{{
+                        formatTitle(title)
+                    }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
         </v-card>
     </main>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useFirestore } from "vuefire";
-import { doc, getDoc } from "firebase/firestore";
+import { onMounted, reactive, ref } from "vue";
+import { getUserDetail } from "../../api/api";
+import { ProfileDetails } from "../../types/profileTypes";
 
-const department = ref("");
-const empID = ref("");
-const role = ref("");
-const totalExp = ref("");
-const cdate = ref("");
-const jdate = ref("");
-const TOTAL_LEAVES = ref("");
-const takenLeaves = ref("");
-const leftLeaves = ref("");
+let profileDetails: ProfileDetails = reactive({
+    department: "",
+    empID: "",
+    role: "",
+    totalLeaves: "",
+    takenLeaves: "",
+    leftLeaves: "",
+    carrerStartDate: null,
+    joiningDate: null,
+    totalExperience: "",
+});
+
+const formatTitle = (title: string) => {
+    if (title == "empID") {
+        return "Employee ID";
+    }
+    const updatedTitle = title.replace(/([A-Z])/g, " $1").trim();
+    return updatedTitle.charAt(0).toUpperCase() + updatedTitle.slice(1);
+};
 
 onMounted(async () => {
-    const key = localStorage.getItem("userId");
-    const db = useFirestore();
-    const docSnap = await getDoc(doc(db, "users", key));
+    const userId = localStorage.getItem("userId");
+    const docSnap = await getUserDetail(userId);
+    const register = docSnap.data().register || {};
+    const leavesDetails = docSnap.data().leavesDetails || {};
+    const employee = docSnap.data().employee || {};
+    const professional = docSnap.data().professional || {};
 
-    if (docSnap.exists()) {
-        const register = docSnap.data()?.register || {};
-        const leavesDetails = docSnap.data()?.leavesDetails || {};
-        const employee = docSnap.data()?.employee || {};
-        const professional = docSnap.data()?.professional || {};
-
-        empID.value = register.empID || "";
-        department.value =
-            (register.department || "").charAt(0).toUpperCase() +
-            register.department?.slice(1);
-        role.value =
-            (register.role || "").charAt(0).toUpperCase() +
-            register.role?.slice(1);
-        TOTAL_LEAVES.value = leavesDetails.TOTAL_LEAVES ?? 10;
-        takenLeaves.value = leavesDetails.takenLeaves ?? 0;
-        leftLeaves.value = leavesDetails.leftLeaves ?? 10;
-        jdate.value = employee.jdate || "";
-        cdate.value = professional.cdate || "";
-        totalExp.value = professional.totalExp || "";
-    }
+    profileDetails.empID = register.empID || "";
+    profileDetails.department =
+        (register.department || "").charAt(0).toUpperCase() +
+        register.department?.slice(1);
+    profileDetails.role =
+        (register.role || "").charAt(0).toUpperCase() + register.role?.slice(1);
+    profileDetails.totalLeaves = leavesDetails.TOTAL_LEAVES ?? 10;
+    profileDetails.takenLeaves = leavesDetails.takenLeaves ?? 0;
+    profileDetails.leftLeaves = leavesDetails.leftLeaves ?? 10;
+    profileDetails.joiningDate = employee.jdate || "";
+    profileDetails.carrerStartDate = professional.cdate || "";
+    profileDetails.totalExperience = professional.totalExp || "";
 });
 </script>
+
 <style scoped>
-.profile-details {
-    display: flex;
-    justify-content: flex-start;
-}
 .v-list-item-title {
     color: #115173;
     font-size: 1.25rem;
