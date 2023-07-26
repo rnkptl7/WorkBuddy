@@ -1,21 +1,19 @@
 <template>
     <main class="profile-details">
-        <v-card
-            class="ma-5 card"
-            v-for="(detail, title) in profileDetails"
-            :key="detail"
-        >
-            <v-list-item three-line>
-                <v-list-item-content class="ma-5">
-                    <v-list-item-title class="mb-1">
-                        {{ detail }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>{{
-                        formatTitle(title)
-                    }}</v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
+        <template v-for="(detail, title) in profileDetails" :key="detail">
+            <v-card class="ma-5 card" v-if="detail !== ''">
+                <v-list-item three-line>
+                    <v-list-item-content class="ma-5">
+                        <v-list-item-title class="mb-1">
+                            {{ detail }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                            {{ formatTitle(title) }}
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-card>
+        </template>
     </main>
 </template>
 <script setup lang="ts">
@@ -30,8 +28,8 @@ let profileDetails: ProfileDetails = reactive({
     totalLeaves: "",
     takenLeaves: "",
     leftLeaves: "",
-    carrerStartDate: null,
-    joiningDate: null,
+    carrerStartDate: "",
+    joiningDate: "",
     totalExperience: "",
 });
 

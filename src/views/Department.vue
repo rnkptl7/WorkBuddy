@@ -1,6 +1,8 @@
 <template>
   <section>
-    <div class="department-title"><strong>Departments</strong></div>
+    <div class="department-title d-flex"><strong>Departments</strong>
+      <input type="text" placeholder="Search.." v-model="searchTerm" @input="search">
+    </div>
 
     <!-- Employees Directory -->
     <v-row>
@@ -116,13 +118,13 @@ const onDrop = async (event: startDrag, departmentId: number) => {
     if (dragAndDropAlert.isConfirmed) {
       let dragUser;
       if (departmentId === 1) {
-        dragUser = frontendDept.find((dragUser) => dragUser.id == dragUserID);
+        dragUser = frontendDept.value.find((dragUser) => dragUser.id == dragUserID);
       } else if (departmentId === 2) {
-        dragUser = backendDept.find((dragUser) => dragUser.id == dragUserID);
+        dragUser = backendDept.value.find((dragUser) => dragUser.id == dragUserID);
       } else if (departmentId === 3) {
-        dragUser = devopsDept.find((dragUser) => dragUser.id == dragUserID);
+        dragUser = devopsDept.value.find((dragUser) => dragUser.id == dragUserID);
       } else {
-        dragUser = uiuxDept.find((dragUser) => dragUser.id == dragUserID);
+        dragUser = uiuxDept.value.find((dragUser) => dragUser.id == dragUserID);
       }
 
       //--------------------Update data in Firebase--------------------//
@@ -132,6 +134,13 @@ const onDrop = async (event: startDrag, departmentId: number) => {
         departmentList[departmentId - 1]
       );
       getUserDataFromDB();
+
+      frontendCopy = frontendDept.value;
+      backendCopy = backendDept.value;
+      devopsCopy = devopsDept.value;
+      uiuxCopy = uiuxDept.value;
+
+      searchTerm.value = ""
     }
   } else {
     Swal.fire("Please ask to Admin");
@@ -147,16 +156,16 @@ const getDepartmentClass = (departmentId: number) => {
 
 //--------------------Get User Data From Firebase and Display it on DOM--------------------//
 const db = useFirestore();
-let frontendDept: displayUserData[] = reactive([]);
-let backendDept: displayUserData[] = reactive([]);
-let devopsDept: displayUserData[] = reactive([]);
-let uiuxDept: displayUserData[] = reactive([]);
+let frontendDept: Ref<displayUserData[]> = ref([]);
+let backendDept: Ref<displayUserData[]>= ref([]);
+let devopsDept: Ref<displayUserData[]>= ref([]);
+let uiuxDept: Ref<displayUserData[]>= ref([]);
 
 async function getUserDataFromDB() {
-  frontendDept.length = 0;
-  backendDept.length = 0;
-  devopsDept.length = 0;
-  uiuxDept.length = 0;
+  frontendDept.value.length = 0;
+  backendDept.value.length = 0;
+  devopsDept.value.length = 0;
+  uiuxDept.value.length = 0;
 
   let users = await getUsers();
   users.forEach((doc) => {
@@ -170,30 +179,44 @@ async function getUserDataFromDB() {
     };
 
     if (doc.data().register.department === "ui-ux") {
-      uiuxDept.push({ ...(displayUserData as displayUserData) });
+      uiuxDept.value.push({ ...(displayUserData as displayUserData) });
     } else if (doc.data().register.department === "frontend") {
-      frontendDept.push({ ...(displayUserData as displayUserData) });
+      frontendDept.value.push({ ...(displayUserData as displayUserData) });
     } else if (doc.data().register.department === "backend") {
-      backendDept.push({ ...(displayUserData as displayUserData) });
+      backendDept.value.push({ ...(displayUserData as displayUserData) });
     } else if (doc.data().register.department === "devops") {
-      devopsDept.push({ ...(displayUserData as displayUserData) });
+      devopsDept.value.push({ ...(displayUserData as displayUserData) });
     }
   });
 }
 
 const getDepartmentItems = (departmentId: number) => {
   if (departmentId == 1) {
-    return frontendDept;
+    return frontendDept.value;
   } else if (departmentId == 2) {
-    return backendDept;
+    return backendDept.value;
   } else if (departmentId == 3) {
-    return devopsDept;
+    return devopsDept.value;
   } else if (departmentId == 4) {
-    return uiuxDept;
+    return uiuxDept.value;
   }
 };
 
 getUserDataFromDB();
+
+
+const searchTerm = ref("");
+let frontendCopy = frontendDept.value;
+let backendCopy = backendDept.value;
+let devopsCopy = devopsDept.value;
+let uiuxCopy = uiuxDept.value;
+function search() {  
+  frontendDept.value = frontendCopy.filter((user) => user.fullName.toLowerCase().includes(searchTerm.value.toLowerCase()));
+  backendDept.value = backendCopy.filter((user) => user.fullName.toLowerCase().includes(searchTerm.value.toLowerCase()));
+  devopsDept.value = devopsCopy.filter((user) => user.fullName.toLowerCase().includes(searchTerm.value.toLowerCase()));
+  uiuxDept.value = uiuxCopy.filter((user) => user.fullName.toLowerCase().includes(searchTerm.value.toLowerCase()));
+  console.log(frontendDept.value);
+}
 </script>
 
 <style scoped>
@@ -319,6 +342,27 @@ getUserDataFromDB();
 .department-user-icon img {
   width: 55%;
 }
+
+input {
+    padding: 1px 12px;
+    display: block;
+    width: 35%;
+    outline: none;
+    border-radius: 3px;
+    font-size: 1.3rem;
+    background-color: #fff;
+    border-bottom: 2px solid #fff;
+}
+
+input::placeholder {
+  font-size: 1.3rem;
+}
+
+input:focus {
+  color: #115173;
+  border-bottom: 2px solid #115173;
+}
+
 
 @media only screen and (max-width: 1786px) and (min-width: 1500px) {
   .department-name {

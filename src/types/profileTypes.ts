@@ -44,7 +44,7 @@ export type ProfileDetails = {
     totalLeaves: string;
     takenLeaves: string;
     leftLeaves: string;
-    carrerStartDate: Date;
-    joiningDate: Date;
+    carrerStartDate: string;
+    joiningDate: string;
     totalExperience: string;
 };
