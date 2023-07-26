@@ -135,6 +135,7 @@ export const fetchUpdatedEmployee = async (userID:string, departmentList:departm
         return employeeDataRef;
     } catch (error) {
         alert("Error in Fetching Updated Employee's Department");
+    }
 }
 
 export async function fetchTickets(userId?: string) {
