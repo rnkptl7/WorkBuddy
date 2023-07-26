@@ -1,5 +1,7 @@
 import { useFirestore } from "vuefire";
 import {
+    DocumentData,
+    QuerySnapshot,
     addDoc,
     collection,
     doc,
@@ -9,7 +11,8 @@ import {
     updateDoc,
     where,
 } from "firebase/firestore";
-import { allowedNodeEnvironmentFlags } from "process";
+import { IRegister } from "@/types/authTypes";
+import { departmentList } from "@/types/department";
 
 const database = useFirestore();
 
@@ -110,7 +113,7 @@ export async function getAchievement() {
 }
 
 export const getUsers = async ():Promise<QuerySnapshot<DocumentData>> => {
-    const querySnapshot = await getDocs(collection(database, "users"));
+    const querySnapshot = await getDocs(collection(database, "users")); 
     return querySnapshot;
 }
 

@@ -22,4 +22,6 @@ export interface IRegister extends Ilogin {
     department: string;
     gender: string;
     role: string;
+    empID?: string;
+    fullName?: string;
 }

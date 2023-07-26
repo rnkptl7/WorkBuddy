@@ -174,6 +174,7 @@ import { storeToRefs } from "pinia";
 import { useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
 import { IRegister } from "@/types/authTypes";
+import { registerUser } from "@/api/api";
 
 const commonStore = useCommonStore();
 const db = useFirestore();
@@ -212,10 +213,8 @@ const uniqueID = (): string => {
 const registerData = async (): Promise<void> => {
   const fullName = `${firstName.value} ${lastName.value}`;
 
-  const data = await addDoc(collection(db, "users"), {
-    register: { ...form, empID: uniqueID(), fullName },
-  });
-  if (data.id) {
+  let userId = await registerUser({ ...form, empID: uniqueID(), fullName });
+  if (userId) {
     $toast.success("Registered Successfully", {
       position: "top-right",
     });
