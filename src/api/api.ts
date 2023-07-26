@@ -87,6 +87,9 @@ export const getUserDetail = async (userId: string) => {
     }
 };
 export const getAdmins = async (userId: string) => {
+}
+
+export const fetchUpdatedEmployee = async (userID:string, departmentList:departmentList) =>{
     try {
         const queryLoc = query(
             collection(database, "users"),
