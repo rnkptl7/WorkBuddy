@@ -12,26 +12,22 @@
 
 <script setup lang="ts">
 import { ref, Ref, computed, onMounted } from "vue";
-import { useFirestore } from "vuefire";
-import { doc, getDoc } from "firebase/firestore";
 import { Doughnut } from "vue-chartjs";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { getUserDetail } from "../../api/api";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const userId = localStorage.getItem("userId");
-const leftLeaves = ref() as Ref<number>;
-const takenLeaves = ref() as Ref<number>;
+const leftLeaves: Ref<number> = ref();
+const takenLeaves: Ref<number> = ref();
 const leaveRecord: Ref<number[]> = ref([]);
 
 onMounted(async () => {
-    const db = useFirestore();
-    const docSnap = await getDoc(doc(db, "users", userId));
-    if (docSnap.exists()) {
-        takenLeaves.value = docSnap.data()?.leavesDetails?.takenLeaves ?? 0;
-        leaveRecord.value.push(takenLeaves.value);
-        leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves ?? 10;
-        leaveRecord.value.push(leftLeaves.value);
-    }
+    const userId = localStorage.getItem("userId");
+    const docSnap = await getUserDetail(userId);
+    takenLeaves.value = docSnap.data()?.leavesDetails?.takenLeaves ?? 0;
+    leaveRecord.value.push(takenLeaves.value);
+    leftLeaves.value = docSnap.data()?.leavesDetails?.leftLeaves ?? 10;
+    leaveRecord.value.push(leftLeaves.value);
 });
 
 const chartData = computed(() => {

@@ -114,7 +114,7 @@ const professionalSchema = {
 let jdate: string;
 let professional: Professional = reactive({
     qualification: "",
-    cdate: "",
+    cdate: null,
     totalExp: "",
 });
 

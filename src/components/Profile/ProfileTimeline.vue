@@ -40,18 +40,20 @@
 import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "../../stores/profileStore";
+import { getAchievement } from "../../api/api";
 onMounted(async (): Promise<void> => {
-    await getAchievement();
+    const docSnap = await getAchievement();
+    achievements.value = docSnap.data().achievementList || [];
 });
 
 const store = useProfileStore();
 const { achievements, openModal: dialog } = storeToRefs(store);
-const { getAchievement } = store;
 
 function toggleModal(): void {
     dialog.value = true;
 }
 </script>
+
 <style scoped>
 .no_achivement_container {
     display: flex;

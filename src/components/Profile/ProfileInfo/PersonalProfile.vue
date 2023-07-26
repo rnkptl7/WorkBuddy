@@ -143,7 +143,7 @@ let personal: Personal = reactive({
     gender: "",
     address: "",
     mobile: 0,
-    dob: "",
+    dob: null,
 });
 
 let personalCopy: Partial<Personal> = {};
