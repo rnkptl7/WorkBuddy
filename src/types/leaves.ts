@@ -17,3 +17,8 @@ export interface leavesDates {
     start: string;
     end: string;
 }
+export interface leaveCounterDetails {
+    TOTAL_LEAVES: number;
+    takenLeaves: number;
+    leftLeaves: number;
+}

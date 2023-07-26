@@ -1,48 +1,38 @@
 import { defineStore, storeToRefs } from "pinia";
-import { useFirestore } from "vuefire";
-import { Timestamp } from "firebase/firestore";
 import { Ref, ref } from "vue";
-import moment from "moment";
 import { useAuthStore } from "./authStore";
-import { leaves, leavesDates } from "@/types/leaves";
+import { leaves, leavesDates, leaveCounterDetails } from "@/types/leaves";
 import {
     fetchAllPendingLeaves,
     fetchLeavesBalance,
     fetchLeavesByUsersId,
 } from "../api/api";
-
-function formatDate(data: Timestamp) {
-    const seconds = data.seconds;
-    const nanoseconds = data.nanoseconds;
-    const date = moment
-        .unix(seconds)
-        .add(nanoseconds / 1000000, "milliseconds");
-    return date;
-}
+import formatDate from "../helper/dateFormater";
 
 export const useLeavesStore = defineStore("leaves", () => {
     const authStore = useAuthStore();
     const { isAdmin, userId } = storeToRefs(authStore);
-    // Setting connection to firebase
-    const database = useFirestore();
 
-    const leaves: Ref<leaves[]> = ref([]); // For Users
-    let leavesDates: Ref<leavesDates[]> = ref([]); // For VCalendar
-    let allPendingLeaves: Ref<leaves[]> = ref([]);
-
-    const leaveCountDetails = ref({
+    /**
+     * leaves: To display User's leaves;
+     * leavesDates: To represent in VCalendar;
+     * allPendingLeaves: For admin users only;
+     * leaveCountDetails: To track available leave balance;
+     */
+    const leaves: Ref<leaves[]> = ref([]);
+    const leavesDates: Ref<leavesDates[]> = ref([]);
+    const allPendingLeaves: Ref<leaves[]> = ref([]);
+    const leaveCountDetails: Ref<leaveCounterDetails> = ref({
         TOTAL_LEAVES: 10,
         takenLeaves: 0,
         leftLeaves: 10,
-    }); // Leaves count of Users
+    });
 
     async function getLeaves(): Promise<void> {
-        const response = await fetchLeavesByUsersId(userId.value);
-        // Emptying Containers to fetch updated changes
+        const response = await fetchLeavesByUsersId(userId.value as string);
         leaves.value = [];
         leavesDates.value = [];
 
-        // Mapping response and manipulating data for better representation
         if (response) {
             response.forEach((doc) => {
                 let leaveItem = doc.data();
@@ -50,20 +40,18 @@ export const useLeavesStore = defineStore("leaves", () => {
                 // Data for VCalendar
                 const leavesForCalendar = {
                     status: leaveItem.status,
-                    start: formatDate(leaveItem.startDate)._d,
-                    end: formatDate(leaveItem.endDate)._d,
+                    start: formatDate(leaveItem.startDate),
+                    end: formatDate(leaveItem.endDate),
                 };
                 leaveItem = {
                     ...leaveItem,
                     id: doc.id,
-                    startDate: formatDate(leaveItem.startDate).format(
-                        "DD-MM-YYYY"
-                    ),
-                    endDate: formatDate(leaveItem.endDate).format("DD-MM-YYYY"),
+                    startDate: formatDate(leaveItem.startDate, "DD-MM-YYYY"),
+                    endDate: formatDate(leaveItem.endDate, "DD-MM-YYYY"),
                 };
 
                 leavesDates.value.push(leavesForCalendar);
-                leaves.value.push(leaveItem);
+                leaves.value.push(leaveItem as leaves);
             });
         }
     }
@@ -77,19 +65,15 @@ export const useLeavesStore = defineStore("leaves", () => {
                 leaveItem = {
                     ...leaveItem,
                     id: doc.id,
-                    startDate: formatDate(leaveItem.startDate).format(
-                        "DD-MM-YYYY"
-                    ),
-                    endDate: formatDate(leaveItem.endDate).format("DD-MM-YYYY"),
+                    startDate: formatDate(leaveItem.startDate, "DD-MM-YYYY"),
+                    endDate: formatDate(leaveItem.endDate, "DD-MM-YYYY"),
                 };
-
-                // Data for VCalendar
                 allPendingLeaves.value.push(leaveItem);
             });
     }
 
     async function getLeaveCounterDetails(): Promise<void> {
-        const docSnap = await fetchLeavesBalance(userId.value);
+        const docSnap = await fetchLeavesBalance(userId.value as string);
         if (docSnap?.exists()) {
             leaveCountDetails.value = {
                 TOTAL_LEAVES: docSnap.data().leavesDetails.TOTAL_LEAVES ?? 10,
