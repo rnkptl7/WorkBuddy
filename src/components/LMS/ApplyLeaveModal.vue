@@ -165,6 +165,7 @@
     import { useLeavesStore } from "../../stores/leaves";
     import { useAuthStore } from "../../stores/authStore";
     import { addLeaveDetail, updateUserDetail } from "../../api/api";
+    import { totalmem } from "os";
     const authStore = useAuthStore();
     const leavesStore = useLeavesStore();
     const { fullName } = storeToRefs(authStore);
@@ -185,19 +186,16 @@
         startDate: (value: string) => {
             if (value) {
                 // Unplanned category
-                const selectedDate = new Date(value).getTime();
+                const selectedDate = Math.floor(
+                    new Date(value).getTime() / (1000 * 60 * 60 * 24)
+                );
                 if (leaveRequestInput.leaveCategory == "Unplanned") {
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
                     const tomorrow = new Date();
                     tomorrow.setDate(tomorrow.getDate() + 2);
-                    console.log(
-                        selectedDate >= yesterday.getTime(),
-                        "=== v-calendar test"
-                    );
-
-                    return selectedDate >= yesterday.getTime() &&
-                        selectedDate <= tomorrow.getTime()
+                    return selectedDate <=
+                        Math.floor(tomorrow.getTime() / (1000 * 60 * 60 * 24))
                         ? true
                         : `Start Date should less than ${moment(
                               tomorrow
@@ -207,8 +205,8 @@
                 else if (leaveRequestInput.leaveCategory == "Planned") {
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() + 2);
-
-                    return selectedDate >= yesterday.getTime()
+                    return selectedDate >
+                        Math.floor(yesterday.getTime() / (1000 * 60 * 60 * 24))
                         ? true
                         : `Start Date should above ${moment(yesterday).format(
                               "DD-MM-YYYY"
@@ -223,30 +221,74 @@
         endDate: (value: string) => {
             if (value) {
                 if (leaveRequestInput.startDate) {
-                    const selectedDate = new Date(value).getTime();
+                    const selectedDate = Math.floor(
+                        new Date(value).getTime() / (1000 * 60 * 60 * 24)
+                    );
+
                     // Unplanned category
                     if (leaveRequestInput.leaveCategory == "Unplanned") {
                         const yesterday = new Date(leaveRequestInput.startDate);
-                        const tomorrow = new Date();
+                        const tomorrow = new Date(leaveRequestInput.startDate);
                         tomorrow.setDate(tomorrow.getDate() + 2);
-
                         const requestingDays =
-                            (selectedDate - yesterday.getTime()) /
+                            selectedDate -
+                            Math.floor(yesterday.getTime()) /
                                 (1000 * 3600 * 24) +
                             1;
-
-                        return `${requestingDays}`;
+                        if (
+                            requestingDays > leaveCountDetails.value.leftLeaves
+                        ) {
+                            leaveCountDetails.value.leftLeaves == 0
+                                ? `You dont't have that much leaves left!`
+                                : `You can request upto ${leaveCountDetails.value.leftLeaves} days.`;
+                        } else
+                            return selectedDate >=
+                                Math.floor(
+                                    yesterday.getTime() / (1000 * 60 * 60 * 24)
+                                ) &&
+                                selectedDate <=
+                                    Math.floor(
+                                        tomorrow.getTime() /
+                                            (1000 * 60 * 60 * 24)
+                                    )
+                                ? true
+                                : `End Date should be between ${moment(
+                                      yesterday
+                                  ).format("DD-MM-YYYY")} and ${moment(
+                                      tomorrow
+                                  ).format("DD-MM-YYYY")}`;
                     }
                     // Planned Category
                     else if (leaveRequestInput.leaveCategory == "Planned") {
-                        const yesterday = new Date();
-                        yesterday.setDate(yesterday.getDate() + 2);
+                        const yesterday = new Date(leaveRequestInput.startDate);
+                        const tomorrow = new Date(leaveRequestInput.startDate);
+                        tomorrow.setDate(tomorrow.getDate() + 2);
 
-                        return selectedDate >= yesterday.getTime()
-                            ? true
-                            : `Start Date should above ${moment(
-                                  yesterday
-                              ).format("DD-MM-YYYY")}`;
+                        const requestingDays =
+                            selectedDate -
+                            Math.floor(
+                                new Date(
+                                    leaveRequestInput.startDate
+                                ).getTime() /
+                                    (1000 * 3600 * 24)
+                            ) +
+                            1;
+
+                        if (
+                            requestingDays > leaveCountDetails.value.leftLeaves
+                        ) {
+                            return leaveCountDetails.value.leftLeaves == 0
+                                ? `You dont't have that much leaves left!`
+                                : `You can request upto ${leaveCountDetails.value.leftLeaves} days.`;
+                        } else
+                            return selectedDate >=
+                                Math.floor(
+                                    yesterday.getTime() / (1000 * 60 * 60 * 24)
+                                )
+                                ? true
+                                : `End Date should not less than ${moment(
+                                      yesterday
+                                  ).format("DD-MM-YYYY")}`;
                     } else {
                         return "Select category for accurate date's details!";
                     }
@@ -255,71 +297,6 @@
                 }
             } else {
                 return "Please select appropriate starting date!";
-            }
-
-            if (value) {
-                const date = new Date(value);
-                let yesterday = new Date(leaveRequestInput.startDate);
-                let tomorrow = new Date(leaveRequestInput.startDate);
-                // Define the minimum and maximum dates
-                let totalDays = 0;
-
-                if (leaveRequestInput.startDate > date) {
-                    return "End date should be greater than Start date.";
-                } else {
-                    if (leaveRequestInput.leaveCategory == "Unplanned") {
-                        tomorrow.setDate(tomorrow.getDate() + 3);
-                        yesterday.setDate(yesterday.getDate());
-                        totalDays =
-                            (tomorrow.getTime() - yesterday.getTime()) /
-                            (1000 * 3600 * 24);
-                    } else if (leaveRequestInput.leaveCategory == "Planned") {
-                        tomorrow.setDate(
-                            tomorrow.getDate() +
-                                leaveCountDetails.value.leftLeaves -
-                                1
-                        );
-                        totalDays =
-                            (tomorrow.getTime() - yesterday.getTime()) /
-                            (1000 * 3600 * 24);
-                        if (
-                            totalDays <= leaveCountDetails.value.leftLeaves &&
-                            leaveCountDetails.value.leftLeaves > 0
-                        ) {
-                            if (date.getTime() > yesterday.getTime()) {
-                                return date.getTime() <= tomorrow.getTime() &&
-                                    date.getTime() >= yesterday.getTime()
-                                    ? true
-                                    : `End Date should below ${moment(
-                                          tomorrow
-                                      ).format("DD-MM-YYYY")}`;
-                            } else {
-                                return `Date should above start date ${moment(
-                                    yesterday
-                                ).format("DD-MM-YYYY")}`;
-                            }
-                        } else {
-                            return "You don't have that much leaves left.";
-                        }
-                    }
-                    console.log(leaveCountDetails.value.leftLeaves);
-                    if (
-                        totalDays <= leaveCountDetails.value.leftLeaves &&
-                        leaveCountDetails.value.leftLeaves > 0
-                    ) {
-                        return date >= yesterday && date <= tomorrow
-                            ? true
-                            : `End Date should between ${moment(
-                                  yesterday
-                              ).format("DD-MM-YYYY")} and ${moment(
-                                  tomorrow
-                              ).format("DD-MM-YYYY")}`;
-                    } else {
-                        return "You don't have that much leaves left.";
-                    }
-                }
-            } else {
-                return "Please choose a End Date.";
             }
         },
         requestingToEmail: "required|email",
@@ -353,6 +330,7 @@
         const totalDays =
             (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
         // Adding a document to leaves collection
+
         const leaveId = await addLeaveDetail({
             ...leaveRequestInput,
             startDate: startDate,
