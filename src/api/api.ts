@@ -9,6 +9,7 @@ import {
     updateDoc,
     where,
 } from "firebase/firestore";
+import { allowedNodeEnvironmentFlags } from "process";
 
 const database = useFirestore();
 
@@ -133,6 +134,25 @@ export const fetchUpdatedEmployee = async (userID:string, departmentList:departm
           });
         return employeeDataRef;
     } catch (error) {
-        alert("Error in Fetching Updated Employee's Department")
+        alert("Error in Fetching Updated Employee's Department");
+}
+
+export async function fetchTickets(userId?: string) {
+    let q;
+    const colRef = collection(database, 'tickets');
+
+    if (userId != undefined) {
+        q = query(colRef, where('userId', "==", userId));
+    }
+    else {
+        q = query(colRef)
+    }
+
+    try {
+        return await getDocs(q);
+    }
+    catch(e) {
+        alert("Error in fetching Tickets data!");
+        return [];
     }
 }

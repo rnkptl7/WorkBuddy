@@ -2,9 +2,8 @@ import { defineStore, storeToRefs } from "pinia";
 import { useAuthStore } from "./authStore";
 import moment from 'moment';
 import { Ref, ref, reactive } from 'vue';
-import { useFirestore } from "vuefire";
-import { collection, getDocs, query, where } from 'firebase/firestore';
 import ticket from "@/types/ticket";
+import { fetchTickets } from "@/api/api";
 
 export const useTicketStore = defineStore('ticketStore', () => {
     const openTickets: Ref<ticket[]> = ref([]);
@@ -16,19 +15,14 @@ export const useTicketStore = defineStore('ticketStore', () => {
     const ticketToBeClosed: Ref<Partial<ticket>> = ref({});
     const { userId, fullName, isAdmin } = storeToRefs(useAuthStore());
 
- 
-    const db = useFirestore();
-    const colRef = collection(db, 'tickets');
-
     async function fetchTicketsByStatus(): Promise<void> {
       let ticketList;
       
       if (isAdmin.value) {
-        ticketList = await getDocs(colRef);
+        ticketList = await fetchTickets();
       }
       else {
-        const q = query(colRef, where('userId', "==", userId.value));
-        ticketList = await getDocs(q);  
+        ticketList = await fetchTickets(userId.value as string);
       }
 
       closedTickets.value = [];
@@ -51,11 +45,10 @@ export const useTicketStore = defineStore('ticketStore', () => {
     async function fetchAllTickets() {
         let ticketList;
         if (isAdmin.value) {
-          ticketList = await getDocs(colRef);
+          ticketList = await fetchTickets();
         }
         else {
-          const q = query(colRef, where('userId', "==", userId.value));
-          ticketList = await getDocs(q);
+          ticketList = await fetchTickets(userId.value as string)
         }
         
         raisedTickets.value = [];
