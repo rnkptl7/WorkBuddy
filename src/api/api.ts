@@ -107,3 +107,32 @@ export async function getAchievement() {
         alert("Error in fetching Achievement Detail!");
     }
 }
+
+export const getUsers = async ():Promise<QuerySnapshot<DocumentData>> => {
+    const querySnapshot = await getDocs(collection(database, "users"));
+    return querySnapshot;
+}
+
+export const registerUser = async (userData: IRegister) => {
+    try {
+        const data = await addDoc(collection(database, "users"), {
+            register: userData,
+        });
+        return data.id;
+    } catch (error) {  
+        alert("Error: User Registration failed!")
+    }
+}
+
+export const fetchUpdatedEmployee = async (userID:string, departmentList:departmentList) =>{
+    try {
+        const employeeDataRef = doc(database, "users", userID);
+        await updateDoc(employeeDataRef, {
+            "register.department":
+              departmentList.name.toLowerCase(),
+          });
+        return employeeDataRef;
+    } catch (error) {
+        alert("Error in Fetching Updated Employee's Department")
+    }
+}

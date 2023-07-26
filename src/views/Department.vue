@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="department-title"><strong>Department</strong></div>
+    <div class="department-title"><strong>Departments</strong></div>
 
     <!-- Employees Directory -->
     <v-row>
@@ -169,55 +169,31 @@ async function getUserDataFromDB() {
       role: doc.data().register.role,
     };
 
-    //--------------------Get User Data From Firebase and Display it on DOM--------------------//
-    const db = useFirestore();
-    let frontendDept = reactive([]);
-    let backendDept = reactive([]);
-    let devopsDept = reactive([]);
-    let uiuxDept = reactive([]);
-
-    async function getUserDataFromDB() {
-        frontendDept.length = 0;
-        backendDept.length = 0;
-        devopsDept.length = 0;
-        uiuxDept.length = 0;
-
-        const getUserDataFromDB = await getDocs(collection(db, "users"));
-        getUserDataFromDB.forEach((doc) => {
-            let displayUserData = {
-                fullName: doc.data().register.fullName,
-                department: doc.data().register.department,
-                email: doc.data().register.email,
-                gender: doc.data().register.gender,
-                userID: doc.id,
-                role: doc.data().register.role,
-            };
-
-            if (doc.data().register.department === "ui-ux") {
-                uiuxDept.push({ ...displayUserData, departmentId: 4 });
-            } else if (doc.data().register.department === "frontend") {
-                frontendDept.push({ ...displayUserData, departmentId: 1 });
-            } else if (doc.data().register.department === "backend") {
-                backendDept.push({ ...displayUserData, departmentId: 2 });
-            } else if (doc.data().register.department === "devops") {
-                devopsDept.push({ ...displayUserData, departmentId: 3 });
-            }
-        });
+    if (doc.data().register.department === "ui-ux") {
+      uiuxDept.push({ ...(displayUserData as displayUserData) });
+    } else if (doc.data().register.department === "frontend") {
+      frontendDept.push({ ...(displayUserData as displayUserData) });
+    } else if (doc.data().register.department === "backend") {
+      backendDept.push({ ...(displayUserData as displayUserData) });
+    } else if (doc.data().register.department === "devops") {
+      devopsDept.push({ ...(displayUserData as displayUserData) });
     }
+  });
+}
 
-    const getDepartmentItems = (departmentId) => {
-        if (departmentId == 1) {
-            return frontendDept;
-        } else if (departmentId == 2) {
-            return backendDept;
-        } else if (departmentId == 3) {
-            return devopsDept;
-        } else if (departmentId == 4) {
-            return uiuxDept;
-        }
-    };
+const getDepartmentItems = (departmentId: number) => {
+  if (departmentId == 1) {
+    return frontendDept;
+  } else if (departmentId == 2) {
+    return backendDept;
+  } else if (departmentId == 3) {
+    return devopsDept;
+  } else if (departmentId == 4) {
+    return uiuxDept;
+  }
+};
 
-    getUserDataFromDB();
+getUserDataFromDB();
 </script>
 
 <style scoped>
@@ -237,6 +213,7 @@ async function getUserDataFromDB() {
   border-radius: 10px;
   background-color: #115173;
 }
+
 ::-webkit-scrollbar-track {
   background-color: white;
 }
@@ -276,10 +253,12 @@ async function getUserDataFromDB() {
   text-align: left;
   width: 35%;
 }
+
 .employee-details {
   text-align: left;
   width: 65%;
 }
+
 .employee-details .text {
   font-size: 15px;
 }
@@ -296,6 +275,7 @@ async function getUserDataFromDB() {
   justify-content: center;
   margin-top: 10px;
 }
+
 .department-name {
   background-color: #115173;
   color: white;
@@ -321,6 +301,7 @@ async function getUserDataFromDB() {
   display: flex;
   padding: 3px 0;
 }
+
 .empty-placeholder {
   margin-top: 70%;
   background-color: #eaeaea;
@@ -381,10 +362,12 @@ async function getUserDataFromDB() {
   * {
     max-width: 96vw;
   }
+
   .v-row {
     display: grid;
     grid-template-columns: auto auto;
   }
+
   .empty-placeholder {
     display: grid;
     place-items: center;
@@ -395,6 +378,7 @@ async function getUserDataFromDB() {
   * {
     max-width: 96vw;
   }
+
   .v-row {
     display: grid;
     grid-template-columns: auto auto;
@@ -405,6 +389,7 @@ async function getUserDataFromDB() {
   * {
     max-width: 96vw;
   }
+
   .v-row {
     display: grid;
     grid-template-columns: auto auto;
@@ -415,6 +400,7 @@ async function getUserDataFromDB() {
   * {
     max-width: 96vw;
   }
+
   .v-row {
     display: grid;
   }
@@ -424,6 +410,7 @@ async function getUserDataFromDB() {
   * {
     max-width: 96vw;
   }
+
   .v-row {
     display: grid;
   }
@@ -431,6 +418,7 @@ async function getUserDataFromDB() {
   .department-name {
     font-size: 20px;
   }
+
   .title,
   .text {
     font-size: 18px;

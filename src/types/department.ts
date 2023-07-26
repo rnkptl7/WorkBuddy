@@ -16,8 +16,6 @@ export interface departmentList {
     name:string;
     class:string;
 }
-
-
 export interface startDrag {
     draggedItem: { value: number | null };
     dataTransfer:{value: number | null };
