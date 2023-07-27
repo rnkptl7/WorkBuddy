@@ -1,12 +1,11 @@
 export interface Achievement {
-    titleDate: any;
+    titleDate: Date;
     title: string;
     titleDescription: string;
 }
 
 export interface ProfileStoreState {
     openModal: boolean;
-    userId: string;
     achievements: Achievement[];
 }
 
@@ -15,7 +14,7 @@ export interface Employee {
     empID: string;
     department: string;
     reporting: string;
-    jdate: string;
+    jdate: Date;
 }
 
 export interface Other {
@@ -29,11 +28,23 @@ export interface Personal {
     gender: string;
     address: string;
     mobile: number;
-    dob: string;
+    dob: Date;
 }
 
 export interface Professional {
     qualification: string;
-    cdate: string;
+    cdate: Date;
     totalExp: string;
 }
+
+export type ProfileDetails = {
+    department: string;
+    empID: string;
+    role: string;
+    totalLeaves: string;
+    takenLeaves: string;
+    leftLeaves: string;
+    carrerStartDate: string;
+    joiningDate: string;
+    totalExperience: string;
+};

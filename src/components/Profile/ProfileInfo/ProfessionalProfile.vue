@@ -82,23 +82,21 @@
 </template>
 <script setup lang="ts">
 import { reactive, ref, onMounted, watch } from "vue";
-import { useFirestore } from "vuefire";
-import { Professional } from "@/types/profileTypes";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { Professional } from "../../../types/profileTypes";
+import { updateUserDetail, getUserDetail } from "../../../api/api";
+
+const userId = localStorage.getItem("userId");
+const isEdit = ref(true);
+const toggleEdit = () => (isEdit.value = !isEdit.value);
+const closeForm = () => {
+    professional = { ...professionalCopy } as Professional;
+    toggleEdit();
+};
 
 onMounted(() => {
     priorData();
 });
 
-const key = localStorage.getItem("userId");
-const db = useFirestore();
-const isEdit = ref(true);
-const toggleEdit = () => (isEdit.value = !isEdit.value);
-
-const closeForm = () => {
-    professional = { ...professionalCopy } as Professional;
-    toggleEdit();
-};
 const professionalSchema = {
     cdate: (value: string) => {
         const inputDate = new Date(value);
@@ -116,24 +114,21 @@ const professionalSchema = {
 let jdate: string;
 let professional: Professional = reactive({
     qualification: "",
-    cdate: "",
+    cdate: null,
     totalExp: "",
 });
 
 let professionalCopy: Partial<Professional> = {};
+
 const priorData = async () => {
-    const docSnap = await getDoc(doc(db, "users", key));
-    if (docSnap.exists()) {
-        const employeeData = docSnap.data()?.employee;
-        const professionalData = docSnap.data()?.professional;
-        jdate = employeeData?.jdate;
-        professional.cdate = professionalData?.cdate || "";
-        professional.totalExp = professionalData?.totalExp || "";
-        professional.qualification = professionalData?.qualification || "";
-        professionalCopy = { ...professional };
-    } else {
-        return;
-    }
+    const docSnap = await getUserDetail(userId);
+    const employeeData = docSnap.data()?.employee;
+    const professionalData = docSnap.data()?.professional;
+    jdate = employeeData?.jdate;
+    professional.cdate = professionalData?.cdate || "";
+    professional.totalExp = professionalData?.totalExp || "";
+    professional.qualification = professionalData?.qualification || "";
+    professionalCopy = { ...professional };
 };
 
 watch(
@@ -147,13 +142,14 @@ watch(
     { deep: true }
 );
 
-const updateProfessionalInfo = async (): Promise<void> => {
-    await updateDoc(doc(db, "users", key), {
+async function updateProfessionalInfo() {
+    await updateUserDetail(userId, {
         professional,
     });
     toggleEdit();
-};
+}
 </script>
+
 <style scoped>
 @import "@/assets/profile.css";
 </style>

@@ -13,13 +13,15 @@ export interface commonStoreState {
     overlay: boolean;
 }
 
-export interface Ilogin { 
+export interface Ilogin {
     email: string;
     password: string;
 }
 
-export interface IRegister extends Ilogin { 
+export interface IRegister extends Ilogin {
     department: string;
     gender: string;
     role: string;
+    empID?: string;
+    fullName?: string;
 }

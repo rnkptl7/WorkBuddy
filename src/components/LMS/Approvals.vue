@@ -2,7 +2,7 @@
     <section class="d-flex flex-row flex-fill w-100">
         <!-- Pending Leave Requests -->
         <div
-            class="admin-pending_requests d-flex flex-fill flex-column align-center pa-3 w-100"
+            class="admin-pending_requests d-flex flex flex-column align-center pa-3 w-100"
         >
             <h3>Your Pending Requests:</h3>
             <div
@@ -42,15 +42,17 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.pending-requests_cards {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 4rem;
+}
 .pending-requests_cards,
 h2,
 h3,
 h4,
 h5 {
     color: var(--primary-color);
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-column-gap: 4rem;
 }
 
 .pendingLeaves_placeholder {

@@ -1,23 +1,22 @@
 export interface draggedItem {
-    fullName:string;
-    department:string;
-    email:string;
-    gender:string;
-    userID:string;
+    fullName: string;
+    department: string;
+    email: string;
+    gender: string;
+    userID: string;
 }
 
 export interface displayUserData extends draggedItem {
-    role:string;
+    role: string;
+    id: number;
 }
 
-export interface frontendDept extends displayUserData{
+export interface departmentList {
+    id: number;
+    name: string;
+    class: string;
 }
-
-export interface backendDept extends displayUserData{
-}
-
-export interface devopsDept extends displayUserData{
-}
-
-export interface uiuxDept extends displayUserData{
+export interface startDrag {
+    draggedItem: { value: number | null };
+    dataTransfer: { value: number | null };
 }

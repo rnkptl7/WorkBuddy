@@ -29,19 +29,22 @@
                     <h3>Your Leave Calendar</h3>
                     <VCalendarVue />
                     <div class="d-flex flex-row flex-wrap">
-                        <span class="approved rounded-pill"
-                            ><span></span>Approved</span
-                        >
-                        <span class="rejected rounded-pill"
-                            ><span></span>Rejected</span
-                        >
-                        <span class="pending rounded-pill"
-                            ><span></span>Pending</span
-                        >
+                        <v-chip class="ma-2" color="blue">
+                            <!-- <v-avatar left class="blue darken-4"> </v-avatar> -->
+                            Approved
+                        </v-chip>
+                        <v-chip class="ma-2" color="grey">
+                            <!-- <v-avatar left class="blue darken-4"> </v-avatar> -->
+                            Rejected
+                        </v-chip>
+                        <v-chip class="ma-2" color="orange">
+                            <!-- <v-avatar left class="blue darken-4"> </v-avatar> -->
+                            Pending
+                        </v-chip>
                     </div>
                 </div>
                 <div
-                    class="LMS-leave_balance mx-auto d-flex flex-column align-space-between justify-center pa-3 align-center"
+                    class="LMS-leave_balance mx-auto d-flex flex-column justify-center pa-3 align-lg-center"
                 >
                     <div class="leaves_count_wrapper d-flex flex-row flex-wrap">
                         <div class="leaves_count pa-3">
@@ -110,145 +113,145 @@
 </template>
 
 <script setup lang="ts">
-    // File imports
-    import LeaveRequestCardVue from "./LeaveRequestCard.vue";
-    import LeaveHistory from "./LeaveHistory.vue";
-    import VCalendarVue from "./VCalendar.vue";
-    import ApplyLeaveModal from "./ApplyLeaveModal.vue";
-    import { useLeavesStore } from "../../stores/leaves";
-    import { useCommonStore } from "../../stores/commonStore";
+// File imports
+import LeaveRequestCardVue from "./LeaveRequestCard.vue";
+import LeaveHistory from "./LeaveHistory.vue";
+import VCalendarVue from "./VCalendar.vue";
+import ApplyLeaveModal from "./ApplyLeaveModal.vue";
+import { useLeavesStore } from "../../stores/leaves";
+import { useCommonStore } from "../../stores/commonStore";
 
-    // Vue's imports
-    import { computed, onMounted, watch } from "vue";
-    import { reactive, ref } from "vue";
-    import { collection } from "firebase/firestore";
-    import { storeToRefs } from "pinia";
+// Vue's imports
+import { computed, onMounted, watch } from "vue";
+import { reactive, ref } from "vue";
+import { collection } from "firebase/firestore";
+import { storeToRefs } from "pinia";
 
-    const { mobileView: isMobile } = storeToRefs(useCommonStore());
-    const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
-    const { getLeaves, getLeaveCounterDetails } = useLeavesStore();
+const { mobileView: isMobile } = storeToRefs(useCommonStore());
+const { leaves, leaveCountDetails } = storeToRefs(useLeavesStore());
+const { getLeaves, getLeaveCounterDetails } = useLeavesStore();
 
-    let pendingLeaves = computed(() => {
-        return leaves.value.filter((leave) => {
-            return leave.status == "pending";
-        });
+let pendingLeaves = computed(() => {
+    return leaves.value.filter((leave) => {
+        return leave.status == "pending";
     });
-    onMounted(async () => {
-        await getLeaves();
-        await getLeaveCounterDetails();
-    });
-    const openRequestLeaveDialog = ref(false);
+});
+onMounted(async () => {
+    await getLeaves();
+    await getLeaveCounterDetails();
+});
+const openRequestLeaveDialog = ref(false);
 </script>
 
 <style scoped>
-    .LMS-wrapper,
-    h2,
-    h3,
-    h4,
-    h5 {
-        color: var(--primary-color);
-    }
-    .LMS_container {
-        background: whitesmoke;
-    }
+.LMS-wrapper,
+h2,
+h3,
+h4,
+h5 {
+    color: var(--primary-color);
+}
+.LMS_container {
+    background: whitesmoke;
+}
 
-    .v-card {
-        box-sizing: content-box;
-        border-radius: 5%;
-        border: 1px dashed grey;
-    }
-    /* Custom small cards for Leaves analytics */
-    .LMS-leave_balance {
-        width: fit-content;
-        border-radius: 5%;
-        border: 2px dashed var(--secondary-color);
-        margin-block: 1rem;
-    }
+.v-card {
+    box-sizing: content-box;
+    border-radius: 5%;
+    border: 1px dashed grey;
+}
+/* Custom small cards for Leaves analytics */
+.LMS-leave_balance {
+    width: fit-content;
+    border-radius: 5%;
+    border: 2px dashed var(--secondary-color);
+    margin-block: 1rem;
+}
+.LMS-calendar_wrapper,
+.LMS-pending_requests {
+    margin: 2rem;
+    width: 40%;
+}
+/* .LMS-information_container, */
+.LMS-leave_history,
+.LMS-information_container {
+    margin: 1rem;
+    box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important;
+}
+
+.LMS-pending_requests {
+    max-height: 580px;
+}
+.pending-requests_cards {
+    overflow-y: auto;
+}
+.pending-requests_cards > .pending_card {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.pendingLeaves_placeholder {
+    margin-block: 1rem;
+    border-radius: 5%;
+    height: 200px;
+    border: 2px dashed var(--secondary-color);
+}
+
+.approved,
+.rejected,
+.pending {
+    /* border-radius: 10%; */
+    border: 1px solid white;
+    margin: 0.3rem;
+    padding-inline: 5px;
+    padding-block: 1px;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.approved span,
+.rejected span,
+.pending span {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-inline: 2px;
+}
+
+.approved span {
+    background-color: #2563eb;
+}
+
+.rejected span {
+    background-color: #475569;
+}
+.pending span {
+    background-color: #ca8a04;
+}
+.approved {
+    color: #2563eb;
+    border-color: #2563eb;
+}
+.rejected {
+    color: #475569;
+    border-color: #475569;
+}
+.pending {
+    color: #ca8a04;
+    border-color: #ca8a04;
+}
+
+@media screen and (max-width: 840px) {
     .LMS-calendar_wrapper,
     .LMS-pending_requests {
-        margin: 2rem;
-        width: 40%;
+        width: 100%;
+        margin: 0 !important;
     }
-    /* .LMS-information_container, */
     .LMS-leave_history,
     .LMS-information_container {
-        margin: 1rem;
-        box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.15) !important;
+        margin: 0 !important;
     }
-
-    .LMS-pending_requests {
-        max-height: 580px;
-    }
-    .pending-requests_cards {
-        overflow-y: auto;
-    }
-    .pending-requests_cards > .pending_card {
-        display: flex;
-        flex: 1 1 auto;
-    }
-
-    .pendingLeaves_placeholder {
-        margin-block: 1rem;
-        border-radius: 5%;
-        height: 200px;
-        border: 2px dashed var(--secondary-color);
-    }
-
-    .approved,
-    .rejected,
-    .pending {
-        /* border-radius: 10%; */
-        border: 1px solid white;
-        margin: 0.3rem;
-        padding-inline: 5px;
-        padding-block: 1px;
-        color: white;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-    .approved span,
-    .rejected span,
-    .pending span {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        margin-inline: 2px;
-    }
-
-    .approved span {
-        background-color: #2563eb;
-    }
-
-    .rejected span {
-        background-color: #475569;
-    }
-    .pending span {
-        background-color: #ca8a04;
-    }
-    .approved {
-        color: #2563eb;
-        border-color: #2563eb;
-    }
-    .rejected {
-        color: #475569;
-        border-color: #475569;
-    }
-    .pending {
-        color: #ca8a04;
-        border-color: #ca8a04;
-    }
-
-    @media screen and (max-width: 840px) {
-        .LMS-calendar_wrapper,
-        .LMS-pending_requests {
-            width: 100%;
-            margin: 0 !important;
-        }
-        .LMS-leave_history,
-        .LMS-information_container {
-            margin: 0 !important;
-        }
-    }
+}
 </style>

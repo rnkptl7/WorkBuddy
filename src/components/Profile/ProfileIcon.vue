@@ -47,8 +47,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useFirestore } from "vuefire";
-import { doc, getDoc } from "firebase/firestore";
+import { getUserDetail } from "../../api/api";
 
 const isProfileSelected = ref(true);
 const isInfoSelected = ref(false);
@@ -70,30 +69,27 @@ const department = ref("");
 const role = ref("");
 const male = ref(true);
 onMounted(async (): Promise<void> => {
-    const key = localStorage.getItem("userId");
-    const db = useFirestore();
-    const docSnap = await getDoc(doc(db, "users", key));
-    if (docSnap.exists()) {
-        fullName.value =
-            (docSnap.data().register.fullName || "").charAt(0).toUpperCase() +
-            `${docSnap.data().register.fullName.slice(1)}`;
-        department.value =
-            (docSnap.data().register.department || "").charAt(0).toUpperCase() +
-            `${docSnap.data().register.department.slice(1)}`;
-        role.value =
-            (docSnap.data().register.role || "").charAt(0).toUpperCase() +
-            `${docSnap.data().register.role.slice(1)}`;
-        if (docSnap.data().register.gender == "Male") {
-            male.value = true;
-        } else {
-            male.value = false;
-        }
-        if (role.value == "Employee") {
-            role.value = "Engineer";
-        }
-        if (role.value == "Admin") {
-            department.value = "";
-        }
+    const userId = localStorage.getItem("userId");
+    const docSnap = await getUserDetail(userId);
+    fullName.value =
+        (docSnap.data().register.fullName || "").charAt(0).toUpperCase() +
+        `${docSnap.data().register.fullName.slice(1)}`;
+    department.value =
+        (docSnap.data().register.department || "").charAt(0).toUpperCase() +
+        `${docSnap.data().register.department.slice(1)}`;
+    role.value =
+        (docSnap.data().register.role || "").charAt(0).toUpperCase() +
+        `${docSnap.data().register.role.slice(1)}`;
+    if (docSnap.data().register.gender == "Male") {
+        male.value = true;
+    } else {
+        male.value = false;
+    }
+    if (role.value == "Employee") {
+        role.value = "Engineer";
+    }
+    if (role.value == "Admin") {
+        department.value = "";
     }
 });
 </script>
@@ -141,7 +137,7 @@ button:hover {
         font-size: 25px;
     }
 }
-@media screen and (max-width: 540px) {
+@media screen and (max-width: 620px) {
     .button-box {
         display: flex;
         justify-content: center;
